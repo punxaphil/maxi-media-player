@@ -20,6 +20,7 @@ class CustomSonosCard extends LitElement {
   
   render() {
     var icon = "mdi-stop";
+    var speakerNames = [];
     var zones = [];
     var favorites = [];
     var first = true;
@@ -39,6 +40,7 @@ class CustomSonosCard extends LitElement {
             state: {},
             roomName: ""
           };
+          speakerNames[entity] = stateObj.attributes.friendly_name;
       }
       zones[entity].state =  stateObj.state;
       zones[entity].roomName =  stateObj.attributes.friendly_name;
@@ -77,7 +79,7 @@ class CustomSonosCard extends LitElement {
           <div class="wrap ${this.active == key? 'active':''}">
             <ul class="speakers">
                 ${stateObj.attributes.sonos_group.map(speaker => {
-                    return html `<li>${zones[speaker].roomName}</li>`;
+                    return html `<li>${speakerNames[speaker]}</li>`;
                 })}
             </ul>
             <div class="play">
