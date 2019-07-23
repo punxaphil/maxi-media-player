@@ -467,6 +467,15 @@ class CustomSonosCard extends LitElement {
       .info__album,
       .info__song {
         margin-bottom: .5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info__artist {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .info__artist,
@@ -615,7 +624,9 @@ class CustomSonosCard extends LitElement {
       }
       .group .play .content {
         flex:1;
-
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .group .play .content .source {
         display:block;
