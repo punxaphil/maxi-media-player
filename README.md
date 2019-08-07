@@ -3,8 +3,11 @@ Customize media player for sonos speakers!<br><br>
 
 ## Features:
 
-* blabla
-* blabla
+* Group/Ungroup speakers
+* Control multiple speaker
+* Play favorites from list
+
+![Screenshot of card](https://github.com/DBuit/custom-sonos-card/blob/master/screenshot-custom-sonos-card.png)
 
 <details>
   <summary><b>Example lovelace yaml:</b></summary>
