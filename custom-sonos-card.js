@@ -100,9 +100,7 @@ class CustomSonosCard extends LitElement {
     if(this.active != '') {
         var activeStateObj = this.hass.states[this.active];
         var volume = 100 * activeStateObj.attributes.volume_level;
-        
-        console.log(volume);
-        
+
         playerTemplate = html`
           <div class="player__container">
             <div class="player__body">
@@ -124,7 +122,7 @@ class CustomSonosCard extends LitElement {
             </div>
             <div class="player__footer">
                 <ul class="list list--footer">
-                    <li><ha-icon @click="${() => this.volumeDown(this.active)}" .icon=${"mdi:volume-minus"}></ha-icon><input type="range" .value="${volume}" @change=${e => this.volumeSet(this.active, e.target.value)} min="0" max="100" id="volumeRange" class="volumeRange" style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);"><ha-icon @click="${() => this.volumeUp(this.active)}" .icon=${"mdi:volume-plus"}></ha-icon></li>
+                    <li><ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}" .icon=${"mdi:volume-minus"}></ha-icon><input type="range" .value="${volume}" @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)} min="0" max="100" id="volumeRange" class="volumeRange" style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);"><ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}" .icon=${"mdi:volume-plus"}></ha-icon></li>
                 </ul>
             </div>
           </div>
@@ -192,7 +190,6 @@ class CustomSonosCard extends LitElement {
   }
 
   updated() {
-    console.log('updated');
     //Set active player
     this.shadowRoot.querySelectorAll(".group").forEach(group => {
         group.addEventListener('click', event => {
@@ -210,10 +207,7 @@ class CustomSonosCard extends LitElement {
     });
     //Join player
     this.shadowRoot.querySelectorAll(".join-member").forEach(member => {
-        console.log(member);
         member.addEventListener('click', event => {
-            console.log(member);
-            console.log(member.dataset.member);
             this.hass.callService("sonos", "join", {
                 master: this.active,
                 entity_id: member.dataset.member
@@ -222,10 +216,7 @@ class CustomSonosCard extends LitElement {
     });
     //Unjoin player
     this.shadowRoot.querySelectorAll(".unjoin-member").forEach(member => {
-        console.log(member);
         member.addEventListener('click', event => {
-            console.log(member);
-            console.log(member.dataset.member);
             this.hass.callService("sonos", "unjoin", {
                 entity_id: member.dataset.member
             });
@@ -246,28 +237,46 @@ class CustomSonosCard extends LitElement {
     });
   }
   
-  volumeDown(entity) {
+  volumeDown(entity, members) {
     this.hass.callService("media_player", "volume_down", {
         entity_id: entity
     });
+    
+
+    for(var member in members) {
+        this.hass.callService("media_player", "volume_down", {
+            entity_id: member
+        });
+    }
+    
   }
   
-  volumeUp(entity) {
+  volumeUp(entity, members) {
     this.hass.callService("media_player", "volume_up", {
         entity_id: entity
-    });  
+    }); 
+    
+    for(var member in members) {
+        this.hass.callService("media_player", "volume_up", {
+            entity_id: member
+        });
+    }
   }
   
-  volumeSet(entity, volume) {
-      var volumeFloat = volume/100;
-    console.log(entity);
-    console.log(volume);
-    console.log(volumeFloat);
-      
+  volumeSet(entity, members, volume) {
+    var volumeFloat = volume/100;
+
     this.hass.callService("media_player", "volume_set", {
         entity_id: entity,
         volume_level: volumeFloat
     });  
+    
+    for(var member in members) {
+        this.hass.callService("media_player", "volume_set", {
+            entity_id: member,
+            volume_level: volumeFloat
+        });  
+    }
   }
   
   
@@ -472,17 +481,17 @@ class CustomSonosCard extends LitElement {
         text-overflow: ellipsis;
       }
 
-      .info__artist {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
       .info__artist,
       .info__album {
         font-size: .75rem;
         font-weight: 300;
         color: #666;
+      }
+      
+      .info__artist {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .info__song {
