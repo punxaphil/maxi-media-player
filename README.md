@@ -11,7 +11,7 @@ Customize media player for sonos speakers!<br><br>
 
 ## Installation
 ### HACS
-Add the URI to HACS's `Setings` > `CUSTOM REPOSITORIES`
+Add the URI to HACS's `Settings` > `CUSTOM REPOSITORIES`
 
 ### Manual
 Download the resources, as you would do with all other modules.
