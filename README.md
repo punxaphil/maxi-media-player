@@ -11,9 +11,11 @@ Customize media player for sonos speakers!<br><br>
 
 ## Installation
 ### HACS
-Just add the URI to HACS's custom 
+Add the URI to HACS's `Setings` > `CUSTOM REPOSITORIES`
 
 ### Manual
+Download the resources, as you would do with all other modules.
+
 Add the custom card as a module, like this:
 ```yaml
 resources:
@@ -33,8 +35,8 @@ views:
       - type: "custom:custom-sonos-card"
         name: "Sonos"
         entities:
-          - media_player.sonos_stue
-          - media_player.sonos_kontor
-          - media_player.sonos_kokken
-          - media_player.sonos_badevaerelse
+          - media_player.sonos_kitchen
+          - media_player.sonos_hallway
+          - media_player.sonos_bedroom
+          - media_player.sonos_livingroom
 ```
