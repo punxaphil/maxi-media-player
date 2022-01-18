@@ -1,10 +1,11 @@
 import {
-    LitElement,
-    html,
-    css
+  LitElement,
+  html,
+  css
 } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
+
 class CustomSonosCard extends LitElement {
-  
+
   static get properties() {
     return {
       hass: {},
@@ -12,96 +13,97 @@ class CustomSonosCard extends LitElement {
       active: {}
     };
   }
-  
+
   constructor() {
     super();
     this.active = '';
   }
-  
+
   render() {
     var icon = "mdi-stop";
     var speakerNames = [];
     var zones = [];
     var favorites = [];
     var first = true;
-    for(var entity of this.config.entities) {        
-      var stateObj = this.hass.states[entity];      
+    for (var entity of this.config.entities) {
+      var stateObj = this.hass.states[entity];
       //Get favorites list
-      if(first) {
+      if (first) {
         first = false;
-        for(var favorite of stateObj.attributes.source_list) {
+        for (var favorite of stateObj.attributes.source_list) {
           favorites.push(favorite);
         }
       }
-      
-      if(!(entity in zones)) {
-          zones[entity] = {
-            members: {},
-            state: {},
-            roomName: ""
-          };
-          speakerNames[entity] = stateObj.attributes.friendly_name;
+
+      if (!(entity in zones)) {
+        zones[entity] = {
+          members: {},
+          state: {},
+          roomName: ""
+        };
+        speakerNames[entity] = stateObj.attributes.friendly_name;
       }
-      zones[entity].state =  stateObj.state;
-      zones[entity].roomName =  stateObj.attributes.friendly_name;
-      
-      
-      if(stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] == entity) {
-        
-        for(var member of stateObj.attributes.sonos_group) {
-          if(member != entity) {
+      zones[entity].state = stateObj.state;
+      zones[entity].roomName = stateObj.attributes.friendly_name;
+
+
+      if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] == entity) {
+
+        for (var member of stateObj.attributes.sonos_group) {
+          if (member != entity) {
             var state = this.hass.states[member];
             zones[entity].members[member] = state.attributes.friendly_name;
           }
         }
-        
-        if(stateObj.state == 'playing' && this.active == '') {
-            this.active = entity;
+
+        if (stateObj.state == 'playing' && this.active == '') {
+          this.active = entity;
         }
-      } else if(stateObj.attributes.sonos_group.length > 1) {
+      } else if (stateObj.attributes.sonos_group.length > 1) {
         delete zones[entity];
       } else {
-        if(stateObj.state == 'playing' && this.active == '') {
+        if (stateObj.state == 'playing' && this.active == '') {
           this.active = entity;
         }
       }
     }
-    
+
     var groupTemplates = [];
-    var playerTemplate = html ``;
+    var playerTemplate = html``;
     var favoriteTemplates = [];
     var memberTemplates = [];
     for (var key in zones) {
       var entity = key;
       var stateObj = this.hass.states[key];
       groupTemplates.push(html`
-        <div class="group" data-id="${key}">
-          <div class="wrap ${this.active == key? 'active':''}">
-            <ul class="speakers">
-                ${stateObj.attributes.sonos_group.map(speaker => {
-                    return html `<li>${speakerNames[speaker]}</li>`;
-                })}
-            </ul>
-            <div class="play">
-              <div class="content">
-                <span class="currentTrack">${stateObj.attributes.media_artist} - ${stateObj.attributes.media_title}</span>
+          <div class="group" data-id="${key}">
+              <div class="wrap ${this.active == key ? 'active' : ''}">
+                  <ul class="speakers">
+                      ${stateObj.attributes.sonos_group.map(speaker => {
+                          return html`
+                              <li>${speakerNames[speaker]}</li>`;
+                      })}
+                  </ul>
+                  <div class="play">
+                      <div class="content">
+                          <span class="currentTrack">${stateObj.attributes.media_artist} - ${stateObj.attributes.media_title}</span>
+                      </div>
+                      <div class="player ${stateObj.state == 'playing' ? 'active' : ''}">
+                          <div class="bar"></div>
+                          <div class="bar"></div>
+                          <div class="bar"></div>
+                      </div>
+                  </div>
               </div>
-              <div class="player ${stateObj.state == 'playing'? 'active':''}">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-              </div>
-            </div>
           </div>
-        </div>
       `);
     }
-    
-    if(this.active != '') {
-        var activeStateObj = this.hass.states[this.active];
-        var volume = 100 * activeStateObj.attributes.volume_level;
 
-        playerTemplate = html`
+    if (this.active != '') {
+      var activeStateObj = this.hass.states[this.active];
+      var volume = 100 * activeStateObj.attributes.volume_level;
+
+      playerTemplate = html`
           <div class="player__container">
             <div class="player__body">
                 <div class="body__cover">
@@ -126,41 +128,46 @@ class CustomSonosCard extends LitElement {
                 </ul>
             </div>
           </div>
-        `;
-        
-        for(member in zones[this.active].members) {
+      `;
+
+      for (member in zones[this.active].members) {
+        memberTemplates.push(html`
+            <li>
+                <div class="member unjoin-member" data-member="${member}">
+                    <span>${zones[this.active].members[member]} </span>
+                    <ha-icon .icon=${"mdi:minus"}></ha-icon>
+                    </i>
+                </div>
+            </li>
+        `);
+      }
+      for (var key in zones) {
+        if (key != this.active) {
           memberTemplates.push(html`
-            <li>
-              <div class="member unjoin-member" data-member="${member}">
-                <span>${zones[this.active].members[member]} </span><ha-icon .icon=${"mdi:minus"}></ha-icon></i>
-              </div>
-            </li>
+              <li>
+                  <div class="member join-member" data-member="${key}">
+                      <span>${zones[key].roomName} </span>
+                      <ha-icon .icon=${"mdi:plus"}></ha-icon>
+                      </i>
+                  </div>
+              </li>
           `);
         }
-        for (var key in zones) {
-            if(key != this.active) {
-                memberTemplates.push(html`
+      }
+
+
+      for (favorite of favorites) {
+        favoriteTemplates.push(html`
             <li>
-              <div class="member join-member" data-member="${key}">
-                <span>${zones[key].roomName} </span><ha-icon .icon=${"mdi:plus"}></ha-icon></i>
-              </div>
+                <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span>
+                    <ha-icon .icon=${"mdi:play"}></ha-icon>
+                </div>
             </li>
-          `);
-            }
-        }
-        
-    
-        for(favorite of favorites) {
-          favoriteTemplates.push(html`
-            <li>
-              <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span> <ha-icon .icon=${"mdi:play"}></ha-icon></div>
-            </li>
-          `);
-        }
+        `);
+      }
     }
 
-  
-    
+
     return html`
         <div class="header">
             <div class="name">${this.config.name}</div>
@@ -192,94 +199,93 @@ class CustomSonosCard extends LitElement {
   updated() {
     //Set active player
     this.shadowRoot.querySelectorAll(".group").forEach(group => {
-        group.addEventListener('click', event => {
-            this.active = group.dataset.id;
-        })
+      group.addEventListener('click', event => {
+        this.active = group.dataset.id;
+      })
     });
     //Set favorite as Source
     this.shadowRoot.querySelectorAll(".favorite").forEach(favorite => {
-        favorite.addEventListener('click', event => {
-            this.hass.callService("media_player", "select_source", {
-                source: favorite.dataset.favorite,
-                entity_id: this.active
-            });
-        })
+      favorite.addEventListener('click', event => {
+        this.hass.callService("media_player", "select_source", {
+          source: favorite.dataset.favorite,
+          entity_id: this.active
+        });
+      })
     });
     //Join player
     this.shadowRoot.querySelectorAll(".join-member").forEach(member => {
-        member.addEventListener('click', event => {
-            this.hass.callService("sonos", "join", {
-                master: this.active,
-                entity_id: member.dataset.member
-            });
-        })
+      member.addEventListener('click', event => {
+        this.hass.callService("sonos", "join", {
+          master: this.active,
+          entity_id: member.dataset.member
+        });
+      })
     });
     //Unjoin player
     this.shadowRoot.querySelectorAll(".unjoin-member").forEach(member => {
-        member.addEventListener('click', event => {
-            this.hass.callService("sonos", "unjoin", {
-                entity_id: member.dataset.member
-            });
-        })
+      member.addEventListener('click', event => {
+        this.hass.callService("sonos", "unjoin", {
+          entity_id: member.dataset.member
+        });
+      })
     });
   }
 
-    
+
   pause(entity) {
     this.hass.callService("media_player", "media_pause", {
-        entity_id: entity
+      entity_id: entity
     });
   }
-  
+
   play(entity) {
     this.hass.callService("media_player", "media_play", {
-        entity_id: entity
+      entity_id: entity
     });
   }
-  
+
   volumeDown(entity, members) {
     this.hass.callService("media_player", "volume_down", {
-        entity_id: entity
+      entity_id: entity
     });
-    
 
-    for(var member in members) {
-        this.hass.callService("media_player", "volume_down", {
-            entity_id: member
-        });
+
+    for (var member in members) {
+      this.hass.callService("media_player", "volume_down", {
+        entity_id: member
+      });
     }
-    
+
   }
-  
+
   volumeUp(entity, members) {
     this.hass.callService("media_player", "volume_up", {
-        entity_id: entity
-    }); 
-    
-    for(var member in members) {
-        this.hass.callService("media_player", "volume_up", {
-            entity_id: member
-        });
+      entity_id: entity
+    });
+
+    for (var member in members) {
+      this.hass.callService("media_player", "volume_up", {
+        entity_id: member
+      });
     }
   }
-  
+
   volumeSet(entity, members, volume) {
-    var volumeFloat = volume/100;
+    var volumeFloat = volume / 100;
 
     this.hass.callService("media_player", "volume_set", {
-        entity_id: entity,
+      entity_id: entity,
+      volume_level: volumeFloat
+    });
+
+    for (var member in members) {
+      this.hass.callService("media_player", "volume_set", {
+        entity_id: member,
         volume_level: volumeFloat
-    });  
-    
-    for(var member in members) {
-        this.hass.callService("media_player", "volume_set", {
-            entity_id: member,
-            volume_level: volumeFloat
-        });  
+      });
     }
   }
-  
-  
+
 
   setConfig(config) {
     if (!config.entities) {
@@ -586,11 +592,12 @@ class CustomSonosCard extends LitElement {
         margin:2rem auto;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         justify-content: center;
       }
 
       .groups {
-        margin: 0 20px 0 0;
+        margin: 0 20px 0 20px;
         padding: 0;
         max-width: 15rem;
         width: 100%;
@@ -601,7 +608,7 @@ class CustomSonosCard extends LitElement {
       }
       .group .wrap {
         border-radius:4px;
-        margin:15px 0;
+        margin:5px 0;
         padding:15px;
         background-color:#f9f9f9;
       }
@@ -677,14 +684,14 @@ class CustomSonosCard extends LitElement {
       }
 
       .sidebar {
-        margin:0 0 0 20px;
+        margin:0 20px 0 20px;
         padding:0;
         max-width:15rem;
         width:100%;
       }
-      .sidebar .title {
-        display:block;
-        color: #FFF;
+      .title {
+        margin-top: 10px;
+        text-align: center;
       }
       ul.members {
         list-style:none;
@@ -697,7 +704,7 @@ class CustomSonosCard extends LitElement {
       }
       ul.members > li .member {
         border-radius:4px;
-        margin:15px 0;
+        margin:5px 0;
         padding:15px;
         background-color:#FFF;
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
@@ -730,7 +737,7 @@ class CustomSonosCard extends LitElement {
       }
       ul.favorites > li .favorite {
         border-radius:4px;
-        margin:15px 0;
+        margin:5px 0;
         padding:15px;
         background-color:#FFF;
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
@@ -763,9 +770,21 @@ class CustomSonosCard extends LitElement {
           height: 20px;
         }
       }
+      
+      @media (max-width: 650px) {
+          .players {
+            order: 0;
+          }   
+          .groups {
+            order: 1;
+          }   
+          .sidebar {
+            order: 2;
+          } 
+      } 
     `;
-  }  
-  
+  }
+
 }
 
 customElements.define('custom-sonos-card', CustomSonosCard);
