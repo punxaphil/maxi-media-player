@@ -103,28 +103,43 @@ class CustomSonosCard extends LitElement {
 
       playerTemplate = html`
           <div class="player__container">
-            <div class="player__body">
-                <div class="body__cover">
-                </div>
-                <div class="body__info">
-                    <div class="info__album">${activeStateObj.attributes.media_album_name}</div>
-                    <div class="info__song">${activeStateObj.attributes.media_title}</div>
-                    <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
-                </div>
-                <div class="body__buttons">
-                    <ul class="list list--buttons">
-                        <li class="middle"><a class="list__link">
-                            ${activeStateObj.state != 'playing' ? html`<ha-icon @click="${() => this.play(this.active)}" .icon=${"mdi:play"}></ha-icon>` : html`<ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>`}
-                        
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="player__footer">
-                <ul class="list list--footer">
-                    <li><ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}" .icon=${"mdi:volume-minus"}></ha-icon><input type="range" .value="${volume}" @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)} min="0" max="100" id="volumeRange" class="volumeRange" style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);"><ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}" .icon=${"mdi:volume-plus"}></ha-icon></li>
-                </ul>
-            </div>
+              ${this.config.headerImage ? html`
+                <img src="${this.config.headerImage}" width="100%" alt="Sonos"/>
+                ` : ''}
+              <div class="player__body">
+                  <div class="body__cover">
+                  </div>
+                  <div class="body__info">
+                      <div class="info__album">${activeStateObj.attributes.media_album_name}</div>
+                      <div class="info__song">${activeStateObj.attributes.media_title}</div>
+                      <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
+                  </div>
+                  <div class="body__buttons">
+                      <ul class="list list--buttons">
+                          <li class="middle"><a class="list__link">
+                              ${activeStateObj.state !== 'playing' ? html`
+                                  <ha-icon @click="${() => this.play(this.active)}"
+                                           .icon=${"mdi:play"}></ha-icon>` : html`
+                                  <ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>`}
+
+                          </a></li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="player__footer">
+                  <ul class="list list--footer">
+                      <li>
+                          <ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}"
+                                   .icon=${"mdi:volume-minus"}></ha-icon>
+                          <input type="range" .value="${volume}"
+                                 @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)}
+                                 min="0" max="100" id="volumeRange" class="volumeRange"
+                                 style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);">
+                          <ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}"
+                                   .icon=${"mdi:volume-plus"}></ha-icon>
+                      </li>
+                  </ul>
+              </div>
           </div>
       `;
 
@@ -172,24 +187,25 @@ class CustomSonosCard extends LitElement {
         </div>
 
         <div class="center">
-          <div class="groups">
-            ${groupTemplates}
-          </div>
+            <div class="groups">
+                <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
+                ${groupTemplates}
+            </div>
 
-          <div class="players">
-            ${playerTemplate}
-          </div>
+            <div class="players">
+                ${playerTemplate}
+                <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
+                <ul class="members">
+                    ${memberTemplates}
+                </ul>
+            </div>
 
-          <div class="sidebar">
-            <div class="title">Rooms</div>
-            <ul class="members">
-              ${memberTemplates}
-            </ul>
-            <div class="title">Favorites</div>
-            <ul class="favorites">
-              ${favoriteTemplates}
-            </ul>
-          </div>
+            <div class="sidebar">
+                <div class="title">${this.config.favoritesTitle ? this.config.favoritesTitle : 'Favorites'}</div>
+                <ul class="favorites">
+                    ${favoriteTemplates}
+                </ul>
+            </div>
         </div>
     `;
   }
