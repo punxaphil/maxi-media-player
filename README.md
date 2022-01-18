@@ -7,7 +7,7 @@ Customize media player for sonos speakers!<br><br>
 * Control multiple speaker
 * Play favorites from list
 
-![Screenshot of card](https://github.com/DBuit/custom-sonos-card/blob/master/screenshot-custom-sonos-card.png)
+![Screenshot of card](screenshot-custom-sonos-card.png)
 
 ## Installation
 ### HACS
@@ -25,18 +25,16 @@ resources:
 
 ## YAML
 Here's one example, of how to add the Sonos Lovelace Card to Home Assistant.
-```
-views:
-  - title: "Sonos"
-    icon: mdi:speaker
-    id: muziek
-    panel: true
-    cards:
-      - type: "custom:custom-sonos-card"
-        name: "Sonos"
-        entities:
-          - media_player.sonos_kitchen
-          - media_player.sonos_hallway
-          - media_player.sonos_bedroom
-          - media_player.sonos_livingroom
+```yaml
+type: custom:custom-sonos-card
+name: Sonos #Required
+groupsTitle: '' #Optional
+groupingTitle: '' #Optional
+favoritesTitle: '' #Optional
+headerImage: '' #Optional
+entities: #Required
+  - media_player.sonos_kitchen
+  - media_player.sonos_hallway
+  - media_player.sonos_bedroom
+  - media_player.sonos_livingroom
 ```
