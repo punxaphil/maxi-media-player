@@ -20,17 +20,16 @@ class CustomSonosCard extends LitElement {
   }
 
   render() {
-    var icon = "mdi-stop";
-    var speakerNames = [];
-    var zones = [];
-    var favorites = [];
-    var first = true;
-    for (var entity of this.config.entities) {
-      var stateObj = this.hass.states[entity];
+    const speakerNames = [];
+    const zones = [];
+    const favorites = [];
+    let first = true;
+    for (let entity of this.config.entities) {
+      const stateObj = this.hass.states[entity];
       //Get favorites list
       if (first) {
         first = false;
-        for (var favorite of stateObj.attributes.source_list) {
+        for (let favorite of stateObj.attributes.source_list) {
           favorites.push(favorite);
         }
       }
@@ -47,37 +46,36 @@ class CustomSonosCard extends LitElement {
       zones[entity].roomName = stateObj.attributes.friendly_name;
 
 
-      if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] == entity) {
+      if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] === entity) {
 
-        for (var member of stateObj.attributes.sonos_group) {
-          if (member != entity) {
-            var state = this.hass.states[member];
+        for (let member of stateObj.attributes.sonos_group) {
+          if (member !== entity) {
+            const state = this.hass.states[member];
             zones[entity].members[member] = state.attributes.friendly_name;
           }
         }
 
-        if (stateObj.state == 'playing' && this.active == '') {
+        if (stateObj.state === 'playing' && this.active === '') {
           this.active = entity;
         }
       } else if (stateObj.attributes.sonos_group.length > 1) {
         delete zones[entity];
       } else {
-        if (stateObj.state == 'playing' && this.active == '') {
+        if (stateObj.state === 'playing' && this.active === '') {
           this.active = entity;
         }
       }
     }
 
-    var groupTemplates = [];
-    var playerTemplate = html``;
-    var favoriteTemplates = [];
-    var memberTemplates = [];
-    for (var key in zones) {
-      var entity = key;
-      var stateObj = this.hass.states[key];
+    const groupTemplates = [];
+    let playerTemplate = html``;
+    const favoriteTemplates = [];
+    const memberTemplates = [];
+    for (let key in zones) {
+      let stateObj = this.hass.states[key];
       groupTemplates.push(html`
           <div class="group" data-id="${key}">
-              <div class="wrap ${this.active == key ? 'active' : ''}">
+              <div class="wrap ${this.active === key ? 'active' : ''}">
                   <ul class="speakers">
                       ${stateObj.attributes.sonos_group.map(speaker => {
                           return html`
@@ -88,7 +86,7 @@ class CustomSonosCard extends LitElement {
                       <div class="content">
                           <span class="currentTrack">${stateObj.attributes.media_artist} - ${stateObj.attributes.media_title}</span>
                       </div>
-                      <div class="player ${stateObj.state == 'playing' ? 'active' : ''}">
+                      <div class="player ${stateObj.state === 'playing' ? 'active' : ''}">
                           <div class="bar"></div>
                           <div class="bar"></div>
                           <div class="bar"></div>
@@ -99,9 +97,9 @@ class CustomSonosCard extends LitElement {
       `);
     }
 
-    if (this.active != '') {
-      var activeStateObj = this.hass.states[this.active];
-      var volume = 100 * activeStateObj.attributes.volume_level;
+    if (this.active !== '') {
+      const activeStateObj = this.hass.states[this.active];
+      const volume = 100 * activeStateObj.attributes.volume_level;
 
       playerTemplate = html`
           <div class="player__container">
@@ -130,7 +128,7 @@ class CustomSonosCard extends LitElement {
           </div>
       `;
 
-      for (member in zones[this.active].members) {
+      for (let member in zones[this.active].members) {
         memberTemplates.push(html`
             <li>
                 <div class="member unjoin-member" data-member="${member}">
@@ -141,12 +139,12 @@ class CustomSonosCard extends LitElement {
             </li>
         `);
       }
-      for (var key in zones) {
-        if (key != this.active) {
+      for (let zonesKey in zones) {
+        if (zonesKey !== this.active) {
           memberTemplates.push(html`
               <li>
-                  <div class="member join-member" data-member="${key}">
-                      <span>${zones[key].roomName} </span>
+                  <div class="member join-member" data-member="${zonesKey}">
+                      <span>${zones[zonesKey].roomName} </span>
                       <ha-icon .icon=${"mdi:plus"}></ha-icon>
                       </i>
                   </div>
@@ -156,7 +154,7 @@ class CustomSonosCard extends LitElement {
       }
 
 
-      for (favorite of favorites) {
+      for (let favorite of favorites) {
         favoriteTemplates.push(html`
             <li>
                 <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span>
@@ -199,13 +197,13 @@ class CustomSonosCard extends LitElement {
   updated() {
     //Set active player
     this.shadowRoot.querySelectorAll(".group").forEach(group => {
-      group.addEventListener('click', event => {
+      group.addEventListener('click', () => {
         this.active = group.dataset.id;
       })
     });
     //Set favorite as Source
     this.shadowRoot.querySelectorAll(".favorite").forEach(favorite => {
-      favorite.addEventListener('click', event => {
+      favorite.addEventListener('click', () => {
         this.hass.callService("media_player", "select_source", {
           source: favorite.dataset.favorite,
           entity_id: this.active
@@ -214,7 +212,7 @@ class CustomSonosCard extends LitElement {
     });
     //Join player
     this.shadowRoot.querySelectorAll(".join-member").forEach(member => {
-      member.addEventListener('click', event => {
+      member.addEventListener('click', () => {
         this.hass.callService("sonos", "join", {
           master: this.active,
           entity_id: member.dataset.member
@@ -223,7 +221,7 @@ class CustomSonosCard extends LitElement {
     });
     //Unjoin player
     this.shadowRoot.querySelectorAll(".unjoin-member").forEach(member => {
-      member.addEventListener('click', event => {
+      member.addEventListener('click', () => {
         this.hass.callService("sonos", "unjoin", {
           entity_id: member.dataset.member
         });
@@ -250,7 +248,7 @@ class CustomSonosCard extends LitElement {
     });
 
 
-    for (var member in members) {
+    for (let member in members) {
       this.hass.callService("media_player", "volume_down", {
         entity_id: member
       });
@@ -263,7 +261,7 @@ class CustomSonosCard extends LitElement {
       entity_id: entity
     });
 
-    for (var member in members) {
+    for (let member in members) {
       this.hass.callService("media_player", "volume_up", {
         entity_id: member
       });
@@ -271,14 +269,14 @@ class CustomSonosCard extends LitElement {
   }
 
   volumeSet(entity, members, volume) {
-    var volumeFloat = volume / 100;
+    const volumeFloat = volume / 100;
 
     this.hass.callService("media_player", "volume_set", {
       entity_id: entity,
       volume_level: volumeFloat
     });
 
-    for (var member in members) {
+    for (let member in members) {
       this.hass.callService("media_player", "volume_set", {
         entity_id: member,
         volume_level: volumeFloat
