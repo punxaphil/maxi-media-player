@@ -7,7 +7,7 @@ Customize media player for sonos speakers!<br><br>
 * Control multiple speaker
 * Play favorites from list
 
-![Screenshot of card](screenshot-custom-sonos-card.png)
+![Screenshot of card](https://github.com/johanfrick/custom-sonos-card/raw/master/screenshot-custom-sonos-card.png)
 
 ## Installation
 ### HACS
