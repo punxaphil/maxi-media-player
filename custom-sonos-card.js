@@ -66,7 +66,9 @@ class CustomSonosCard extends LitElement {
         }
       }
     }
-
+    if (!this.active) {
+      this.active = Object.keys(zones)[0];
+    }
     const groupTemplates = [];
     let playerTemplate = html``;
     const favoriteTemplates = [];
@@ -78,9 +80,9 @@ class CustomSonosCard extends LitElement {
               <div class="wrap ${this.active === key ? 'active' : ''}">
                   <ul class="speakers">
                       ${stateObj.attributes.sonos_group.map(speaker => {
-        return html`
+                          return html`
                               <li>${speakerNames[speaker]}</li>`;
-      })}
+                      })}
                   </ul>
                   <div class="play">
                       <div class="content">
@@ -108,8 +110,8 @@ class CustomSonosCard extends LitElement {
       playerTemplate = html`
           <div class="player__container">
               ${this.config.headerImage ? html`
-                <img src="${this.config.headerImage}" width="100%" alt="Sonos"/>
-                ` : ''}
+                  <img src="${this.config.headerImage}" width="100%" alt="Sonos"/>
+              ` : ''}
               <div class="player__body">
                   <div class="body__cover">
                   </div>
@@ -119,19 +121,19 @@ class CustomSonosCard extends LitElement {
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
                   </div>
                   <div class="body__buttons list--buttons">
-                              <a class="list__link">
-                                  <ha-icon @click="${() => this.prev(this.active)}" .icon=${"mdi:skip-backward"}></ha-icon>
-                              </a>
-                              <a class="list__link">
-                              ${activeStateObj.state !== 'playing' ? html`
-                                <ha-icon @click="${() => this.play(this.active)}"
-                                           .icon=${"mdi:play"}></ha-icon>` : html`
-                                <ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>
-                              `}
-                              </a>
-                              <a class="list__link">
-                                <ha-icon @click="${() => this.next(this.active)}" .icon=${"mdi:skip-forward"}></ha-icon>
-                              </a>
+                      <a class="list__link">
+                          <ha-icon @click="${() => this.prev(this.active)}" .icon=${"mdi:skip-backward"}></ha-icon>
+                      </a>
+                      <a class="list__link">
+                          ${activeStateObj.state !== 'playing' ? html`
+                              <ha-icon @click="${() => this.play(this.active)}"
+                                       .icon=${"mdi:play"}></ha-icon>` : html`
+                              <ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>
+                          `}
+                      </a>
+                      <a class="list__link">
+                          <ha-icon @click="${() => this.next(this.active)}" .icon=${"mdi:skip-forward"}></ha-icon>
+                      </a>
                   </div>
               </div>
               <div class="player__footer">
@@ -152,59 +154,82 @@ class CustomSonosCard extends LitElement {
       `;
 
       const spinner = html`
-                  <svg xmlns="http://www.w3.org/2000/svg"
-                       style="margin: 0;display: block;float: left;"
-                       width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-                      <g transform="rotate(0 50 50)">
-                          <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite"></animate>
-                          </rect>
-                      </g><g transform="rotate(30 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(60 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(90 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(120 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(150 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(180 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(210 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(240 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(270 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(300 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g><g transform="rotate(330 50 50)">
-                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animate>
-                      </rect>
-                  </g>
-        </svg>
+          <svg xmlns="http://www.w3.org/2000/svg"
+               style="margin: 0;display: block;float: left;"
+               width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+              <g transform="rotate(0 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(30 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(60 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(90 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(120 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(150 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(180 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(210 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(240 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(270 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s"
+                               begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(300 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s"
+                               begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+              <g transform="rotate(330 50 50)">
+                  <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                      <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s"
+                               repeatCount="indefinite"></animate>
+                  </rect>
+              </g>
+          </svg>
       `;
       for (let member in zones[this.active].members) {
         memberTemplates.push(html`
@@ -212,7 +237,7 @@ class CustomSonosCard extends LitElement {
                 <div class="member unjoin-member" data-member="${member}">
                     <span>${zones[this.active].members[member]} </span>
                     ${this.groupButtonClicked === member ? spinner : html`
-                    <ha-icon .icon=${"mdi:minus"}></ha-icon>
+                        <ha-icon .icon=${"mdi:minus"}></ha-icon>
                     `}
                     </i>
                 </div>
@@ -226,7 +251,7 @@ class CustomSonosCard extends LitElement {
                   <div class="member join-member" data-member="${zonesKey}">
                       <span>${zones[zonesKey].roomName} </span>
                       ${this.groupButtonClicked === zonesKey ? spinner : html`
-                      <ha-icon .icon=${"mdi:plus"}></ha-icon>
+                          <ha-icon .icon=${"mdi:plus"}></ha-icon>
                       `}
                       </i>
                   </div>
@@ -319,16 +344,19 @@ class CustomSonosCard extends LitElement {
       entity_id: entity
     });
   }
+
   prev(entity) {
     this.hass.callService("media_player", "media_previous_track", {
       entity_id: entity
     });
   }
+
   next(entity) {
     this.hass.callService("media_player", "media_next_track", {
       entity_id: entity
     });
   }
+
   play(entity) {
     this.hass.callService("media_player", "media_play", {
       entity_id: entity
