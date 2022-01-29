@@ -78,9 +78,9 @@ class CustomSonosCard extends LitElement {
               <div class="wrap ${this.active === key ? 'active' : ''}">
                   <ul class="speakers">
                       ${stateObj.attributes.sonos_group.map(speaker => {
-                          return html`
+        return html`
                               <li>${speakerNames[speaker]}</li>`;
-                      })}
+      })}
                   </ul>
                   <div class="play">
                       <div class="content">
@@ -96,6 +96,10 @@ class CustomSonosCard extends LitElement {
           </div>
       `);
     }
+    if (groupTemplates.length !== this.groupSize) {
+      this.groupButtonClicked = null;
+    }
+    this.groupSize = groupTemplates.length;
 
     if (this.active !== '') {
       const activeStateObj = this.hass.states[this.active];
@@ -114,16 +118,20 @@ class CustomSonosCard extends LitElement {
                       <div class="info__song">${activeStateObj.attributes.media_title}</div>
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
                   </div>
-                  <div class="body__buttons">
-                      <ul class="list list--buttons">
-                          <li class="middle"><a class="list__link">
+                  <div class="body__buttons list--buttons">
+                              <a class="list__link">
+                                  <ha-icon @click="${() => this.prev(this.active)}" .icon=${"mdi:skip-backward"}></ha-icon>
+                              </a>
+                              <a class="list__link">
                               ${activeStateObj.state !== 'playing' ? html`
-                                  <ha-icon @click="${() => this.play(this.active)}"
+                                <ha-icon @click="${() => this.play(this.active)}"
                                            .icon=${"mdi:play"}></ha-icon>` : html`
-                                  <ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>`}
-
-                          </a></li>
-                      </ul>
+                                <ha-icon @click="${() => this.pause(this.active)}" .icon=${"mdi:stop"}></ha-icon>
+                              `}
+                              </a>
+                              <a class="list__link">
+                                <ha-icon @click="${() => this.next(this.active)}" .icon=${"mdi:skip-forward"}></ha-icon>
+                              </a>
                   </div>
               </div>
               <div class="player__footer">
@@ -143,12 +151,69 @@ class CustomSonosCard extends LitElement {
           </div>
       `;
 
+      const spinner = html`
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       style="margin: 0;display: block;float: left;"
+                       width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                      <g transform="rotate(0 50 50)">
+                          <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite"></animate>
+                          </rect>
+                      </g><g transform="rotate(30 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(60 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(90 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(120 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(150 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(180 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(210 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(240 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(270 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(300 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g><g transform="rotate(330 50 50)">
+                      <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
+                          <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animate>
+                      </rect>
+                  </g>
+        </svg>
+      `;
       for (let member in zones[this.active].members) {
         memberTemplates.push(html`
             <li>
                 <div class="member unjoin-member" data-member="${member}">
                     <span>${zones[this.active].members[member]} </span>
+                    ${this.groupButtonClicked === member ? spinner : html`
                     <ha-icon .icon=${"mdi:minus"}></ha-icon>
+                    `}
                     </i>
                 </div>
             </li>
@@ -160,7 +225,9 @@ class CustomSonosCard extends LitElement {
               <li>
                   <div class="member join-member" data-member="${zonesKey}">
                       <span>${zones[zonesKey].roomName} </span>
+                      ${this.groupButtonClicked === zonesKey ? spinner : html`
                       <ha-icon .icon=${"mdi:plus"}></ha-icon>
+                      `}
                       </i>
                   </div>
               </li>
@@ -233,6 +300,7 @@ class CustomSonosCard extends LitElement {
           master: this.active,
           entity_id: member.dataset.member
         });
+        this.groupButtonClicked = member.dataset.member;
       })
     });
     //Unjoin player
@@ -251,7 +319,16 @@ class CustomSonosCard extends LitElement {
       entity_id: entity
     });
   }
-
+  prev(entity) {
+    this.hass.callService("media_player", "media_previous_track", {
+      entity_id: entity
+    });
+  }
+  next(entity) {
+    this.hass.callService("media_player", "media_next_track", {
+      entity_id: entity
+    });
+  }
   play(entity) {
     this.hass.callService("media_player", "media_play", {
       entity_id: entity
@@ -277,7 +354,7 @@ class CustomSonosCard extends LitElement {
       entity_id: entity
     });
 
-    for (let member in members) {
+    for (var member in members) {
       this.hass.callService("media_player", "volume_up", {
         entity_id: member
       });
@@ -381,7 +458,6 @@ class CustomSonosCard extends LitElement {
         list-style-type: none;
       }
 
-      .body__buttons,
       .body__info,
       .player__footer {
         padding-right: 2rem;
@@ -522,46 +598,22 @@ class CustomSonosCard extends LitElement {
 
       .body__buttons {
         padding-bottom: 2rem;
-      }
-
-      .body__buttons {
         padding-top: 1rem;
       }
 
       .list--buttons {
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
+        display: flex;
         justify-content: center;
       }
 
-      .list--buttons li:nth-of-type(n+2) {
-        margin-left: 1.25rem;
-      }
-
       .list--buttons a {
-        padding-top: .45rem;
-        padding-right: .75rem;
-        padding-bottom: .45rem;
-        padding-left: .75rem;
-        font-size: 1rem;
-        border-radius: 50%;
+        padding: 0.8rem;
         box-shadow: 0 3px 6px rgba(33, 33, 33, 0.1), 0 3px 12px rgba(33, 33, 33, 0.15);
       }
       .list--buttons a:focus, .list--buttons a:hover {
         color: rgba(171, 2, 26, 0.95);
         opacity: 1;
         box-shadow: 0 6px 9px rgba(33, 33, 33, 0.1), 0 6px 16px rgba(33, 33, 33, 0.15);
-      }
-
-      .list--buttons li.middle a {
-        padding: .82rem;
-        margin-left: .5rem;
-        font-size: 1.25rem!important;
-        color: rgba(211, 3, 32, 0.95)!important;
-        opacity:1!important;
       }
 
       .list--buttons li:first-of-type a,
@@ -580,6 +632,8 @@ class CustomSonosCard extends LitElement {
       .list__link {
         -webkit-transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
         transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
+        margin: 1rem;
+        border-radius: 50%;
       }
       .list__link:focus, .list__link:hover {
         color: #d30320;
