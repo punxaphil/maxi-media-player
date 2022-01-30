@@ -1,6 +1,8 @@
 # Sonos custom card
 Customize media player for sonos speakers!<br><br>
 
+Thanks to https://github.com/DBuit and https://github.com/exetico for creating this card.
+
 ## Features:
 
 * Group/Ungroup speakers
