@@ -16,22 +16,27 @@ class CustomSonosCard extends LitElement {
 
   constructor() {
     super();
-    this.active = '';
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+    this.favorites = [];
   }
 
   render() {
+    this.selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g,'') : '';
+    if (this.active) {
+      this.setActivePlayer(this.active);
+    }
     const speakerNames = [];
     const zones = [];
-    const favorites = [];
-    let first = true;
     for (let entity of this.config.entities) {
       const stateObj = this.hass.states[entity];
       //Get favorites list
-      if (first) {
-        first = false;
+      if (!this.favorites.length) {
         for (let favorite of stateObj.attributes.source_list) {
-          favorites.push(favorite);
+          this.favorites.push(favorite);
         }
+        shuffleArray(this.favorites);
       }
 
       if (!(entity in zones)) {
@@ -41,6 +46,9 @@ class CustomSonosCard extends LitElement {
           roomName: ""
         };
         speakerNames[entity] = stateObj.attributes.friendly_name;
+        if (entity === this.selected_player) {
+          this.setActivePlayer(entity);
+        }
       }
       zones[entity].state = stateObj.state;
       zones[entity].roomName = stateObj.attributes.friendly_name;
@@ -52,23 +60,28 @@ class CustomSonosCard extends LitElement {
           if (member !== entity) {
             const state = this.hass.states[member];
             zones[entity].members[member] = state.attributes.friendly_name;
+            if (member === this.selected_player) {
+              this.setActivePlayer(entity);
+            }
           }
         }
 
-        if (stateObj.state === 'playing' && this.active === '') {
-          this.active = entity;
+        if (stateObj.state === 'playing' && !this.active) {
+          this.setActivePlayer(entity);
         }
       } else if (stateObj.attributes.sonos_group.length > 1) {
         delete zones[entity];
       } else {
-        if (stateObj.state === 'playing' && this.active === '') {
-          this.active = entity;
+        if (stateObj.state === 'playing' && !this.active) {
+          this.setActivePlayer(entity);
         }
       }
     }
+    this.selected_player = null;
     if (!this.active) {
-      this.active = Object.keys(zones)[0];
+      this.setActivePlayer(Object.keys(zones)[0]);
     }
+
     const groupTemplates = [];
     let playerTemplate = html``;
     const favoriteTemplates = [];
@@ -109,16 +122,15 @@ class CustomSonosCard extends LitElement {
 
       playerTemplate = html`
           <div class="player__container">
-              ${this.config.headerImage ? html`
-                  <img src="${this.config.headerImage}" width="100%" alt="Sonos"/>
-              ` : ''}
+              <img class="info__artwork" src="${activeStateObj.attributes.entity_picture}" alt="artwork"/>
+              <div class="info__artwork-opacity"/>
               <div class="player__body">
-                  <div class="body__cover">
-                  </div>
                   <div class="body__info">
                       <div class="info__album">${activeStateObj.attributes.media_album_name}</div>
                       <div class="info__song">${activeStateObj.attributes.media_title}</div>
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
+                      ${activeStateObj.attributes.entity_picture ? html`
+                      ` : ''}
                   </div>
                   <div class="body__buttons list--buttons">
                       <a class="list__link">
@@ -137,18 +149,16 @@ class CustomSonosCard extends LitElement {
                   </div>
               </div>
               <div class="player__footer">
-                  <ul class="list list--footer">
-                      <li>
-                          <ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}"
-                                   .icon=${"mdi:volume-minus"}></ha-icon>
-                          <input type="range" .value="${volume}"
-                                 @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)}
-                                 min="0" max="100" id="volumeRange" class="volumeRange"
-                                 style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);">
-                          <ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}"
-                                   .icon=${"mdi:volume-plus"}></ha-icon>
-                      </li>
-                  </ul>
+                  <input type="range" .value="${volume}"
+                         @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)}
+                         min="0" max="100" id="volumeRange" class="volumeRange"
+                         style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);">
+                  <div>
+                      <ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}"
+                               .icon=${"mdi:volume-minus"}></ha-icon>
+                      <ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}"
+                               .icon=${"mdi:volume-plus"}></ha-icon>
+                  </div>
               </div>
           </div>
       `;
@@ -233,51 +243,45 @@ class CustomSonosCard extends LitElement {
       `;
       for (let member in zones[this.active].members) {
         memberTemplates.push(html`
-            <li>
-                <div class="member unjoin-member" data-member="${member}">
-                    <span>${zones[this.active].members[member]} </span>
-                    ${this.groupButtonClicked === member ? spinner : html`
-                        <ha-icon .icon=${"mdi:minus"}></ha-icon>
-                    `}
-                    </i>
-                </div>
-            </li>
+            <div class="member unjoin-member" data-member="${member}">
+                <span>${zones[this.active].members[member]} </span>
+                ${this.groupButtonClicked === member ? spinner : html`
+                    <ha-icon .icon=${"mdi:minus"}></ha-icon>
+                `}
+                </i>
+            </div>
         `);
       }
       for (let zonesKey in zones) {
         if (zonesKey !== this.active) {
           memberTemplates.push(html`
-              <li>
-                  <div class="member join-member" data-member="${zonesKey}">
-                      <span>${zones[zonesKey].roomName} </span>
-                      ${this.groupButtonClicked === zonesKey ? spinner : html`
-                          <ha-icon .icon=${"mdi:plus"}></ha-icon>
-                      `}
-                      </i>
-                  </div>
-              </li>
+              <div class="member join-member" data-member="${zonesKey}">
+                  <span>${zones[zonesKey].roomName} </span>
+                  ${this.groupButtonClicked === zonesKey ? spinner : html`
+                      <ha-icon .icon=${"mdi:plus"}></ha-icon>
+                  `}
+                  </i>
+              </div>
           `);
         }
       }
 
-
-      for (let favorite of favorites) {
+      for (let favorite of this.favorites) {
         favoriteTemplates.push(html`
-            <li>
-                <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span>
-                    <ha-icon .icon=${"mdi:play"}></ha-icon>
-                </div>
-            </li>
+            <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span>
+                <ha-icon .icon=${"mdi:play"}></ha-icon>
+            </div>
         `);
       }
     }
 
 
     return html`
+        ${this.config.name ? html`
         <div class="header">
             <div class="name">${this.config.name}</div>
         </div>
-
+        ` : ''}
         <div class="center">
             <div class="groups">
                 <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
@@ -287,16 +291,16 @@ class CustomSonosCard extends LitElement {
             <div class="players">
                 ${playerTemplate}
                 <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
-                <ul class="members">
+                <div class="members">
                     ${memberTemplates}
-                </ul>
+                </div>
             </div>
 
             <div class="sidebar">
                 <div class="title">${this.config.favoritesTitle ? this.config.favoritesTitle : 'Favorites'}</div>
-                <ul class="favorites">
+                <div class="favorites">
                     ${favoriteTemplates}
-                </ul>
+                </div>
             </div>
         </div>
     `;
@@ -306,7 +310,7 @@ class CustomSonosCard extends LitElement {
     //Set active player
     this.shadowRoot.querySelectorAll(".group").forEach(group => {
       group.addEventListener('click', () => {
-        this.active = group.dataset.id;
+        this.setActivePlayer(group.dataset.id);
       })
     });
     //Set favorite as Source
@@ -410,9 +414,6 @@ class CustomSonosCard extends LitElement {
     if (!config.entities) {
       throw new Error("You need to define entities");
     }
-    if (!config.name) {
-      throw new Error("You need to define a name for the cards header");
-    }
     this.config = config;
   }
 
@@ -455,60 +456,44 @@ class CustomSonosCard extends LitElement {
       }
 
       .players {
-        max-width: 20rem;
-        width:100%;
-        max-width: 20rem;
+        flex: 1;
       }
       .player__container {
+        position: relative;
+        overflow: hidden;
+        z-index: 0;
         margin:0;
-        max-width: 20rem;
-        background: #fff;
+        background: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
         border-radius: 0.25rem;
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
       }
-
-      .body__cover {
-        position: relative;
+      
+      .player__body {
+        background-repeat: no-repeat;
+        background-size: 10%;
+        background-position-y: center;
       }
-
-      .body__cover img {
-        max-width: 100%;
-        width:100%;
-        border-radius: 0.25rem;
-      }
-
-      .list {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-      }
-
-      .body__info,
-      .player__footer {
+      
+      .body__info {
         padding-right: 2rem;
         padding-left: 2rem;
       }
 
 
-      .list--footer {
+      .player__footer input {
+        width: 97%;
+      }
+      
+      .player__footer div {
         justify-content: space-between;
+        display: flex;
       }
-      .list--footer li:last-child {
-        flex:1;
-        display:flex;
-        flex-direction: row;
-        margin-left:15px;
-      }
-      .list--footer li:last-child input {
-        flex:1;
-      }
-      .list--footer li:last-child ha-icon {
-        margin:0 5px;
+      .player__footer div ha-icon {
         color: #888;
-        font-size:16px;
+        padding: 10px;
       }
 
       .volumeRange {
@@ -530,7 +515,7 @@ class CustomSonosCard extends LitElement {
       }
 
       .list--header .list__link,
-      .list--footer .list__link {
+      .list__link {
         color: #888;
       }
 
@@ -600,9 +585,7 @@ class CustomSonosCard extends LitElement {
       .info__album,
       .info__song {
         margin-bottom: .5rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: wrap;
       }
 
       .info__artist,
@@ -613,9 +596,7 @@ class CustomSonosCard extends LitElement {
       }
       
       .info__artist {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: wrap;
       }
 
       .info__song {
@@ -624,8 +605,23 @@ class CustomSonosCard extends LitElement {
         color: #d30320;
       }
 
+      .info__artwork {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        z-index: -2;
+      }
+      .info__artwork-opacity {
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: #ffffffe6;
+      }
       .body__buttons {
-        padding-bottom: 2rem;
+        padding-bottom: 1rem;
         padding-top: 1rem;
       }
 
@@ -662,21 +658,13 @@ class CustomSonosCard extends LitElement {
         transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
         margin: 1rem;
         border-radius: 50%;
+        background: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
       }
       .list__link:focus, .list__link:hover {
         color: #d30320;
-      }
-
-      .player__footer {
-        padding-top: 1rem;
-        padding-bottom: 2rem;
-      }
-
-      .list--footer a {
-        opacity: .5;
-      }
-      .list--footer a:focus, .list--footer a:hover {
-        opacity: .9;
       }
 
       .shuffle.active {
@@ -685,48 +673,53 @@ class CustomSonosCard extends LitElement {
       }
 
       .center {
-        margin:2rem auto;
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         justify-content: center;
       }
 
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
-        max-width: 15rem;
-        width: 100%;
+        flex: 1; 
       }
-      .groups > .group {
+      .group {
         padding:0;
         margin:0;
       }
       .group .wrap {
         border-radius:4px;
-        margin:5px 0;
+        margin:5px 5px;
         padding:15px;
-        background-color:#f9f9f9;
+        background-color: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
       }
       .group .wrap.active {
+        margin:5px 0;
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-        background-color:#FFF;
+        border-color: #d30320;
+        border-width: thin;
+        border-style: solid;
+        font-weight: bold;
       }
       .group:first-child .wrap {
         margin-top:0;
       }
-      .group ul.speakers {
+      .speakers {
         list-style:none;
         margin:0;
         padding:0;
       }
-      .group ul.speakers li {
+      .speakers li {
         display:block;
         font-size:12px;
         margin:5px 0 0 0 ;
         color:#000;
       }
-      .group ul.speakers li:first-child {
+      .speakers li:first-child {
         margin:0;
       }
       .group .play {
@@ -736,9 +729,6 @@ class CustomSonosCard extends LitElement {
       }
       .group .play .content {
         flex:1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
       .group .play .content .source {
         display:block;
@@ -747,7 +737,6 @@ class CustomSonosCard extends LitElement {
       }
       .group .play .content .currentTrack {
         display:block;
-        color:#CCC;
         font-size:12px;
       }
       .group .play .player {
@@ -782,76 +771,79 @@ class CustomSonosCard extends LitElement {
       .sidebar {
         margin:0 20px 0 20px;
         padding:0;
-        max-width:15rem;
-        width:100%;
+        flex: 1;
       }
       .title {
         margin-top: 10px;
         text-align: center;
+        color: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
+        font-weight: bold;
+        font-size: larger;
       }
-      ul.members {
-        list-style:none;
+      .members {
         padding:0;
         margin:0;
-      }
-      ul.members > li {
-        padding:0;
-        margin:0;
-      }
-      ul.members > li .member {
-        border-radius:4px;
-        margin:5px 0;
-        padding:15px;
-        background-color:#FFF;
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-        display:flex;
+        display: flex;
         flex-direction:row;
+        flex-wrap: wrap;
+        justify-content: space-between;
       }
-      ul.members > li .member span {
-        flex:1;
+      .member {
+        flex-grow: 1;
+        border-radius:4px;
+        margin:5px;
+        padding:15px;
+        background-color: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
+      }
+      .member span {
         align-self:center;
         font-size:12px;
         color:#000;
       }
-      ul.members > li .member ha-icon {
+      .member ha-icon {
         align-self:center;
         font-size:10px;
         color: #888;
       }
-      ul.members > li .member:hover ha-icon {
+      .member:hover ha-icon {
         color: #d30320;
       }
 
-      ul.favorites {
-        list-style:none;
+      .favorites {
         padding:0;
         margin:0 0 30px 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
       }
-      ul.favorites > li {
-        padding:0;
-        margin:0;
-      }
-      ul.favorites > li .favorite {
+      .favorite {
+        flex-grow: 1;
         border-radius:4px;
-        margin:5px 0;
+        margin:5px;
         padding:15px;
-        background-color:#FFF;
+        background-color: var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        );
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-        display:flex;
-        flex-direction:row;
       }
-      ul.favorites > li .favorite span {
-        flex:1;
-        align-self:center;
+      .favorite span {
         font-size:12px;
         color:#000;
       }
-      ul.favorites > li .favorite ha-icon {
-        align-self:center;
+      .favorite ha-icon {
         font-size:10px;
         color: #888;
       }
-      ul.favorites > li .favorite:hover ha-icon {
+      .favorite:hover ha-icon {
         color: #d30320;
       }
 
@@ -868,6 +860,9 @@ class CustomSonosCard extends LitElement {
       }
       
       @media (max-width: 650px) {
+          .center {
+            flex-wrap: wrap;
+          }
           .players {
             order: 0;
           }   
@@ -881,6 +876,19 @@ class CustomSonosCard extends LitElement {
     `;
   }
 
+  setActivePlayer(entity) {
+    this.active = entity;
+    let newUrl = window.location.href.replaceAll(/#.*/g, '');
+    window.location.href = newUrl + '#' + entity;
+  }
+
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
 customElements.define('custom-sonos-card', CustomSonosCard);
