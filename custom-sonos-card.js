@@ -10,20 +10,18 @@ class CustomSonosCard extends LitElement {
     return {
       hass: {},
       config: {},
-      active: {}
+      active: {},
+      showVolumes: {}
     };
   }
 
   constructor() {
     super();
-    const params = new Proxy(new URLSearchParams(window.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });
     this.favorites = [];
   }
 
   render() {
-    this.selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g,'') : '';
+    this.selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
     if (this.active) {
       this.setActivePlayer(this.active);
     }
@@ -86,6 +84,8 @@ class CustomSonosCard extends LitElement {
     let playerTemplate = html``;
     const favoriteTemplates = [];
     const memberTemplates = [];
+    const joinedZones = []
+    const notJoinedZones = []
     for (let key in zones) {
       let stateObj = this.hass.states[key];
       groupTemplates.push(html`
@@ -119,18 +119,21 @@ class CustomSonosCard extends LitElement {
     if (this.active !== '') {
       const activeStateObj = this.hass.states[this.active];
       const volume = 100 * activeStateObj.attributes.volume_level;
-
+      const isGroup = activeStateObj.attributes.sonos_group.length > 1;
+      let allVolumes = []
+      if (isGroup) {
+        allVolumes = activeStateObj.attributes.sonos_group.map(member => this.getVolumeTemplate(member, this.hass.states[member].attributes.friendly_name));
+      }
       playerTemplate = html`
-          <div class="player__container">
-              <img class="info__artwork" src="${activeStateObj.attributes.entity_picture}" alt="artwork"/>
-              <div class="info__artwork-opacity"/>
+          <div class="player__container" style="background-position-x:center;background-repeat: no-repeat;background-size: cover;
+              ${activeStateObj.attributes.entity_picture ? `background-image: url(${activeStateObj.attributes.entity_picture});`: ''}
+              ">
               <div class="player__body">
+                  ${activeStateObj.attributes.media_title ? html`
                   <div class="body__info">
                       <div class="info__album">${activeStateObj.attributes.media_album_name}</div>
                       <div class="info__song">${activeStateObj.attributes.media_title}</div>
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
-                      ${activeStateObj.attributes.entity_picture ? html`
-                      ` : ''}
                   </div>
                   <div class="body__buttons list--buttons">
                       <a class="list__link">
@@ -147,15 +150,23 @@ class CustomSonosCard extends LitElement {
                           <ha-icon @click="${() => this.next(this.active)}" .icon=${"mdi:skip-forward"}></ha-icon>
                       </a>
                   </div>
+                  ` : html`<div style="width: 100%; text-align: center; padding: 3rem 0">${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}</div>`}
               </div>
               <div class="player__footer">
-                  <input type="range" .value="${volume}"
-                         @change=${e => this.volumeSet(this.active, zones[this.active].members, e.target.value)}
-                         min="0" max="100" id="volumeRange" class="volumeRange"
-                         style="background: linear-gradient(to right, rgb(211, 3, 32) 0%, rgb(211, 3, 32) ${volume}%, rgb(211, 211, 211) ${volume}%, rgb(211, 211, 211) 100%);">
-                  <div>
+                  ${this.getVolumeTemplate(this.active, this.showVolumes ? (this.config.allVolumes ? this.config.allVolumes : 'All') : '', zones[this.active].members)}
+                  <div style="display: ${this.showVolumes ? 'block' : 'none'}">
+                      ${allVolumes}
+                  </div>
+                  <div class="player__footer-icons">
                       <ha-icon @click="${() => this.volumeDown(this.active, zones[this.active].members)}"
                                .icon=${"mdi:volume-minus"}></ha-icon>
+                      <ha-icon @click="${() => this.shuffle(this.active, !activeStateObj.attributes.shuffle)}"
+                               .icon=${activeStateObj.attributes.shuffle ? 'mdi:shuffle-variant' : 'mdi:shuffle-disabled'}></ha-icon>
+                      <ha-icon style="display: ${isGroup ? 'block' : 'none'}"
+                               @click="${() => this.showVolumes = !this.showVolumes}"
+                               .icon=${this.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'}></ha-icon>
+                      <ha-icon @click="${() => this.repeat(this.active, activeStateObj.attributes.repeat)}"
+                               .icon=${activeStateObj.attributes.repeat === 'all' ? 'mdi:repeat' : activeStateObj.attributes.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat-off'}></ha-icon>
                       <ha-icon @click="${() => this.volumeUp(this.active, zones[this.active].members)}"
                                .icon=${"mdi:volume-plus"}></ha-icon>
                   </div>
@@ -242,25 +253,25 @@ class CustomSonosCard extends LitElement {
           </svg>
       `;
       for (let member in zones[this.active].members) {
+        joinedZones.push(member);
         memberTemplates.push(html`
             <div class="member unjoin-member" data-member="${member}">
                 <span>${zones[this.active].members[member]} </span>
                 ${this.groupButtonClicked === member ? spinner : html`
                     <ha-icon .icon=${"mdi:minus"}></ha-icon>
                 `}
-                </i>
             </div>
         `);
       }
       for (let zonesKey in zones) {
         if (zonesKey !== this.active) {
+          notJoinedZones.push(zonesKey);
           memberTemplates.push(html`
               <div class="member join-member" data-member="${zonesKey}">
                   <span>${zones[zonesKey].roomName} </span>
                   ${this.groupButtonClicked === zonesKey ? spinner : html`
                       <ha-icon .icon=${"mdi:plus"}></ha-icon>
                   `}
-                  </i>
               </div>
           `);
         }
@@ -278,9 +289,9 @@ class CustomSonosCard extends LitElement {
 
     return html`
         ${this.config.name ? html`
-        <div class="header">
-            <div class="name">${this.config.name}</div>
-        </div>
+            <div class="header">
+                <div class="name">${this.config.name}</div>
+            </div>
         ` : ''}
         <div class="center">
             <div class="groups">
@@ -293,6 +304,14 @@ class CustomSonosCard extends LitElement {
                 <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
                 <div class="members">
                     ${memberTemplates}
+                </div>
+                <div class="members">
+                    <div class="member join-all" data-zones="${notJoinedZones.join(',')}">
+                        <ha-icon .icon=${"mdi:checkbox-multiple-marked-outline"}></ha-icon>
+                    </div>
+                    <div class="member unjoin-all" data-zones="${joinedZones.join(',')}">
+                        <ha-icon .icon=${"mdi:minus-box-multiple-outline"}></ha-icon>
+                    </div>
                 </div>
             </div>
 
@@ -311,6 +330,7 @@ class CustomSonosCard extends LitElement {
     this.shadowRoot.querySelectorAll(".group").forEach(group => {
       group.addEventListener('click', () => {
         this.setActivePlayer(group.dataset.id);
+        this.showVolumes = false;
       })
     });
     //Set favorite as Source
@@ -322,7 +342,21 @@ class CustomSonosCard extends LitElement {
         });
       })
     });
-    //Join player
+    this.shadowRoot.querySelectorAll(".join-all").forEach(member => {
+      member.addEventListener('click', () => {
+        this.hass.callService("sonos", "join", {
+          master: this.active,
+          entity_id: member.dataset.zones
+        });
+      })
+    });
+    this.shadowRoot.querySelectorAll(".unjoin-all").forEach(member => {
+      member.addEventListener('click', () => {
+        this.hass.callService("sonos", "unjoin", {
+          entity_id: member.dataset.zones
+        });
+      })
+    });
     this.shadowRoot.querySelectorAll(".join-member").forEach(member => {
       member.addEventListener('click', () => {
         this.hass.callService("sonos", "join", {
@@ -332,7 +366,6 @@ class CustomSonosCard extends LitElement {
         this.groupButtonClicked = member.dataset.member;
       })
     });
-    //Unjoin player
     this.shadowRoot.querySelectorAll(".unjoin-member").forEach(member => {
       member.addEventListener('click', () => {
         this.hass.callService("sonos", "unjoin", {
@@ -340,6 +373,29 @@ class CustomSonosCard extends LitElement {
         });
       })
     });
+  }
+
+  getVolumeTemplate(entity, name, members = {}) {
+    const volume = 100 * this.hass.states[entity].attributes.volume_level;
+    let max = 100;
+    let inputColor = 'rgb(211, 3, 32)';
+    if (volume < 20) {
+      max = 30;
+      inputColor = 'rgb(72,187,14)';
+    }
+    return html`
+        ${name ? html`
+            <div style="margin-top: 1rem; margin-left: 0.4rem;">${name}</div>` : ''}
+        <div style="font-size: x-small; margin: 0 0.4rem; display: flex;">
+            <div style="flex: ${volume}">0%</div>
+            <div style="flex: 2">${Math.round(volume)}%</div>
+            <div style="flex: ${max-volume};text-align: right">${max}%</div>
+        </div>
+        <input type="range" .value="${volume}"
+               @change=${e => this.volumeSet(entity, members, e.target.value)}
+               min="0" max="${max}" id="volumeRange" class="volumeRange"
+               style="background: linear-gradient(to right, ${inputColor} 0%, ${inputColor} ${volume * 100 / max}%, rgb(211, 211, 211) ${volume * 100 / max}%, rgb(211, 211, 211) 100%);">
+    `;
   }
 
 
@@ -364,6 +420,21 @@ class CustomSonosCard extends LitElement {
   play(entity) {
     this.hass.callService("media_player", "media_play", {
       entity_id: entity
+    });
+  }
+
+  shuffle(entity, state) {
+    this.hass.callService("media_player", "shuffle_set", {
+      entity_id: entity,
+      shuffle: state
+    });
+  }
+
+  repeat(entity, currentState) {
+    const state = currentState === 'all' ? 'one' : currentState === 'one' ? 'off' : 'all';
+    this.hass.callService("media_player", "repeat_set", {
+      entity_id: entity,
+      repeat: state
     });
   }
 
@@ -456,7 +527,7 @@ class CustomSonosCard extends LitElement {
       }
 
       .players {
-        flex: 1;
+        flex: 3;
       }
       .player__container {
         position: relative;
@@ -468,6 +539,10 @@ class CustomSonosCard extends LitElement {
           var(--paper-card-background-color, white)
         );
         border-radius: 0.25rem;
+        border: 8px solid var(
+          --ha-card-background,
+          var(--paper-card-background-color, white)
+        ); 
         box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
       }
       
@@ -476,18 +551,17 @@ class CustomSonosCard extends LitElement {
         background-size: 10%;
         background-position-y: center;
       }
-      
-      .body__info {
-        padding-right: 2rem;
-        padding-left: 2rem;
+
+      .player__footer {
+        background: #ffffffe6;
+        margin: 1rem;
+        border-radius: 0.25rem;
       }
-
-
       .player__footer input {
         width: 97%;
       }
       
-      .player__footer div {
+      .player__footer-icons {
         justify-content: space-between;
         display: flex;
       }
@@ -577,9 +651,10 @@ class CustomSonosCard extends LitElement {
       }
 
       .body__info {
-        padding-top: 1.5rem;
-        padding-bottom: 1.25rem;
+        margin: 1rem;
         text-align: center;
+        background: #ffffffe6;
+        border-radius: 0.25rem;
       }
 
       .info__album,
@@ -612,17 +687,8 @@ class CustomSonosCard extends LitElement {
         width: 100%;
         z-index: -2;
       }
-      .info__artwork-opacity {
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        background: #ffffffe6;
-      }
       .body__buttons {
-        padding-bottom: 1rem;
-        padding-top: 1rem;
+        padding: 8rem;
       }
 
       .list--buttons {
@@ -658,18 +724,10 @@ class CustomSonosCard extends LitElement {
         transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
         margin: 1rem;
         border-radius: 50%;
-        background: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
+        background: #ffffffe6;
       }
       .list__link:focus, .list__link:hover {
         color: #d30320;
-      }
-
-      .shuffle.active {
-        color: #d30320;
-        opacity:0.9;
       }
 
       .center {
@@ -682,7 +740,7 @@ class CustomSonosCard extends LitElement {
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
-        flex: 1; 
+        flex: 2; 
       }
       .group {
         padding:0;
@@ -690,8 +748,8 @@ class CustomSonosCard extends LitElement {
       }
       .group .wrap {
         border-radius:4px;
-        margin:5px 5px;
-        padding:15px;
+        margin:2px;
+        padding:9px;
         background-color: var(
           --ha-card-background,
           var(--paper-card-background-color, white)
@@ -771,7 +829,7 @@ class CustomSonosCard extends LitElement {
       .sidebar {
         margin:0 20px 0 20px;
         padding:0;
-        flex: 1;
+        flex: 2;
       }
       .title {
         margin-top: 10px;
@@ -794,8 +852,10 @@ class CustomSonosCard extends LitElement {
       .member {
         flex-grow: 1;
         border-radius:4px;
-        margin:5px;
-        padding:15px;
+        margin:2px;
+        padding:9px;
+        display: flex;
+        justify-content: center;
         background-color: var(
           --ha-card-background,
           var(--paper-card-background-color, white)
@@ -827,8 +887,10 @@ class CustomSonosCard extends LitElement {
       .favorite {
         flex-grow: 1;
         border-radius:4px;
-        margin:5px;
-        padding:15px;
+        margin:2px;
+        padding:9px;
+        display: flex;
+        justify-content: center;
         background-color: var(
           --ha-card-background,
           var(--paper-card-background-color, white)
