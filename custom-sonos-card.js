@@ -18,6 +18,7 @@ class CustomSonosCard extends LitElement {
   constructor() {
     super();
     this.favorites = [];
+    this.timerToggleShowAllVolumes = '';
   }
 
   render() {
@@ -135,7 +136,7 @@ class CustomSonosCard extends LitElement {
                       <div class="info__song">${activeStateObj.attributes.media_title}</div>
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
                   </div>
-                  <div class="body__buttons list--buttons">
+                  <div class="${this.showVolumes ? 'hidden' : 'body__buttons list--buttons'}">
                       <a class="list__link">
                           <ha-icon @click="${() => this.prev(this.active)}" .icon=${"mdi:skip-backward"}></ha-icon>
                       </a>
@@ -163,7 +164,7 @@ class CustomSonosCard extends LitElement {
                       <ha-icon @click="${() => this.shuffle(this.active, !activeStateObj.attributes.shuffle)}"
                                .icon=${activeStateObj.attributes.shuffle ? 'mdi:shuffle-variant' : 'mdi:shuffle-disabled'}></ha-icon>
                       <ha-icon style="display: ${isGroup ? 'block' : 'none'}"
-                               @click="${() => this.showVolumes = !this.showVolumes}"
+                               @click="${() => this.toggleShowAllVolumes()}"
                                .icon=${this.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'}></ha-icon>
                       <ha-icon @click="${() => this.repeat(this.active, activeStateObj.attributes.repeat)}"
                                .icon=${activeStateObj.attributes.repeat === 'all' ? 'mdi:repeat' : activeStateObj.attributes.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat-off'}></ha-icon>
@@ -490,6 +491,17 @@ class CustomSonosCard extends LitElement {
 
   getCardSize() {
     return this.config.entities.length + 1;
+  }
+
+  toggleShowAllVolumes() {
+    this.showVolumes = !this.showVolumes;
+    clearTimeout(this.timerToggleShowAllVolumes);
+    if (this.showVolumes) {
+      this.timerToggleShowAllVolumes = setTimeout(() => {
+        this.showVolumes = false;
+        window.scrollTo(0,0);
+      }, 30000);
+    }
   }
 
   static get styles() {
@@ -908,7 +920,10 @@ class CustomSonosCard extends LitElement {
       .favorite:hover ha-icon {
         color: #d30320;
       }
-
+      
+      .hidden {
+        display: none;
+      }
 
       @keyframes sound {
         0% {
