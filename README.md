@@ -1,5 +1,5 @@
 # Sonos custom card
-Customize media player for sonos speakers!<br><br>
+Customized media player for sonos speakers!
 
 Thanks to https://github.com/DBuit and https://github.com/exetico for creating this card.
 
@@ -8,12 +8,16 @@ Thanks to https://github.com/DBuit and https://github.com/exetico for creating t
 * Group/Ungroup speakers
 * Control multiple speaker
 * Play favorites from list
+* Control individual volumes in a group
+* Artwork background
+* Shuffle and repeat mode
+and more!
 
 ![Screenshot of card](https://github.com/johanfrick/custom-sonos-card/raw/master/screenshot-custom-sonos-card.png)
 
 ## Installation
 ### HACS
-Add the URI to HACS's `Settings` > `CUSTOM REPOSITORIES`
+This card is available in HACS (Home Assistant Community Store)
 
 ### Manual
 Download the resources, as you would do with all other modules.
