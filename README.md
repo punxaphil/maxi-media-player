@@ -29,14 +29,22 @@ resources:
 Here's one example, of how to add the Sonos Lovelace Card to Home Assistant.
 ```yaml
 type: custom:custom-sonos-card
-name: Sonos #Required
-groupsTitle: '' #Optional
-groupingTitle: '' #Optional
-favoritesTitle: '' #Optional
-headerImage: '' #Optional
-entities: #Required
+# Optional settings:
+name: '' 
+groupsTitle: '' 
+groupingTitle: '' 
+favoritesTitle: '' 
+headerImage: '' 
+shuffleFavorites: false 
+noMediaText: 'No media selected' 
+allVolumesText: 'All volumes'
+# Required settings:
+entities: 
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
   - media_player.sonos_livingroom
 ```
+
+## Linking to specific player
+Append `#media_player.my_sonos_player` to page URL to have that player selected selected. 

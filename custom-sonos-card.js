@@ -28,14 +28,14 @@ class CustomSonosCard extends LitElement {
     }
     const speakerNames = [];
     const zones = [];
-    for (let entity of this.config.entities) {
+    for (const entity of this.config.entities) {
       const stateObj = this.hass.states[entity];
       //Get favorites list
       if (!this.favorites.length) {
-        for (let favorite of stateObj.attributes.source_list) {
+        for (const favorite of stateObj.attributes.source_list) {
           this.favorites.push(favorite);
         }
-        shuffleArray(this.favorites);
+        if (this.config.shuffleFavorites) shuffleArray(this.favorites);
       }
 
       if (!(entity in zones)) {
@@ -55,7 +55,7 @@ class CustomSonosCard extends LitElement {
 
       if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] === entity) {
 
-        for (let member of stateObj.attributes.sonos_group) {
+        for (const member of stateObj.attributes.sonos_group) {
           if (member !== entity) {
             const state = this.hass.states[member];
             zones[entity].members[member] = state.attributes.friendly_name;
@@ -87,7 +87,7 @@ class CustomSonosCard extends LitElement {
     const memberTemplates = [];
     const joinedZones = []
     const notJoinedZones = []
-    for (let key in zones) {
+    for (const key in zones) {
       let stateObj = this.hass.states[key];
       groupTemplates.push(html`
           <div class="group" data-id="${key}">
@@ -119,9 +119,8 @@ class CustomSonosCard extends LitElement {
 
     if (this.active !== '') {
       const activeStateObj = this.hass.states[this.active];
-      const volume = 100 * activeStateObj.attributes.volume_level;
       const isGroup = activeStateObj.attributes.sonos_group.length > 1;
-      let allVolumes = []
+      let allVolumes = [];
       if (isGroup) {
         allVolumes = activeStateObj.attributes.sonos_group.map(member => this.getVolumeTemplate(member, this.hass.states[member].attributes.friendly_name));
       }
@@ -154,7 +153,7 @@ class CustomSonosCard extends LitElement {
                   ` : html`<div style="width: 100%; text-align: center; padding: 3rem 0">${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}</div>`}
               </div>
               <div class="player__footer">
-                  ${this.getVolumeTemplate(this.active, this.showVolumes ? (this.config.allVolumes ? this.config.allVolumes : 'All') : '', zones[this.active].members)}
+                  ${this.getVolumeTemplate(this.active, this.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '', zones[this.active].members)}
                   <div style="display: ${this.showVolumes ? 'block' : 'none'}">
                       ${allVolumes}
                   </div>
@@ -253,7 +252,7 @@ class CustomSonosCard extends LitElement {
               </g>
           </svg>
       `;
-      for (let member in zones[this.active].members) {
+      for (const member in zones[this.active].members) {
         joinedZones.push(member);
         memberTemplates.push(html`
             <div class="member unjoin-member" data-member="${member}">
@@ -264,7 +263,7 @@ class CustomSonosCard extends LitElement {
             </div>
         `);
       }
-      for (let zonesKey in zones) {
+      for (const zonesKey in zones) {
         if (zonesKey !== this.active) {
           notJoinedZones.push(zonesKey);
           memberTemplates.push(html`
@@ -278,7 +277,7 @@ class CustomSonosCard extends LitElement {
         }
       }
 
-      for (let favorite of this.favorites) {
+      for (const favorite of this.favorites) {
         favoriteTemplates.push(html`
             <div class="favorite" data-favorite="${favorite}"><span>${favorite}</span>
                 <ha-icon .icon=${"mdi:play"}></ha-icon>
@@ -445,7 +444,7 @@ class CustomSonosCard extends LitElement {
     });
 
 
-    for (let member in members) {
+    for (const member in members) {
       this.hass.callService("media_player", "volume_down", {
         entity_id: member
       });
@@ -458,7 +457,7 @@ class CustomSonosCard extends LitElement {
       entity_id: entity
     });
 
-    for (var member in members) {
+    for (const member in members) {
       this.hass.callService("media_player", "volume_up", {
         entity_id: member
       });
@@ -473,7 +472,7 @@ class CustomSonosCard extends LitElement {
       volume_level: volumeFloat
     });
 
-    for (let member in members) {
+    for (const member in members) {
       this.hass.callService("media_player", "volume_set", {
         entity_id: member,
         volume_level: volumeFloat
