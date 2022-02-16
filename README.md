@@ -11,6 +11,7 @@ Thanks to https://github.com/DBuit and https://github.com/exetico for creating t
 * Control individual volumes in a group
 * Artwork background
 * Shuffle and repeat mode
+
 and more!
 
 ![Screenshot of card](https://github.com/johanfrick/custom-sonos-card/raw/master/screenshot-custom-sonos-card.png)
