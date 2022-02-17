@@ -24,7 +24,8 @@ class CustomSonosCard extends LitElement {
     }
     const speakerNames = [];
     const zones = [];
-    for (const entity of this.config.entities) {
+    this.mediaPlayers = [...new Set(this.config.entities)].sort();
+    for (const entity of this.mediaPlayers) {
       const stateObj = this.hass.states[entity];
       if (!stateObj) {
         console.error(entity, 'not found. Check your config. Ignoring and moving on to next entity (if any).');
@@ -116,10 +117,6 @@ class CustomSonosCard extends LitElement {
         </div>
       `);
     }
-    if (groupTemplates.length !== this.groupSize) {
-      this.groupButtonClicked = null;
-    }
-    this.groupSize = groupTemplates.length;
 
     if (this.active !== '') {
       const activeStateObj = this.hass.states[this.active];
@@ -182,104 +179,21 @@ class CustomSonosCard extends LitElement {
         </div>
       `;
 
-      const spinner = html`
-        <svg xmlns="http://www.w3.org/2000/svg"
-             style="margin: 0;display: block;float: left;"
-             width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-          <g transform="rotate(0 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.9166666666666666s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(30 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.8333333333333334s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(60 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(90 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.6666666666666666s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(120 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5833333333333334s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(150 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(180 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.4166666666666667s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(210 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.3333333333333333s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(240 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(270 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s"
-                       begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(300 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s"
-                       begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-          <g transform="rotate(330 50 50)">
-            <rect x="47" y="24" rx="3" ry="6" width="6" height="12" fill="gray">
-              <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s"
-                       repeatCount="indefinite"></animate>
-            </rect>
-          </g>
-        </svg>
-      `;
-      for (const member in zones[this.active].members) {
-        joinedZones.push(member);
-        memberTemplates.push(html`
-          <div class="member" @click="${() => this.callSonosService('unjoin', {entity_id: member})}">
-            <span>${zones[this.active].members[member]} </span>
-            ${this.groupButtonClicked === member ? spinner : html`
-              <ha-icon .icon=${"mdi:minus"}></ha-icon>
-            `}
-          </div>
-        `);
-      }
-      for (const zonesKey in zones) {
-        if (zonesKey !== this.active) {
-          notJoinedZones.push(zonesKey);
+      for (const entity of this.mediaPlayers) {
+        if (zones[this.active].members[entity]) {
+          joinedZones.push(entity);
           memberTemplates.push(html`
-            <div class="member" @click="${() => this.sonosJoin(zonesKey)}">
-              <span>${zones[zonesKey].roomName} </span>
-              ${this.groupButtonClicked === zonesKey ? spinner : html`
-                <ha-icon .icon=${"mdi:plus"}></ha-icon>
-              `}
+            <div class="member" @click="${() => this.callSonosService('unjoin', {entity_id: entity})}">
+              <span>${zones[this.active].members[entity]} </span>
+              <ha-icon .icon=${"mdi:minus"}></ha-icon>
+            </div>
+          `);
+        } else {
+          notJoinedZones.push(entity);
+          memberTemplates.push(html`
+            <div class="member" @click="${() => this.sonosJoin(entity)}">
+              <span>${this.hass.states[entity].attributes.friendly_name} </span>
+              <ha-icon .icon=${"mdi:plus"}></ha-icon>
             </div>
           `);
         }
@@ -343,7 +257,6 @@ class CustomSonosCard extends LitElement {
       master: this.active,
       entity_id: zonesKey
     })
-    this.groupButtonClicked = zonesKey;
   }
 
   callSonosService(service, inOptions) {
