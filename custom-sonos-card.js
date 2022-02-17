@@ -139,7 +139,7 @@ class CustomSonosCard extends LitElement {
                       <div class="info__song">${activeStateObj.attributes.media_title}</div>
                       <div class="info__artist">${activeStateObj.attributes.media_artist}</div>
                   </div>
-                  <div class="${this.showVolumes ? 'hidden' : 'body__buttons list--buttons'}">
+                  <div class="${this.showVolumes ? 'hidden' : 'body__buttons ' + (activeStateObj.attributes.entity_picture ? 'padded__buttons': '')}">
                       <a class="list__link">
                           <ha-icon @click="${() => this.prev(this.active)}" .icon=${"mdi:skip-backward"}></ha-icon>
                       </a>
@@ -702,34 +702,34 @@ class CustomSonosCard extends LitElement {
         width: 100%;
         z-index: -2;
       }
-      .body__buttons {
+      .padded__buttons {
         padding: 8rem;
       }
 
-      .list--buttons {
+      .body__buttons {
         display: flex;
         justify-content: center;
       }
 
-      .list--buttons a {
+      .body__buttons a {
         padding: 0.8rem;
         box-shadow: 0 3px 6px rgba(33, 33, 33, 0.1), 0 3px 12px rgba(33, 33, 33, 0.15);
       }
-      .list--buttons a:focus, .list--buttons a:hover {
+      .body__buttons a:focus, .body__buttons a:hover {
         color: rgba(171, 2, 26, 0.95);
         opacity: 1;
         box-shadow: 0 6px 9px rgba(33, 33, 33, 0.1), 0 6px 16px rgba(33, 33, 33, 0.15);
       }
 
-      .list--buttons li:first-of-type a,
-      .list--buttons li:last-of-type a {
+      .body__buttons li:first-of-type a,
+      .body__buttons li:last-of-type a {
         font-size: .95rem;
         color: #212121;
         opacity: .5;
       }
-      .list--buttons li:first-of-type a:focus, .list--buttons li:first-of-type a:hover,
-      .list--buttons li:last-of-type a:focus,
-      .list--buttons li:last-of-type a:hover {
+      .body__buttons li:first-of-type a:focus, .body__buttons li:first-of-type a:hover,
+      .body__buttons li:last-of-type a:focus,
+      .body__buttons li:last-of-type a:hover {
         color: #d30320;
         opacity: .75;
       }
