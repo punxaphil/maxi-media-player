@@ -315,15 +315,13 @@ class CustomSonosCard extends LitElement {
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
           <div class="members">
             ${memberTemplates}
-          </div>
-          <div class="members">
-            <div class="member join-all" @click="${() => this.callSonosService('join', {
+            <div class="member" @click="${() => this.callSonosService('join', {
               master: this.active,
               entity_id: notJoinedZones.join(',')
             })}">
               <ha-icon .icon=${"mdi:checkbox-multiple-marked-outline"}></ha-icon>
             </div>
-            <div class="member unjoin-all"
+            <div class="member"
                  @click="${() => this.callSonosService('unjoin', {entity_id: joinedZones.join(',')})}">
               <ha-icon .icon=${"mdi:minus-box-multiple-outline"}></ha-icon>
             </div>
