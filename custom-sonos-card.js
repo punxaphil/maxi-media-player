@@ -521,7 +521,7 @@ class CustomSonosCard extends LitElement {
       }
 
       .players {
-        flex: 3;
+        flex: 0 0 50%;
       }
       .player__container {
         position: relative;
@@ -734,7 +734,7 @@ class CustomSonosCard extends LitElement {
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
-        flex: 2; 
+        flex: 0 0 20%; 
       }
       .group {
         padding:0;
@@ -823,7 +823,7 @@ class CustomSonosCard extends LitElement {
       .sidebar {
         margin:0 20px 0 20px;
         padding:0;
-        flex: 2;
+        flex: 0 0 20%;
       }
       .title {
         margin-top: 10px;
