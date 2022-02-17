@@ -180,22 +180,24 @@ class CustomSonosCard extends LitElement {
       `;
 
       for (const entity of this.mediaPlayers) {
-        if (zones[this.active].members[entity]) {
-          joinedZones.push(entity);
-          memberTemplates.push(html`
-            <div class="member" @click="${() => this.callSonosService('unjoin', {entity_id: entity})}">
-              <span>${zones[this.active].members[entity]} </span>
-              <ha-icon .icon=${"mdi:minus"}></ha-icon>
-            </div>
-          `);
-        } else {
-          notJoinedZones.push(entity);
-          memberTemplates.push(html`
-            <div class="member" @click="${() => this.sonosJoin(entity)}">
-              <span>${this.hass.states[entity].attributes.friendly_name} </span>
-              <ha-icon .icon=${"mdi:plus"}></ha-icon>
-            </div>
-          `);
+        if (entity !== this.active) {
+          if (zones[this.active].members[entity]) {
+            joinedZones.push(entity);
+            memberTemplates.push(html`
+              <div class="member" @click="${() => this.callSonosService('unjoin', {entity_id: entity})}">
+                <span>${zones[this.active].members[entity]} </span>
+                <ha-icon .icon=${"mdi:minus"}></ha-icon>
+              </div>
+            `);
+          } else {
+            notJoinedZones.push(entity);
+            memberTemplates.push(html`
+              <div class="member" @click="${() => this.sonosJoin(entity)}">
+                <span>${this.hass.states[entity].attributes.friendly_name} </span>
+                <ha-icon .icon=${"mdi:plus"}></ha-icon>
+              </div>
+            `);
+          }
         }
       }
 
