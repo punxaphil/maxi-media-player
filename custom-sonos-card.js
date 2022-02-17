@@ -370,7 +370,8 @@ class CustomSonosCard extends LitElement {
         <div style="margin-top: 1rem; margin-left: 0.4rem;">${name}</div>` : ''}
       <div style="font-size: x-small; margin: 0 0.4rem; display: flex;">
         <div style="flex: ${volume}">0%</div>
-        <div style="flex: 2">${Math.round(volume)}%</div>
+        ${volume > 0 ? html`
+          <div style="flex: 2">${Math.round(volume)}%</div>` : ''}
         <div style="flex: ${max - volume};text-align: right">${max}%</div>
       </div>
       <input type="range" .value="${volume}"
