@@ -200,7 +200,7 @@ class Player extends LitElement {
       }
 
       .padded-buttons {
-        padding: 8rem;
+        padding: 5rem;
       }
 
       .buttons {

@@ -79,7 +79,6 @@ class CustomSonosCard extends LitElement {
     }
 
     const groupTemplates = [];
-    let playerTemplate = html``;
     const favoriteTemplates = [];
     const memberTemplates = [];
     const joinedZones = [];
@@ -235,7 +234,7 @@ class CustomSonosCard extends LitElement {
       }
 
       .players {
-        flex: 0 0 50%;
+        flex: 0 0 40%;
       }
 
       .list--header .list__link,
