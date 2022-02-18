@@ -30,8 +30,11 @@ resources:
     type: module
 ```
 
-## YAML
-Here's one example, of how to add the Sonos Lovelace Card to Home Assistant.
+## Usage
+To get the full width of the Sonos Card, please make sure to use `panel` mode in your Lovelace view. 
+Read more here: https://www.home-assistant.io/lovelace/views/
+
+After that add a card to the view, and in YAML mode add the following (configured according to your preferences):
 ```yaml
 type: custom:custom-sonos-card
 # Optional settings:
@@ -52,4 +55,4 @@ entities:
 ```
 
 ## Linking to specific player
-Append `#media_player.my_sonos_player` to page URL to have that player selected selected. 
+Append `#media_player.my_sonos_player` to page URL to have that player selected. 
