@@ -66,6 +66,7 @@ The following variables are available and can be set in your theme to change the
 | --sonos-color | var(--secondary-text-color)
 | --sonos-artist-album-text-color | var(--primary-text-color)
 | --sonos-accent-color | var(--accent-color)
+| --sonos-title-color | var(--card-background-color)
 |--mdc-icon-size | 18px
 
 ## Linking to specific player
