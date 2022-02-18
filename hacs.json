@@ -1,6 +1,5 @@
 {
     "name": "Sonos Card",
     "render_readme": true,
-    "content_in_root": false,
-    "filename": "dist/custom-sonos-card.js"
+    "filename": "custom-sonos-card.js"
 }
