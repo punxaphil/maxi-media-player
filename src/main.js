@@ -2,6 +2,7 @@ import {css, LitElement, html} from 'lit-element';
 import Service from "./service";
 import './player';
 import './group';
+import './grouping-buttons';
 
 class CustomSonosCard extends LitElement {
   static get properties() {
@@ -25,8 +26,8 @@ class CustomSonosCard extends LitElement {
       this.setActivePlayer(this.active);
     }
     const groups = [];
-    this.mediaPlayers = [...new Set(this.config.entities)].sort();
-    for (const entity of this.mediaPlayers) {
+    const mediaPlayers = [...new Set(this.config.entities)].sort();
+    for (const entity of mediaPlayers) {
       const stateObj = this.hass.states[entity];
       if (!stateObj) {
         console.error(entity, 'not found. Check your config. Ignoring and moving on to next entity (if any).');
@@ -78,33 +79,8 @@ class CustomSonosCard extends LitElement {
     }
 
     const favoriteTemplates = [];
-    const memberTemplates = [];
-    const joinedPlayers = [];
-    const notJoinedPlayers = [];
 
     if (this.active !== '') {
-      for (const entity of this.mediaPlayers) {
-        if (entity !== this.active) {
-          if (groups[this.active].members[entity]) {
-            joinedPlayers.push(entity);
-            memberTemplates.push(html`
-              <div class="member" @click="${() => this.service.unjoin(entity)}">
-                <span>${groups[this.active].members[entity]} </span>
-                <ha-icon .icon=${'mdi:minus'}></ha-icon>
-              </div>
-            `);
-          } else {
-            notJoinedPlayers.push(entity);
-            memberTemplates.push(html`
-              <div class="member" @click="${() => this.service.join(this.active, entity)}">
-                <span>${this.hass.states[entity].attributes.friendly_name} </span>
-                <ha-icon .icon=${'mdi:plus'}></ha-icon>
-              </div>
-            `);
-          }
-        }
-      }
-
       for (const favorite of this.favorites) {
         favoriteTemplates.push(html`
           <div class="favorite" @click="${() => this.service.setSource(this.active, favorite)}"><span>${favorite}</span>
@@ -125,9 +101,9 @@ class CustomSonosCard extends LitElement {
         <div class="groups">
           <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
           ${Object.keys(groups).map(group => html`
-            <sonos-group 
-                .hass=${this.hass} 
-                .group=${group} 
+            <sonos-group
+                .hass=${this.hass}
+                .group=${group}
                 .active=${this.active === group}
                 @click="${() => {
                   this.setActivePlayer(group);
@@ -147,16 +123,13 @@ class CustomSonosCard extends LitElement {
               .service=${this.service}>
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
-          <div class="members">
-            ${memberTemplates}
-            <div class="member" @click="${() => this.service.join(this.active, notJoinedPlayers.join(','))}">
-              <ha-icon .icon=${'mdi:checkbox-multiple-marked-outline'}></ha-icon>
-            </div>
-            <div class="member"
-                 @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
-              <ha-icon .icon=${'mdi:minus-box-multiple-outline'}></ha-icon>
-            </div>
-          </div>
+          <sonos-grouping-buttons
+              .hass=${this.hass}
+              .groups=${groups}
+              .mediaPlayers=${mediaPlayers}
+              .active=${this.active}
+              .service=${this.service}>
+          </sonos-grouping-buttons>
         </div>
 
         <div class="sidebar">
@@ -251,41 +224,7 @@ class CustomSonosCard extends LitElement {
         font-weight: bold;
         font-size: larger;
       }
-      .members {
-        padding:0;
-        margin:0;
-        display: flex;
-        flex-direction:row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .member {
-        flex-grow: 1;
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
-        display: flex;
-        justify-content: center;
-        background-color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-      }
-      .member span {
-        align-self:center;
-        font-size:12px;
-        color:#000;
-      }
-      .member ha-icon {
-        align-self:center;
-        font-size:10px;
-        color: #888;
-      }
-      .member:hover ha-icon {
-        color: #d30320;
-      }
-
+      
       .favorites {
         padding:0;
         margin:0 0 30px 0;
