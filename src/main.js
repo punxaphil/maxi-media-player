@@ -4,6 +4,7 @@ import './player';
 import './group';
 import './grouping-buttons';
 import './favorite-buttons';
+import {getEntityName} from "./utils";
 
 class CustomSonosCard extends LitElement {
   static get properties() {
@@ -30,6 +31,7 @@ class CustomSonosCard extends LitElement {
             <sonos-group
                 .hass=${this.hass}
                 .group=${group}
+                .config=${this.config}
                 .active=${this.active === group}
                 @click="${() => {
                   this.setActivePlayer(group);
@@ -51,6 +53,7 @@ class CustomSonosCard extends LitElement {
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
           <sonos-grouping-buttons
               .hass=${this.hass}
+              .config=${this.config}
               .groups=${playerGroups}
               .mediaPlayers=${mediaPlayers}
               .active=${this.active}
@@ -117,9 +120,9 @@ class CustomSonosCard extends LitElement {
       return {
         entity: groupMaster,
         state: state.state,
-        roomName: state.attributes.friendly_name,
+        roomName: getEntityName(this.hass, this.config, groupMaster),
         members: Object.fromEntries(membersArray.map(member => {
-          const friendlyName = this.hass.states[member].attributes.friendly_name;
+          const friendlyName = getEntityName(this.hass, this.config, member);
           return [member, friendlyName];
         }))
       };

@@ -1,10 +1,11 @@
 import {LitElement, html, css} from 'lit-element';
+import {getEntityName} from "./utils";
 
 class Group extends LitElement {
 
   static get properties() {
     return {
-      hass: {}, group: {}, active: {}
+      hass: {}, group: {}, active: {}, config: {}
     };
   }
 
@@ -16,7 +17,7 @@ class Group extends LitElement {
         <div class="wrap ${this.active ? 'active' : ''}">
           <ul class="speakers">
             ${stateObj.attributes.sonos_group.map(speaker => html`
-              <li>${this.hass.states[speaker].attributes.friendly_name}</li>`)}
+              <li>${getEntityName(this.hass, this.config, speaker)}</li>`)}
           </ul>
           <div class="play">
             ${currentTrack ? html`

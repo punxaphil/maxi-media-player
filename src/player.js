@@ -20,7 +20,7 @@ class Player extends LitElement {
     const isGroup = activeStateObj.attributes.sonos_group.length > 1;
     let allVolumes = [];
     if (isGroup) {
-      allVolumes = activeStateObj.attributes.sonos_group.map(member => this.getVolumeTemplate(member, this.hass.states[member].attributes.friendly_name));
+      allVolumes = activeStateObj.attributes.sonos_group.map(member => this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member)));
     }
     return html`
       <div class="container" style="background-position-x:center;background-repeat: no-repeat;background-size: cover;

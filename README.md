@@ -46,6 +46,7 @@ headerImage: ''
 shuffleFavorites: false 
 noMediaText: 'No media selected' 
 allVolumesText: 'All volumes'
+entityNameRegex: '/SONOS //' # Regex pattern to replace parts of the entity names
 # Required settings:
 entities: 
   - media_player.sonos_kitchen

@@ -1,11 +1,12 @@
 import {LitElement, html, css} from 'lit-element';
 import Service from "./service";
+import {getEntityName} from "./utils";
 
 class GroupingButtons extends LitElement {
 
   static get properties() {
     return {
-      hass: {}, groups: {}, mediaPlayers: {}, active: {}, service: Service
+      hass: {}, groups: {}, mediaPlayers: {}, active: {}, service: Service, config: {}
     };
   }
 
@@ -28,7 +29,7 @@ class GroupingButtons extends LitElement {
               } else {
                 return html`
                       <div class="member" @click="${() => this.service.join(this.active, entity)}">
-                        <span>${this.hass.states[entity].attributes.friendly_name} </span>
+                        <span>${getEntityName(this.hass, this.config, entity)} </span>
                         <ha-icon .icon=${'mdi:plus'}></ha-icon>
                       </div>
                     `;
