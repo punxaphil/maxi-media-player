@@ -1,4 +1,4 @@
-import {css, LitElement, html} from 'lit-element';
+import {css, html, LitElement} from 'lit-element';
 import Service from "./service";
 import './player';
 import './group';
@@ -8,64 +8,15 @@ import './favorite-buttons';
 class CustomSonosCard extends LitElement {
   static get properties() {
     return {
-      hass: {},
-      config: {},
-      active: {},
-      showVolumes: {}
+      hass: {}, config: {}, active: {}, showVolumes: {}
     };
   }
 
   render() {
     this.service = new Service(this.hass);
-    this.selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
-    if (this.active) {
-      this.setActivePlayer(this.active);
-    }
-    const groups = [];
-    const mediaPlayers = [...new Set(this.config.entities)].sort();
-    for (const entity of mediaPlayers) {
-      const stateObj = this.hass.states[entity];
-      if (!stateObj) {
-        console.error(entity, 'not found. Check your config. Ignoring and moving on to next entity (if any).');
-        continue;
-      }
-
-      if (!(entity in groups)) {
-        groups[entity] = {
-          members: {}, state: {}, roomName: '',
-        };
-      }
-      groups[entity].state = stateObj.state;
-      groups[entity].roomName = stateObj.attributes.friendly_name;
-
-
-      if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] === entity) {
-        if (entity === this.selected_player) {
-          this.setActivePlayer(entity);
-        }
-        for (const member of stateObj.attributes.sonos_group) {
-          if (member !== entity) {
-            const state = this.hass.states[member];
-            groups[entity].members[member] = state.attributes.friendly_name;
-            if (member === this.selected_player) {
-              this.setActivePlayer(entity);
-            }
-          }
-        }
-
-        if (stateObj.state === 'playing' && !this.active) {
-          this.setActivePlayer(entity);
-        }
-      } else if (stateObj.attributes.sonos_group.length > 1) {
-        delete groups[entity];
-      } else if (stateObj.state === 'playing' && !this.active) {
-        this.setActivePlayer(entity);
-      }
-    }
-    this.selected_player = null;
-    if (!this.active) {
-      this.setActivePlayer(Object.keys(groups)[0]);
-    }
+    const mediaPlayers = [...new Set(this.config.entities)].sort().filter(player => this.hass.states[player]);
+    const playerGroups = this.createPlayerGroups(mediaPlayers);
+    this.determineActivePlayer(playerGroups);
     return html`
       ${this.config.name ? html`
         <div class="header">
@@ -75,7 +26,7 @@ class CustomSonosCard extends LitElement {
       <div class="content">
         <div class="groups">
           <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
-          ${Object.keys(groups).map(group => html`
+          ${Object.keys(playerGroups).map(group => html`
             <sonos-group
                 .hass=${this.hass}
                 .group=${group}
@@ -94,13 +45,13 @@ class CustomSonosCard extends LitElement {
               .config=${this.config}
               .entityId=${this.active}
               .main=${this}
-              .members=${groups[this.active].members}
+              .members=${playerGroups[this.active].members}
               .service=${this.service}>
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
           <sonos-grouping-buttons
               .hass=${this.hass}
-              .groups=${groups}
+              .groups=${playerGroups}
               .mediaPlayers=${mediaPlayers}
               .active=${this.active}
               .service=${this.service}>
@@ -119,6 +70,61 @@ class CustomSonosCard extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  determineActivePlayer(playerGroups) {
+    let selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
+    if (this.active) {
+      this.setActivePlayer(this.active);
+    }
+    if (!this.active) {
+      for (let player in playerGroups) {
+        if (player === selected_player) {
+          this.setActivePlayer(player);
+        } else {
+          for (const member in playerGroups[player].members) {
+            if (member === selected_player) {
+              this.setActivePlayer(player);
+            }
+          }
+        }
+      }
+    }
+    if (!this.active) {
+      for (let player in playerGroups) {
+        if (playerGroups[player].state === 'playing') {
+          this.setActivePlayer(player);
+        }
+      }
+    }
+    if (!this.active) {
+      this.setActivePlayer(Object.keys(playerGroups)[0]);
+    }
+  }
+
+  createPlayerGroups(mediaPlayers) {
+    const groupMasters = mediaPlayers.filter(player => {
+      const state = this.hass.states[player];
+      const stateAttributes = state.attributes;
+      const isGrouped = stateAttributes.sonos_group.length > 1;
+      const isMasterInGroup = isGrouped && stateAttributes.sonos_group[0] === player;
+      return !isGrouped || isMasterInGroup;
+    });
+    const groupArray = groupMasters.map(groupMaster => {
+      const state = this.hass.states[groupMaster];
+      let membersArray = state.attributes.sonos_group
+        .filter(member => member !== groupMaster);
+      return {
+        entity: groupMaster,
+        state: state.state,
+        roomName: state.attributes.friendly_name,
+        members: Object.fromEntries(membersArray.map(member => {
+          const friendlyName = this.hass.states[member].attributes.friendly_name;
+          return [member, friendlyName];
+        }))
+      };
+    });
+    return Object.fromEntries(groupArray.map(group => [group.entity, group]));
   }
 
   setConfig(config) {
@@ -232,10 +238,10 @@ class CustomSonosCard extends LitElement {
     `;
   }
 
-  setActivePlayer(entity) {
-    this.active = entity;
+  setActivePlayer(player) {
+    this.active = player;
     const newUrl = window.location.href.replaceAll(/#.*/g, '');
-    window.location.href = `${newUrl}#${entity}`;
+    window.location.href = `${newUrl}#${player}`;
   }
 }
 

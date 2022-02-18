@@ -18,7 +18,6 @@ class FavoriteButtons extends LitElement {
     if (!this.favorites.length) {
       this.favorites = this.mediaPlayers
         .map(entity => this.hass.states[entity])
-        .filter(state => state)
         .flatMap(state => state.attributes.source_list);
       this.favorites = [...new Set(this.favorites)];
       if (this.config.shuffleFavorites) {
