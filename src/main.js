@@ -3,6 +3,7 @@ import Service from "./service";
 import './player';
 import './group';
 import './grouping-buttons';
+import './favorite-buttons';
 
 class CustomSonosCard extends LitElement {
   static get properties() {
@@ -12,11 +13,6 @@ class CustomSonosCard extends LitElement {
       active: {},
       showVolumes: {}
     };
-  }
-
-  constructor() {
-    super();
-    this.favorites = [];
   }
 
   render() {
@@ -32,13 +28,6 @@ class CustomSonosCard extends LitElement {
       if (!stateObj) {
         console.error(entity, 'not found. Check your config. Ignoring and moving on to next entity (if any).');
         continue;
-      }
-      // Get favorites list
-      if (!this.favorites.length) {
-        for (const favorite of stateObj.attributes.source_list) {
-          this.favorites.push(favorite);
-        }
-        if (this.config.shuffleFavorites) shuffleArray(this.favorites);
       }
 
       if (!(entity in groups)) {
@@ -77,20 +66,6 @@ class CustomSonosCard extends LitElement {
     if (!this.active) {
       this.setActivePlayer(Object.keys(groups)[0]);
     }
-
-    const favoriteTemplates = [];
-
-    if (this.active !== '') {
-      for (const favorite of this.favorites) {
-        favoriteTemplates.push(html`
-          <div class="favorite" @click="${() => this.service.setSource(this.active, favorite)}"><span>${favorite}</span>
-            <ha-icon .icon=${'mdi:play'}></ha-icon>
-          </div>
-        `);
-      }
-    }
-
-
     return html`
       ${this.config.name ? html`
         <div class="header">
@@ -134,9 +109,13 @@ class CustomSonosCard extends LitElement {
 
         <div class="sidebar">
           <div class="title">${this.config.favoritesTitle ? this.config.favoritesTitle : 'Favorites'}</div>
-          <div class="favorites">
-            ${favoriteTemplates}
-          </div>
+          <sonos-favorite-buttons
+              .hass=${this.hass}
+              .config=${this.config}
+              .mediaPlayers=${mediaPlayers}
+              .active=${this.active}
+              .service=${this.service}>
+          </sonos-favorite-buttons>
         </div>
       </div>
     `;
@@ -225,39 +204,6 @@ class CustomSonosCard extends LitElement {
         font-size: larger;
       }
       
-      .favorites {
-        padding:0;
-        margin:0 0 30px 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-      .favorite {
-        flex-grow: 1;
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
-        display: flex;
-        justify-content: center;
-        background-color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-      }
-      .favorite span {
-        font-size:12px;
-        color:#000;
-      }
-      .favorite ha-icon {
-        font-size:10px;
-        color: #888;
-      }
-      .favorite:hover ha-icon {
-        color: #d30320;
-      }
-      
       @keyframes sound {
         0% {
           opacity: .35;
@@ -290,13 +236,6 @@ class CustomSonosCard extends LitElement {
     this.active = entity;
     const newUrl = window.location.href.replaceAll(/#.*/g, '');
     window.location.href = `${newUrl}#${entity}`;
-  }
-}
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
