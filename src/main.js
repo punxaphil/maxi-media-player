@@ -121,7 +121,7 @@ class CustomSonosCard extends LitElement {
           <div class="name">${this.config.name}</div>
         </div>
       ` : ''}
-      <div class="center">
+      <div class="content">
         <div class="groups">
           <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
           ${Object.keys(groups).map(group => html`
@@ -223,7 +223,7 @@ class CustomSonosCard extends LitElement {
         color: #888;
       }
 
-      .center {
+      .content {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -331,7 +331,7 @@ class CustomSonosCard extends LitElement {
       }
       
       @media (max-width: 650px) {
-          .center {
+          .content {
             flex-wrap: wrap;
           }
           .players {
