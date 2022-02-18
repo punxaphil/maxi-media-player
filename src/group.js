@@ -10,6 +10,7 @@ class Group extends LitElement {
 
   render() {
     const stateObj = this.hass.states[this.group];
+    let currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replaceAll(/^ - /g, '');
     return html`
       <div class="group">
         <div class="wrap ${this.active ? 'active' : ''}">
@@ -18,14 +19,18 @@ class Group extends LitElement {
               <li>${this.hass.states[speaker].attributes.friendly_name}</li>`)}
           </ul>
           <div class="play">
-            <div class="content">
-              <span class="currentTrack">${stateObj.attributes.media_artist} - ${stateObj.attributes.media_title}</span>
-            </div>
-            <div class="player ${stateObj.state === 'playing' ? 'active' : ''}">
-              <div class="bar"></div>
-              <div class="bar"></div>
-              <div class="bar"></div>
-            </div>
+            ${currentTrack ? html`
+              <div class="content">
+                <span class="currentTrack">${currentTrack}</span>
+              </div>
+            ` : ''}
+            ${stateObj.state === 'playing' ? html`
+              <div class="player active">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+              </div>
+            ` : ''}
           </div>
         </div>
       </div>
@@ -72,7 +77,6 @@ class Group extends LitElement {
       .group .play {
         display:flex;
         flex-direction:row;
-        margin-top:10px;
       }
       .group .play .content {
         flex:1;
