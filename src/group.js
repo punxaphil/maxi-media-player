@@ -117,6 +117,16 @@ class Group extends LitElement {
         left: 9px;
         animation-duration: 407ms;
       }
+      @keyframes sound {
+        0% {
+          opacity: .35;
+          height: 3px;
+        }
+        100% {
+          opacity: 1;
+          height: 20px;
+        }
+      }      
     `;
   }
 }

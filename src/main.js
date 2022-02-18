@@ -171,29 +171,20 @@ class CustomSonosCard extends LitElement {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-
       .players {
         flex: 0 0 40%;
       }
-
-      .list--header .list__link,
-      .list__link {
-        color: #888;
-      }
-
       .content {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: center;
       }
-
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
         flex: 0 0 20%; 
-      }
-      
+      } 
       .sidebar {
         margin:0 20px 0 20px;
         padding:0;
@@ -208,19 +199,7 @@ class CustomSonosCard extends LitElement {
         );
         font-weight: bold;
         font-size: larger;
-      }
-      
-      @keyframes sound {
-        0% {
-          opacity: .35;
-          height: 3px;
-        }
-        100% {
-          opacity: 1;
-          height: 20px;
-        }
-      }
-      
+      }     
       @media (max-width: 650px) {
           .content {
             flex-wrap: wrap;
