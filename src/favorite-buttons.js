@@ -60,22 +60,17 @@ class FavoriteButtons extends LitElement {
         padding:9px;
         display: flex;
         justify-content: center;
-        background-color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
+        background-color: var(--sonos-background-color);
+        box-shadow: var(--sonos-box-shadow);
       }
       .favorite span {
         font-size:12px;
-        color:#000;
       }
       .favorite ha-icon {
         font-size:10px;
-        color: #888;
       }
       .favorite:hover ha-icon {
-        color: #d30320;
+        color: var(--sonos-accent-color);
       }
     `;
   }

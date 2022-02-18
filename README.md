@@ -1,4 +1,4 @@
-# Sonos custom card
+# Sonos card for Home Assistant's Lovelace UI
 Customized media player for sonos speakers!
 
 Thanks to https://github.com/DBuit and https://github.com/exetico for creating this card.
@@ -53,6 +53,18 @@ entities:
   - media_player.sonos_bedroom
   - media_player.sonos_livingroom
 ```
+
+## Theme variables
+The following variables are available and can be set in your theme to change the appearence of the card.
+
+| Name | Default |
+|------|---------|
+| --sonos-box-shadow | var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) )
+| --sonos-background-color | var(--card-background-color)
+| --sonos-player-section-background | #ffffffe6
+| --sonos-color | var(--secondary-text-color)
+| --sonos-artist-album-text-color | var(--primary-text-color)
+| --sonos-accent-color | var(--accent-color)
 
 ## Linking to specific player
 Append `#media_player.my_sonos_player` to page URL to have that player selected. 

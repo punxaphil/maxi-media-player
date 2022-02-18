@@ -119,16 +119,10 @@ class Player extends LitElement {
         overflow: hidden;
         z-index: 0;
         margin:0;
-        background: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
+        background: var(--sonos-background-color);
         border-radius: 0.25rem;
-        border: 8px solid var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        ); 
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
+        border: 8px solid var(--sonos-background-color); 
+        box-shadow: var(--sonos-box-shadow);
       }
       
       .body {
@@ -138,7 +132,7 @@ class Player extends LitElement {
       }
      
       .footer {
-        background: #ffffffe6;
+        background: var(--sonos-player-section-background);
         margin: 1rem;
         border-radius: 0.25rem;
       }
@@ -153,7 +147,6 @@ class Player extends LitElement {
       }
       
       .footer div ha-icon {
-        color: #888;
         padding: 10px;
       }
       
@@ -161,7 +154,6 @@ class Player extends LitElement {
         -webkit-appearance: none;
         height: 5px;
         border-radius: 5px;
-        background: #d3d3d3;
         outline: none;
         opacity: 0.7;
         -webkit-transition: .2s;
@@ -172,7 +164,7 @@ class Player extends LitElement {
       .info {
         margin: 1rem;
         text-align: center;
-        background: #ffffffe6;
+        background: var(--sonos-player-section-background);
         border-radius: 0.25rem;
       }
 
@@ -186,7 +178,7 @@ class Player extends LitElement {
       .album {
         font-size: .75rem;
         font-weight: 300;
-        color: #666;
+        color: var(--sonos-artist-album-text-color);
       }
       
       .artist {
@@ -196,7 +188,7 @@ class Player extends LitElement {
       .song {
         font-size: 1.15rem;
         font-weight: 400;
-        color: #d30320;
+        color: var(--sonos-accent-color);
       }
 
       .padded-buttons {
@@ -214,23 +206,9 @@ class Player extends LitElement {
       }
       
       .buttons a:focus, .buttons a:hover {
-        color: rgba(171, 2, 26, 0.95);
+        color: var(--sonos-accent-color);
         opacity: 1;
         box-shadow: 0 6px 9px rgba(33, 33, 33, 0.1), 0 6px 16px rgba(33, 33, 33, 0.15);
-      }
-
-      .buttons li:first-of-type a,
-      .buttons li:last-of-type a {
-        font-size: .95rem;
-        color: #212121;
-        opacity: .5;
-      }
-      
-      .buttons li:first-of-type a:focus, .buttons li:first-of-type a:hover,
-      .buttons li:last-of-type a:focus,
-      .buttons li:last-of-type a:hover {
-        color: #d30320;
-        opacity: .75;
       }
 
       .link {
@@ -238,11 +216,11 @@ class Player extends LitElement {
         transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
         margin: 1rem;
         border-radius: 50%;
-        background: #ffffffe6;
+        background: var(--sonos-player-section-background);
       }
       
       .link:focus, .link:hover {
-        color: #d30320;
+        color: var(--sonos-accent-color);
       }
 
       .hidden {

@@ -140,27 +140,17 @@ class CustomSonosCard extends LitElement {
 
   static get styles() {
     return css`
-      ha-card {
-        background: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
-        border-radius: var(--ha-card-border-radius, 2px);
-        box-shadow: var(
-          --ha-card-box-shadow,
-          0 2px 2px 0 rgba(0, 0, 0, 0.14),
-          0 1px 5px 0 rgba(0, 0, 0, 0.12),
-          0 3px 1px -2px rgba(0, 0, 0, 0.2)
-        );
-        color: var(--primary-text-color);
-        display: block;
-        transition: all 0.3s ease-out;
-        padding: 16px;
+      :host {
+        --sonos-box-shadow: var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) );
+        --sonos-background-color: var(--card-background-color);
+        --sonos-player-section-background: #ffffffe6;
+        --sonos-color: var(--secondary-text-color);
+        --sonos-artist-album-text-color: var(--primary-text-color);
+        --sonos-accent-color: var(--accent-color);
+        color: var(--sonos-color);
       }
       .header {
-        color: var(--ha-card-header-color, --primary-text-color);
-        font-family: var(--ha-card-header-font-family, inherit);
-        font-size: var(--ha-card-header-font-size, 24px);
+        font-size: 24px;
         letter-spacing: -0.012em;
         line-height: 32px;
         padding: 4px 0 12px;
@@ -193,10 +183,6 @@ class CustomSonosCard extends LitElement {
       .title {
         margin-top: 10px;
         text-align: center;
-        color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
         font-weight: bold;
         font-size: larger;
       }     

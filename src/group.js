@@ -42,15 +42,12 @@ class Group extends LitElement {
         border-radius:4px;
         margin:2px;
         padding:9px;
-        background-color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
+        background-color: var(--sonos-background-color);
+        box-shadow: var(--sonos-box-shadow);
       }
       .group .wrap.active {
         margin:5px 0;
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-        border-color: #d30320;
+        border-color: var(--sonos-accent-color);
         border-width: thin;
         border-style: solid;
         font-weight: bold;
@@ -66,8 +63,8 @@ class Group extends LitElement {
       .speakers li {
         display:block;
         font-size:12px;
-        margin:5px 0 0 0 ;
-        color:#000;
+        margin:5px 0 0 0;
+        color:var(--sonos-color);
       }
       .speakers li:first-child {
         margin:0;
@@ -80,21 +77,16 @@ class Group extends LitElement {
       .group .play .content {
         flex:1;
       }
-      .group .play .content .source {
-        display:block;
-        color:#CCC;
-        font-size:10px;
-      }
       .group .play .content .currentTrack {
         display:block;
-        font-size:12px;
+        font-size:10px;
       }
       .group .play .player {
         width:12px;
         position:relative;
       }
       .group .play .player .bar {
-        background: #666;
+        background: var(--sonos-color);
         bottom: 1px;
         height: 3px;
         position: absolute;
