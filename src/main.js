@@ -24,7 +24,7 @@ class CustomSonosCard extends LitElement {
       this.setActivePlayer(this.active);
     }
     const speakerNames = [];
-    const zones = [];
+    const groups = [];
     this.mediaPlayers = [...new Set(this.config.entities)].sort();
     for (const entity of this.mediaPlayers) {
       const stateObj = this.hass.states[entity];
@@ -40,14 +40,14 @@ class CustomSonosCard extends LitElement {
         if (this.config.shuffleFavorites) shuffleArray(this.favorites);
       }
 
-      if (!(entity in zones)) {
-        zones[entity] = {
+      if (!(entity in groups)) {
+        groups[entity] = {
           members: {}, state: {}, roomName: '',
         };
         speakerNames[entity] = stateObj.attributes.friendly_name;
       }
-      zones[entity].state = stateObj.state;
-      zones[entity].roomName = stateObj.attributes.friendly_name;
+      groups[entity].state = stateObj.state;
+      groups[entity].roomName = stateObj.attributes.friendly_name;
 
 
       if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] === entity) {
@@ -57,7 +57,7 @@ class CustomSonosCard extends LitElement {
         for (const member of stateObj.attributes.sonos_group) {
           if (member !== entity) {
             const state = this.hass.states[member];
-            zones[entity].members[member] = state.attributes.friendly_name;
+            groups[entity].members[member] = state.attributes.friendly_name;
             if (member === this.selected_player) {
               this.setActivePlayer(entity);
             }
@@ -68,22 +68,22 @@ class CustomSonosCard extends LitElement {
           this.setActivePlayer(entity);
         }
       } else if (stateObj.attributes.sonos_group.length > 1) {
-        delete zones[entity];
+        delete groups[entity];
       } else if (stateObj.state === 'playing' && !this.active) {
         this.setActivePlayer(entity);
       }
     }
     this.selected_player = null;
     if (!this.active) {
-      this.setActivePlayer(Object.keys(zones)[0]);
+      this.setActivePlayer(Object.keys(groups)[0]);
     }
 
     const groupTemplates = [];
     const favoriteTemplates = [];
     const memberTemplates = [];
-    const joinedZones = [];
-    const notJoinedZones = [];
-    for (const key in zones) {
+    const joinedPlayers = [];
+    const notJoinedPlayers = [];
+    for (const key in groups) {
       const stateObj = this.hass.states[key];
       groupTemplates.push(html`
         <div class="group" @click="${() => {
@@ -114,16 +114,16 @@ class CustomSonosCard extends LitElement {
     if (this.active !== '') {
       for (const entity of this.mediaPlayers) {
         if (entity !== this.active) {
-          if (zones[this.active].members[entity]) {
-            joinedZones.push(entity);
+          if (groups[this.active].members[entity]) {
+            joinedPlayers.push(entity);
             memberTemplates.push(html`
               <div class="member" @click="${() => this.service.unjoin(entity)}">
-                <span>${zones[this.active].members[entity]} </span>
+                <span>${groups[this.active].members[entity]} </span>
                 <ha-icon .icon=${'mdi:minus'}></ha-icon>
               </div>
             `);
           } else {
-            notJoinedZones.push(entity);
+            notJoinedPlayers.push(entity);
             memberTemplates.push(html`
               <div class="member" @click="${() => this.service.join(this.active, entity)}">
                 <span>${this.hass.states[entity].attributes.friendly_name} </span>
@@ -162,17 +162,17 @@ class CustomSonosCard extends LitElement {
               .config=${this.config}
               .entityId=${this.active}
               .main=${this}
-              .members=${zones[this.active].members}
+              .members=${groups[this.active].members}
               .service=${this.service}>
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
           <div class="members">
             ${memberTemplates}
-            <div class="member" @click="${() => this.service.join(this.active, notJoinedZones.join(','))}">
+            <div class="member" @click="${() => this.service.join(this.active, notJoinedPlayers.join(','))}">
               <ha-icon .icon=${'mdi:checkbox-multiple-marked-outline'}></ha-icon>
             </div>
             <div class="member"
-                 @click="${() => this.service.unjoin(joinedZones.join(','))}">
+                 @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
               <ha-icon .icon=${'mdi:minus-box-multiple-outline'}></ha-icon>
             </div>
           </div>
