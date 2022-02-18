@@ -42,20 +42,18 @@ class CustomSonosCard extends LitElement {
 
       if (!(entity in zones)) {
         zones[entity] = {
-          members: {},
-          state: {},
-          roomName: '',
+          members: {}, state: {}, roomName: '',
         };
         speakerNames[entity] = stateObj.attributes.friendly_name;
-        if (entity === this.selected_player) {
-          this.setActivePlayer(entity);
-        }
       }
       zones[entity].state = stateObj.state;
       zones[entity].roomName = stateObj.attributes.friendly_name;
 
 
       if (stateObj.attributes.sonos_group.length > 1 && stateObj.attributes.sonos_group[0] === entity) {
+        if (entity === this.selected_player) {
+          this.setActivePlayer(entity);
+        }
         for (const member of stateObj.attributes.sonos_group) {
           if (member !== entity) {
             const state = this.hass.states[member];
@@ -161,11 +159,11 @@ class CustomSonosCard extends LitElement {
 
         <div class="players">
           <sonos-player
-              .hass=${this.hass} 
-              .config=${this.config} 
-              .entityId=${this.active} 
+              .hass=${this.hass}
+              .config=${this.config}
+              .entityId=${this.active}
               .main=${this}
-              .members=${zones[this.active].members} 
+              .members=${zones[this.active].members}
               .service=${this.service}>
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
