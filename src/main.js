@@ -1,6 +1,7 @@
 import {css, LitElement, html} from 'lit-element';
 import Service from "./service";
 import './player';
+import './group';
 
 class CustomSonosCard extends LitElement {
   static get properties() {
@@ -23,7 +24,6 @@ class CustomSonosCard extends LitElement {
     if (this.active) {
       this.setActivePlayer(this.active);
     }
-    const speakerNames = [];
     const groups = [];
     this.mediaPlayers = [...new Set(this.config.entities)].sort();
     for (const entity of this.mediaPlayers) {
@@ -44,7 +44,6 @@ class CustomSonosCard extends LitElement {
         groups[entity] = {
           members: {}, state: {}, roomName: '',
         };
-        speakerNames[entity] = stateObj.attributes.friendly_name;
       }
       groups[entity].state = stateObj.state;
       groups[entity].roomName = stateObj.attributes.friendly_name;
@@ -78,38 +77,10 @@ class CustomSonosCard extends LitElement {
       this.setActivePlayer(Object.keys(groups)[0]);
     }
 
-    const groupTemplates = [];
     const favoriteTemplates = [];
     const memberTemplates = [];
     const joinedPlayers = [];
     const notJoinedPlayers = [];
-    for (const key in groups) {
-      const stateObj = this.hass.states[key];
-      groupTemplates.push(html`
-        <div class="group" @click="${() => {
-          this.setActivePlayer(key);
-          this.showVolumes = false;
-        }}">
-          <div class="wrap ${this.active === key ? 'active' : ''}">
-            <ul class="speakers">
-              ${stateObj.attributes.sonos_group.map(speaker => html`
-                <li>${speakerNames[speaker]}</li>`)}
-            </ul>
-            <div class="play">
-              <div class="content">
-                <span
-                    class="currentTrack">${stateObj.attributes.media_artist} - ${stateObj.attributes.media_title}</span>
-              </div>
-              <div class="player ${stateObj.state === 'playing' ? 'active' : ''}">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
-    }
 
     if (this.active !== '') {
       for (const entity of this.mediaPlayers) {
@@ -153,7 +124,17 @@ class CustomSonosCard extends LitElement {
       <div class="center">
         <div class="groups">
           <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
-          ${groupTemplates}
+          ${Object.keys(groups).map(group => html`
+            <sonos-group 
+                .hass=${this.hass} 
+                .group=${group} 
+                .active=${this.active === group}
+                @click="${() => {
+                  this.setActivePlayer(group);
+                  this.showVolumes = false;
+                }}">
+            </sonos-group>
+          `)}
         </div>
 
         <div class="players">
@@ -254,90 +235,7 @@ class CustomSonosCard extends LitElement {
         padding: 0;
         flex: 0 0 20%; 
       }
-      .group {
-        padding:0;
-        margin:0;
-      }
-      .group .wrap {
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
-        background-color: var(
-          --ha-card-background,
-          var(--paper-card-background-color, white)
-        );
-      }
-      .group .wrap.active {
-        margin:5px 0;
-        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.19), 0 6px 6px -10px rgba(0, 0, 0, 0.23);
-        border-color: #d30320;
-        border-width: thin;
-        border-style: solid;
-        font-weight: bold;
-      }
-      .group:first-child .wrap {
-        margin-top:0;
-      }
-      .speakers {
-        list-style:none;
-        margin:0;
-        padding:0;
-      }
-      .speakers li {
-        display:block;
-        font-size:12px;
-        margin:5px 0 0 0 ;
-        color:#000;
-      }
-      .speakers li:first-child {
-        margin:0;
-      }
-      .group .play {
-        display:flex;
-        flex-direction:row;
-        margin-top:10px;
-      }
-      .group .play .content {
-        flex:1;
-      }
-      .group .play .content .source {
-        display:block;
-        color:#CCC;
-        font-size:10px;
-      }
-      .group .play .content .currentTrack {
-        display:block;
-        font-size:12px;
-      }
-      .group .play .player {
-        width:12px;
-        position:relative;
-      }
-      .group .play .player .bar {
-        background: #666;
-        bottom: 1px;
-        height: 3px;
-        position: absolute;
-        width: 3px;
-        animation: sound 0ms -800ms linear infinite alternate;
-        display:none;
-      }
-      .group .play .player.active .bar{
-        display:block;
-      }
-      .group .play .player .bar:nth-child(1) {
-        left: 1px;
-        animation-duration: 474ms;
-      }
-      .group .play .player .bar:nth-child(2) {
-        left: 5px;
-        animation-duration: 433ms;
-      }
-      .group .play .player .bar:nth-child(3) {
-        left: 9px;
-        animation-duration: 407ms;
-      }
-
+      
       .sidebar {
         margin:0 20px 0 20px;
         padding:0;
