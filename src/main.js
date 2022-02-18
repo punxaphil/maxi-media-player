@@ -147,6 +147,7 @@ class CustomSonosCard extends LitElement {
         --sonos-color: var(--secondary-text-color);
         --sonos-artist-album-text-color: var(--primary-text-color);
         --sonos-accent-color: var(--accent-color);
+        --mdc-icon-size: 18px;
         color: var(--sonos-color);
       }
       .header {
