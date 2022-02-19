@@ -1,4 +1,5 @@
 import {LitElement, html, css} from 'lit-element';
+import {getEntityName} from "./utils";
 
 import Service from "./service";
 
