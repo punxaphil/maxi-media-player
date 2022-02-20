@@ -6,6 +6,8 @@ export function getEntityName(hass, config, entity) {
       const [pattern, replaceWith] = parts;
       return name.replace(new RegExp(pattern, 'g'), replaceWith);
     }
+  } else if (config.entityNameRegexToReplace) {
+    return name.replace(new RegExp(config.entityNameRegexToReplace, 'g'), config.entityNameReplacement);
   }
   return name;
 }
