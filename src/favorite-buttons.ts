@@ -61,8 +61,8 @@ class FavoriteButtons extends LitElement {
         padding: 9px;
         display: flex;
         justify-content: center;
-        background-color: var(--sonos-background-color);
-        box-shadow: var(--sonos-box-shadow);
+        background-color: var(--sonos-int-background-color);
+        box-shadow: var(--sonos-int-box-shadow);
       }
       .favorite span {
         font-size: 12px;
@@ -71,7 +71,7 @@ class FavoriteButtons extends LitElement {
         font-size: 10px;
       }
       .favorite:hover ha-icon {
-        color: var(--sonos-accent-color);
+        color: var(--sonos-int-accent-color);
       }
     `;
   }

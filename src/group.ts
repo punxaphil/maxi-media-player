@@ -55,12 +55,12 @@ class Group extends LitElement {
         border-radius: 4px;
         margin: 2px;
         padding: 9px;
-        background-color: var(--sonos-background-color);
-        box-shadow: var(--sonos-box-shadow);
+        background-color: var(--sonos-int-background-color);
+        box-shadow: var(--sonos-int-box-shadow);
       }
       .group .wrap.active {
         margin: 5px 0;
-        border-color: var(--sonos-accent-color);
+        border-color: var(--sonos-int-accent-color);
         border-width: thin;
         border-style: solid;
         font-weight: bold;
@@ -77,7 +77,7 @@ class Group extends LitElement {
         display: block;
         font-size: 12px;
         margin: 5px 0 0 0;
-        color: var(--sonos-color);
+        color: var(--sonos-int-color);
       }
       .speakers li:first-child {
         margin: 0;
@@ -98,7 +98,7 @@ class Group extends LitElement {
         position: relative;
       }
       .group .play .player .bar {
-        background: var(--sonos-color);
+        background: var(--sonos-int-color);
         bottom: 1px;
         height: 3px;
         position: absolute;

@@ -155,10 +155,10 @@ class Player extends LitElement {
         overflow: hidden;
         z-index: 0;
         margin: 0;
-        background: var(--sonos-background-color);
+        background: var(--sonos-int-background-color);
         border-radius: 0.25rem;
-        border: 8px solid var(--sonos-background-color);
-        box-shadow: var(--sonos-box-shadow);
+        border: 8px solid var(--sonos-int-background-color);
+        box-shadow: var(--sonos-int-box-shadow);
       }
 
       .body {
@@ -168,7 +168,7 @@ class Player extends LitElement {
       }
 
       .footer {
-        background: var(--sonos-player-section-background);
+        background: var(--sonos-int-player-section-background);
         margin: 1rem;
         border-radius: 0.25rem;
       }
@@ -200,7 +200,7 @@ class Player extends LitElement {
       .info {
         margin: 1rem;
         text-align: center;
-        background: var(--sonos-player-section-background);
+        background: var(--sonos-int-player-section-background);
         border-radius: 0.25rem;
       }
 
@@ -214,7 +214,7 @@ class Player extends LitElement {
       .album {
         font-size: 0.75rem;
         font-weight: 300;
-        color: var(--sonos-artist-album-text-color);
+        color: var(--sonos-int-artist-album-text-color);
       }
 
       .artist {
@@ -224,7 +224,7 @@ class Player extends LitElement {
       .song {
         font-size: 1.15rem;
         font-weight: 400;
-        color: var(--sonos-accent-color);
+        color: var(--sonos-int-accent-color);
       }
 
       .padded-buttons {
@@ -243,7 +243,7 @@ class Player extends LitElement {
 
       .buttons a:focus,
       .buttons a:hover {
-        color: var(--sonos-accent-color);
+        color: var(--sonos-int-accent-color);
         opacity: 1;
         box-shadow: 0 6px 9px rgba(33, 33, 33, 0.1), 0 6px 16px rgba(33, 33, 33, 0.15);
       }
@@ -253,12 +253,12 @@ class Player extends LitElement {
         transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
         margin: 1rem;
         border-radius: 50%;
-        background: var(--sonos-player-section-background);
+        background: var(--sonos-int-player-section-background);
       }
 
       .link:focus,
       .link:hover {
-        color: var(--sonos-accent-color);
+        color: var(--sonos-int-accent-color);
       }
 
       .hidden {

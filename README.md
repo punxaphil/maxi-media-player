@@ -61,14 +61,12 @@ The following variables are available and can be set in your theme to change the
 
 | Name | Default |
 |------|---------|
-| --sonos-box-shadow | var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) )
 | --sonos-background-color | var(--card-background-color)
 | --sonos-player-section-background | #ffffffe6
 | --sonos-color | var(--secondary-text-color)
 | --sonos-artist-album-text-color | var(--primary-text-color)
 | --sonos-accent-color | var(--accent-color)
 | --sonos-title-color | var(--card-background-color)
-|--mdc-icon-size | 18px
 
 ## Linking to specific player
 Append `#media_player.my_sonos_player` to page URL to have that player selected. 
