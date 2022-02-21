@@ -1,18 +1,16 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css, state, property} from 'lit-element';
 import Service from "./service";
+import {HomeAssistant} from "custom-card-helpers";
+import {CardConfig} from "./types";
 
 class FavoriteButtons extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  @property() active!: string;
+  @property() service!: Service;
+  @property() mediaPlayers!: string[];
 
-  constructor() {
-    super();
-    this.favorites = [];
-  }
-
-  static get properties() {
-    return {
-      hass: {}, config: {}, mediaPlayers: {}, active: {}, service: Service
-    };
-  }
+  @state() private favorites: string[] = [];
 
   render() {
     if (!this.favorites.length) {

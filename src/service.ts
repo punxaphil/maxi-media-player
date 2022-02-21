@@ -1,5 +1,8 @@
-export default class Service {
+import {HomeAssistant} from "custom-card-helpers";
 
+export default class Service {
+  private hass: HomeAssistant;
+  
   constructor(hass) {
     this.hass = hass;
   }

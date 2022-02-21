@@ -1,14 +1,16 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css, property} from 'lit-element';
 import Service from "./service";
 import {getEntityName} from "./utils";
+import {HomeAssistant} from "custom-card-helpers";
+import {CardConfig} from "./types";
 
 class GroupingButtons extends LitElement {
-
-  static get properties() {
-    return {
-      hass: {}, groups: {}, mediaPlayers: {}, active: {}, service: Service, config: {}
-    };
-  }
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  @property() active!: string;
+  @property() service!: Service;
+  @property() groups!: [];
+  @property() mediaPlayers!: string[];
 
   render() {
     const joinedPlayers = this.mediaPlayers.filter(player => player !== this.active && this.groups[this.active].members[player]);

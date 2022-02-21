@@ -1,17 +1,17 @@
-import {LitElement, html, css} from 'lit-element';
+import {css, html, LitElement, property} from 'lit-element';
 import {getEntityName} from "./utils";
+import {HomeAssistant} from "custom-card-helpers";
+import {CardConfig} from "./types";
 
 class Group extends LitElement {
-
-  static get properties() {
-    return {
-      hass: {}, group: {}, active: {}, config: {}
-    };
-  }
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  @property() active!: string;
+  @property() group!: string;
 
   render() {
     const stateObj = this.hass.states[this.group];
-    let currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replaceAll(/^ - /g, '');
+    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replaceAll(/^ - /g, '');
     return html`
       <div class="group">
         <div class="wrap ${this.active ? 'active' : ''}">

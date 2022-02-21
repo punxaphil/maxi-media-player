@@ -1,20 +1,20 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css, property, state} from 'lit-element';
 import {getEntityName} from "./utils";
 
 import Service from "./service";
+import {CardConfig} from "./types";
+import {HomeAssistant} from "custom-card-helpers";
+
+import {CustomSonosCard} from "./main";
 
 class Player extends LitElement {
-
-  constructor() {
-    super();
-    this.timerToggleShowAllVolumes = '';
-  }
-
-  static get properties() {
-    return {
-      hass: {}, config: {}, entityId: String, members: {}, main: {}, service: Service
-    };
-  }
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  @property() entityId!: string;
+  @property() service!: Service;
+  @property() members!: string[];
+  @property() main!: CustomSonosCard;
+  @state() private timerToggleShowAllVolumes!: number;
 
   render() {
     const activeStateObj = this.hass.states[this.entityId];
@@ -106,7 +106,7 @@ class Player extends LitElement {
     this.main.showVolumes = !this.main.showVolumes;
     clearTimeout(this.timerToggleShowAllVolumes);
     if (this.main.showVolumes) {
-      this.timerToggleShowAllVolumes = setTimeout(() => {
+      this.timerToggleShowAllVolumes = window.setTimeout(() => {
         this.main.showVolumes = false;
         window.scrollTo(0, 0);
       }, 30000);

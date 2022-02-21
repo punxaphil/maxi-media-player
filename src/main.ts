@@ -1,34 +1,39 @@
-import {css, html, LitElement} from 'lit-element';
-import Service from "./service";
+import { css, html, LitElement, property, state } from 'lit-element';
+import Service from './service';
 import './player';
 import './group';
 import './grouping-buttons';
 import './favorite-buttons';
-import {getEntityName} from "./utils";
+import { getEntityName } from './utils';
+import { HomeAssistant } from 'custom-card-helpers';
+import { CardConfig } from './types';
 
-class CustomSonosCard extends LitElement {
-  static get properties() {
-    return {
-      hass: {}, config: {}, active: {}, showVolumes: {}
-    };
-  }
+export class CustomSonosCard extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  @state() private active!: string;
+  @state() showVolumes!: boolean;
+  private service!: Service;
 
   render() {
     this.service = new Service(this.hass);
-    const mediaPlayers = [...new Set(this.config.entities)].sort().filter(player => this.hass.states[player]);
+    const mediaPlayers = [...new Set(this.config.entities)].sort().filter((player) => this.hass.states[player]);
     const playerGroups = this.createPlayerGroups(mediaPlayers);
     this.determineActivePlayer(playerGroups);
     return html`
-      ${this.config.name ? html`
-        <div class="header">
-          <div class="name">${this.config.name}</div>
-        </div>
-      ` : ''}
+      ${this.config.name
+        ? html`
+            <div class="header">
+              <div class="name">${this.config.name}</div>
+            </div>
+          `
+        : ''}
       <div class="content">
         <div class="groups">
           <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
-          ${Object.keys(playerGroups).map(group => html`
-            <sonos-group
+          ${Object.keys(playerGroups).map(
+            (group) => html`
+              <sonos-group
                 .hass=${this.hass}
                 .group=${group}
                 .config=${this.config}
@@ -36,39 +41,44 @@ class CustomSonosCard extends LitElement {
                 @click="${() => {
                   this.setActivePlayer(group);
                   this.showVolumes = false;
-                }}">
-            </sonos-group>
-          `)}
+                }}"
+              >
+              </sonos-group>
+            `,
+          )}
         </div>
 
         <div class="players">
           <sonos-player
-              .hass=${this.hass}
-              .config=${this.config}
-              .entityId=${this.active}
-              .main=${this}
-              .members=${playerGroups[this.active].members}
-              .service=${this.service}>
+            .hass=${this.hass}
+            .config=${this.config}
+            .entityId=${this.active}
+            .main=${this}
+            .members=${playerGroups[this.active].members}
+            .service=${this.service}
+          >
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
           <sonos-grouping-buttons
-              .hass=${this.hass}
-              .config=${this.config}
-              .groups=${playerGroups}
-              .mediaPlayers=${mediaPlayers}
-              .active=${this.active}
-              .service=${this.service}>
+            .hass=${this.hass}
+            .config=${this.config}
+            .groups=${playerGroups}
+            .mediaPlayers=${mediaPlayers}
+            .active=${this.active}
+            .service=${this.service}
+          >
           </sonos-grouping-buttons>
         </div>
 
         <div class="sidebar">
           <div class="title">${this.config.favoritesTitle ? this.config.favoritesTitle : 'Favorites'}</div>
           <sonos-favorite-buttons
-              .hass=${this.hass}
-              .config=${this.config}
-              .mediaPlayers=${mediaPlayers}
-              .active=${this.active}
-              .service=${this.service}>
+            .hass=${this.hass}
+            .config=${this.config}
+            .mediaPlayers=${mediaPlayers}
+            .active=${this.active}
+            .service=${this.service}
+          >
           </sonos-favorite-buttons>
         </div>
       </div>
@@ -76,12 +86,12 @@ class CustomSonosCard extends LitElement {
   }
 
   determineActivePlayer(playerGroups) {
-    let selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
+    const selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
     if (this.active) {
       this.setActivePlayer(this.active);
     }
     if (!this.active) {
-      for (let player in playerGroups) {
+      for (const player in playerGroups) {
         if (player === selected_player) {
           this.setActivePlayer(player);
         } else {
@@ -94,7 +104,7 @@ class CustomSonosCard extends LitElement {
       }
     }
     if (!this.active) {
-      for (let player in playerGroups) {
+      for (const player in playerGroups) {
         if (playerGroups[player].state === 'playing') {
           this.setActivePlayer(player);
         }
@@ -106,28 +116,29 @@ class CustomSonosCard extends LitElement {
   }
 
   createPlayerGroups(mediaPlayers) {
-    const groupMasters = mediaPlayers.filter(player => {
+    const groupMasters = mediaPlayers.filter((player) => {
       const state = this.hass.states[player];
       const stateAttributes = state.attributes;
       const isGrouped = stateAttributes.sonos_group.length > 1;
       const isMasterInGroup = isGrouped && stateAttributes.sonos_group[0] === player;
       return !isGrouped || isMasterInGroup;
     });
-    const groupArray = groupMasters.map(groupMaster => {
+    const groupArray = groupMasters.map((groupMaster) => {
       const state = this.hass.states[groupMaster];
-      let membersArray = state.attributes.sonos_group
-        .filter(member => member !== groupMaster);
+      const membersArray = state.attributes.sonos_group.filter((member) => member !== groupMaster);
       return {
         entity: groupMaster,
         state: state.state,
         roomName: getEntityName(this.hass, this.config, groupMaster),
-        members: Object.fromEntries(membersArray.map(member => {
-          const friendlyName = getEntityName(this.hass, this.config, member);
-          return [member, friendlyName];
-        }))
+        members: Object.fromEntries(
+          membersArray.map((member) => {
+            const friendlyName = getEntityName(this.hass, this.config, member);
+            return [member, friendlyName];
+          }),
+        ),
       };
     });
-    return Object.fromEntries(groupArray.map(group => [group.entity, group]));
+    return Object.fromEntries(groupArray.map((group) => [group.entity, group]));
   }
 
   setConfig(config) {
@@ -144,7 +155,12 @@ class CustomSonosCard extends LitElement {
   static get styles() {
     return css`
       :host {
-        --sonos-box-shadow: var( --ha-card-box-shadow, 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) );
+        --sonos-box-shadow: var(
+          --ha-card-box-shadow,
+          0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+          0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+          0px 1px 3px 0px rgba(0, 0, 0, 0.12)
+        );
         --sonos-background-color: var(--card-background-color);
         --sonos-player-section-background: #ffffffe6;
         --sonos-color: var(--secondary-text-color);
@@ -178,11 +194,11 @@ class CustomSonosCard extends LitElement {
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
-        flex: 0 0 20%; 
-      } 
+        flex: 0 0 20%;
+      }
       .sidebar {
-        margin:0 20px 0 20px;
-        padding:0;
+        margin: 0 20px 0 20px;
+        padding: 0;
         flex: 0 0 20%;
       }
       .title {
@@ -191,21 +207,21 @@ class CustomSonosCard extends LitElement {
         font-weight: bold;
         font-size: larger;
         color: var(--sonos-title-color);
-      }     
+      }
       @media (max-width: 650px) {
-          .content {
-            flex-wrap: wrap;
-          }
-          .players {
-            order: 0;
-          }   
-          .groups {
-            order: 1;
-          }   
-          .sidebar {
-            order: 2;
-          } 
-      } 
+        .content {
+          flex-wrap: wrap;
+        }
+        .players {
+          order: 0;
+        }
+        .groups {
+          order: 1;
+        }
+        .sidebar {
+          order: 2;
+        }
+      }
     `;
   }
 
