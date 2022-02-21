@@ -6,7 +6,7 @@ import './grouping-buttons';
 import './favorite-buttons';
 import { getEntityName } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig } from './types';
+import { CardConfig, PlayerGroups } from './types';
 
 export class CustomSonosCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -85,7 +85,7 @@ export class CustomSonosCard extends LitElement {
     `;
   }
 
-  determineActivePlayer(playerGroups) {
+  determineActivePlayer(playerGroups: PlayerGroups) {
     const selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
     if (this.active) {
       this.setActivePlayer(this.active);
@@ -115,7 +115,7 @@ export class CustomSonosCard extends LitElement {
     }
   }
 
-  createPlayerGroups(mediaPlayers) {
+  createPlayerGroups(mediaPlayers: string[]): PlayerGroups {
     const groupMasters = mediaPlayers.filter((player) => {
       const state = this.hass.states[player];
       const stateAttributes = state.attributes;
@@ -125,13 +125,13 @@ export class CustomSonosCard extends LitElement {
     });
     const groupArray = groupMasters.map((groupMaster) => {
       const state = this.hass.states[groupMaster];
-      const membersArray = state.attributes.sonos_group.filter((member) => member !== groupMaster);
+      const membersArray = state.attributes.sonos_group.filter((member: string) => member !== groupMaster);
       return {
         entity: groupMaster,
         state: state.state,
         roomName: getEntityName(this.hass, this.config, groupMaster),
         members: Object.fromEntries(
-          membersArray.map((member) => {
+          membersArray.map((member: string) => {
             const friendlyName = getEntityName(this.hass, this.config, member);
             return [member, friendlyName];
           }),
@@ -141,7 +141,7 @@ export class CustomSonosCard extends LitElement {
     return Object.fromEntries(groupArray.map((group) => [group.entity, group]));
   }
 
-  setConfig(config) {
+  setConfig(config: CardConfig) {
     if (!config.entities) {
       throw new Error('You need to define entities');
     }
@@ -225,7 +225,7 @@ export class CustomSonosCard extends LitElement {
     `;
   }
 
-  setActivePlayer(player) {
+  setActivePlayer(player: string) {
     this.active = player;
     const newUrl = window.location.href.replaceAll(/#.*/g, '');
     window.location.href = `${newUrl}#${player}`;

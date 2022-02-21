@@ -1,4 +1,4 @@
-import {LovelaceCardConfig} from 'custom-card-helpers';
+import { LovelaceCardConfig } from 'custom-card-helpers';
 
 export interface CardConfig extends LovelaceCardConfig {
   type: string;
@@ -10,7 +10,22 @@ export interface CardConfig extends LovelaceCardConfig {
   shuffleFavorites?: boolean;
   noMediaText?: string;
   allVolumesText?: string;
-  entityNameRegexToReplace?: string
-  entityNameReplacement?: string
+  entityNameRegexToReplace?: string;
+  entityNameReplacement?: string;
   entities: string[];
+}
+
+export interface PlayerGroups {
+  [name: string]: PlayerGroup;
+}
+
+export interface Members {
+  [name: string]: string;
+}
+
+export interface PlayerGroup {
+  entity: string;
+  state: string;
+  roomName: string;
+  members: Members;
 }

@@ -1,7 +1,7 @@
-import {LitElement, html, css, state, property} from 'lit-element';
-import Service from "./service";
-import {HomeAssistant} from "custom-card-helpers";
-import {CardConfig} from "./types";
+import { LitElement, html, css, state, property } from 'lit-element';
+import Service from './service';
+import { HomeAssistant } from 'custom-card-helpers';
+import { CardConfig } from './types';
 
 class FavoriteButtons extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -15,8 +15,8 @@ class FavoriteButtons extends LitElement {
   render() {
     if (!this.favorites.length) {
       this.favorites = this.mediaPlayers
-        .map(entity => this.hass.states[entity])
-        .flatMap(state => state.attributes.source_list);
+        .map((entity) => this.hass.states[entity])
+        .flatMap((state) => state.attributes.source_list);
       this.favorites = [...new Set(this.favorites)];
       if (this.config.shuffleFavorites) {
         this.shuffleArray(this.favorites);
@@ -24,17 +24,20 @@ class FavoriteButtons extends LitElement {
     }
     return html`
       <div class="favorites">
-        ${this.active !== '' && this.favorites.map(favorite => html`
-          <div class="favorite" @click="${() => this.service.setSource(this.active, favorite)}">
-            <span>${favorite}</span>
-            <ha-icon .icon=${'mdi:play'}></ha-icon>
-          </div>
-        `)}
+        ${this.active !== '' &&
+        this.favorites.map(
+          (favorite) => html`
+            <div class="favorite" @click="${() => this.service.setSource(this.active, favorite)}">
+              <span>${favorite}</span>
+              <ha-icon .icon=${'mdi:play'}></ha-icon>
+            </div>
+          `,
+        )}
       </div>
     `;
   }
 
-  shuffleArray(array) {
+  shuffleArray(array: string[]) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -44,8 +47,8 @@ class FavoriteButtons extends LitElement {
   static get styles() {
     return css`
       .favorites {
-        padding:0;
-        margin:0 0 30px 0;
+        padding: 0;
+        margin: 0 0 30px 0;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -53,19 +56,19 @@ class FavoriteButtons extends LitElement {
       }
       .favorite {
         flex-grow: 1;
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
+        border-radius: 4px;
+        margin: 2px;
+        padding: 9px;
         display: flex;
         justify-content: center;
         background-color: var(--sonos-background-color);
         box-shadow: var(--sonos-box-shadow);
       }
       .favorite span {
-        font-size:12px;
+        font-size: 12px;
       }
       .favorite ha-icon {
-        font-size:10px;
+        font-size: 10px;
       }
       .favorite:hover ha-icon {
         color: var(--sonos-accent-color);

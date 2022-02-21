@@ -13,8 +13,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "strict": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "skipLibCheck": false,
     "resolveJsonModule": true,
     "experimentalDecorators": true
   }

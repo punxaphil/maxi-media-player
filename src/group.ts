@@ -1,7 +1,7 @@
-import {css, html, LitElement, property} from 'lit-element';
-import {getEntityName} from "./utils";
-import {HomeAssistant} from "custom-card-helpers";
-import {CardConfig} from "./types";
+import { css, html, LitElement, property } from 'lit-element';
+import { getEntityName } from './utils';
+import { HomeAssistant } from 'custom-card-helpers';
+import { CardConfig } from './types';
 
 class Group extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -11,27 +11,34 @@ class Group extends LitElement {
 
   render() {
     const stateObj = this.hass.states[this.group];
-    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replaceAll(/^ - /g, '');
+    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${
+      stateObj.attributes.media_title || ''
+    }`.replaceAll(/^ - /g, '');
     return html`
       <div class="group">
         <div class="wrap ${this.active ? 'active' : ''}">
           <ul class="speakers">
-            ${stateObj.attributes.sonos_group.map(speaker => html`
-              <li>${getEntityName(this.hass, this.config, speaker)}</li>`)}
+            ${stateObj.attributes.sonos_group.map(
+              (speaker: string) => html` <li>${getEntityName(this.hass, this.config, speaker)}</li>`,
+            )}
           </ul>
           <div class="play">
-            ${currentTrack ? html`
-              <div class="content">
-                <span class="currentTrack">${currentTrack}</span>
-              </div>
-            ` : ''}
-            ${stateObj.state === 'playing' ? html`
-              <div class="player active">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-              </div>
-            ` : ''}
+            ${currentTrack
+              ? html`
+                  <div class="content">
+                    <span class="currentTrack">${currentTrack}</span>
+                  </div>
+                `
+              : ''}
+            ${stateObj.state === 'playing'
+              ? html`
+                  <div class="player active">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                  </div>
+                `
+              : ''}
           </div>
         </div>
       </div>
@@ -41,54 +48,54 @@ class Group extends LitElement {
   static get styles() {
     return css`
       .group {
-        padding:0;
-        margin:0;
+        padding: 0;
+        margin: 0;
       }
       .group .wrap {
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
+        border-radius: 4px;
+        margin: 2px;
+        padding: 9px;
         background-color: var(--sonos-background-color);
         box-shadow: var(--sonos-box-shadow);
       }
       .group .wrap.active {
-        margin:5px 0;
+        margin: 5px 0;
         border-color: var(--sonos-accent-color);
         border-width: thin;
         border-style: solid;
         font-weight: bold;
       }
       .group:first-child .wrap {
-        margin-top:0;
+        margin-top: 0;
       }
       .speakers {
-        list-style:none;
-        margin:0;
-        padding:0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
       }
       .speakers li {
-        display:block;
-        font-size:12px;
-        margin:5px 0 0 0;
-        color:var(--sonos-color);
+        display: block;
+        font-size: 12px;
+        margin: 5px 0 0 0;
+        color: var(--sonos-color);
       }
       .speakers li:first-child {
-        margin:0;
+        margin: 0;
       }
       .group .play {
-        display:flex;
-        flex-direction:row;
+        display: flex;
+        flex-direction: row;
       }
       .group .play .content {
-        flex:1;
+        flex: 1;
       }
       .group .play .content .currentTrack {
-        display:block;
-        font-size:10px;
+        display: block;
+        font-size: 10px;
       }
       .group .play .player {
-        width:12px;
-        position:relative;
+        width: 12px;
+        position: relative;
       }
       .group .play .player .bar {
         background: var(--sonos-color);
@@ -97,10 +104,10 @@ class Group extends LitElement {
         position: absolute;
         width: 3px;
         animation: sound 0ms -800ms linear infinite alternate;
-        display:none;
+        display: none;
       }
-      .group .play .player.active .bar{
-        display:block;
+      .group .play .player.active .bar {
+        display: block;
       }
       .group .play .player .bar:nth-child(1) {
         left: 1px;
@@ -116,14 +123,14 @@ class Group extends LitElement {
       }
       @keyframes sound {
         0% {
-          opacity: .35;
+          opacity: 0.35;
           height: 3px;
         }
         100% {
           opacity: 1;
           height: 20px;
         }
-      }      
+      }
     `;
   }
 }

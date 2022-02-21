@@ -1,47 +1,51 @@
-import {LitElement, html, css, property} from 'lit-element';
-import Service from "./service";
-import {getEntityName} from "./utils";
-import {HomeAssistant} from "custom-card-helpers";
-import {CardConfig} from "./types";
+import { LitElement, html, css, property } from 'lit-element';
+import Service from './service';
+import { getEntityName } from './utils';
+import { HomeAssistant } from 'custom-card-helpers';
+import { CardConfig, PlayerGroups } from './types';
 
 class GroupingButtons extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
   @property() active!: string;
   @property() service!: Service;
-  @property() groups!: [];
+  @property() groups!: PlayerGroups;
   @property() mediaPlayers!: string[];
 
   render() {
-    const joinedPlayers = this.mediaPlayers.filter(player => player !== this.active && this.groups[this.active].members[player]);
-    const notJoinedPlayers = this.mediaPlayers.filter(player => player !== this.active && !this.groups[this.active].members[player]);
+    const joinedPlayers = this.mediaPlayers.filter(
+      (player) => player !== this.active && this.groups[this.active].members[player],
+    );
+    const notJoinedPlayers = this.mediaPlayers.filter(
+      (player) => player !== this.active && !this.groups[this.active].members[player],
+    );
 
     return html`
       <div class="members">
-        ${this.active && this.mediaPlayers
-            .filter(entity => entity !== this.active)
-            .map((entity) => {
-              if (this.groups[this.active].members[entity]) {
-                return html`
-                      <div class="member" @click="${() => this.service.unjoin(entity)}">
-                        <span>${this.groups[this.active].members[entity]} </span>
-                        <ha-icon .icon=${'mdi:minus'}></ha-icon>
-                      </div>
-                    `;
-              } else {
-                return html`
-                      <div class="member" @click="${() => this.service.join(this.active, entity)}">
-                        <span>${getEntityName(this.hass, this.config, entity)} </span>
-                        <ha-icon .icon=${'mdi:plus'}></ha-icon>
-                      </div>
-                    `;
-              }
-            })}
+        ${this.active &&
+        this.mediaPlayers
+          .filter((entity) => entity !== this.active)
+          .map((entity) => {
+            if (this.groups[this.active].members[entity]) {
+              return html`
+                <div class="member" @click="${() => this.service.unjoin(entity)}">
+                  <span>${this.groups[this.active].members[entity]} </span>
+                  <ha-icon .icon=${'mdi:minus'}></ha-icon>
+                </div>
+              `;
+            } else {
+              return html`
+                <div class="member" @click="${() => this.service.join(this.active, entity)}">
+                  <span>${getEntityName(this.hass, this.config, entity)} </span>
+                  <ha-icon .icon=${'mdi:plus'}></ha-icon>
+                </div>
+              `;
+            }
+          })}
         <div class="member" @click="${() => this.service.join(this.active, notJoinedPlayers.join(','))}">
           <ha-icon .icon=${'mdi:checkbox-multiple-marked-outline'}></ha-icon>
         </div>
-        <div class="member"
-             @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
+        <div class="member" @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
           <ha-icon .icon=${'mdi:minus-box-multiple-outline'}></ha-icon>
         </div>
       </div>
@@ -51,30 +55,30 @@ class GroupingButtons extends LitElement {
   static get styles() {
     return css`
       .members {
-        padding:0;
-        margin:0;
+        padding: 0;
+        margin: 0;
         display: flex;
-        flex-direction:row;
+        flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
       }
       .member {
         flex-grow: 1;
-        border-radius:4px;
-        margin:2px;
-        padding:9px;
+        border-radius: 4px;
+        margin: 2px;
+        padding: 9px;
         display: flex;
         justify-content: center;
         background-color: var(--sonos-background-color);
         box-shadow: var(--sonos-box-shadow);
       }
       .member span {
-        align-self:center;
-        font-size:12px;
+        align-self: center;
+        font-size: 12px;
       }
       .member ha-icon {
-        align-self:center;
-        font-size:10px;
+        align-self: center;
+        font-size: 10px;
       }
       .member:hover ha-icon {
         color: var(--sonos-accent-color);

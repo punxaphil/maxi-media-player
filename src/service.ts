@@ -1,65 +1,67 @@
-import {HomeAssistant} from "custom-card-helpers";
+import { HomeAssistant } from 'custom-card-helpers';
+import { Members } from './types';
+import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
 
 export default class Service {
   private hass: HomeAssistant;
-  
-  constructor(hass) {
+
+  constructor(hass: HomeAssistant) {
     this.hass = hass;
   }
 
-  join(master, entities) {
+  join(master: string, entities: string) {
     this.callSonosService('join', {
       master: master,
       entity_id: entities,
     });
   }
 
-  unjoin(entities) {
+  unjoin(entities: string) {
     this.callSonosService('unjoin', {
-      entity_id: entities
+      entity_id: entities,
     });
   }
 
-  callSonosService(service, inOptions) {
+  callSonosService(service: string, inOptions: ServiceCallRequest['serviceData']) {
     this.hass.callService('sonos', service, inOptions);
   }
 
-  callMediaService(service, inOptions) {
+  callMediaService(service: string, inOptions: ServiceCallRequest['serviceData']) {
     this.hass.callService('media_player', service, inOptions);
   }
 
-  pause(entity) {
+  pause(entity: string) {
     this.callMediaService('media_pause', {
       entity_id: entity,
     });
   }
 
-  prev(entity) {
+  prev(entity: string) {
     this.callMediaService('media_previous_track', {
       entity_id: entity,
     });
   }
 
-  next(entity) {
+  next(entity: string) {
     this.callMediaService('media_next_track', {
       entity_id: entity,
     });
   }
 
-  play(entity) {
+  play(entity: string) {
     this.callMediaService('media_play', {
       entity_id: entity,
     });
   }
 
-  shuffle(entity, state) {
+  shuffle(entity: string, state: boolean) {
     this.callMediaService('shuffle_set', {
       entity_id: entity,
       shuffle: state,
     });
   }
 
-  repeat(entity, currentState) {
+  repeat(entity: string, currentState: string) {
     const state = currentState === 'all' ? 'one' : currentState === 'one' ? 'off' : 'all';
     this.callMediaService('repeat_set', {
       entity_id: entity,
@@ -67,7 +69,7 @@ export default class Service {
     });
   }
 
-  volumeDown(entity, members) {
+  volumeDown(entity: string, members: Members) {
     this.callMediaService('volume_down', {
       entity_id: entity,
     });
@@ -79,7 +81,7 @@ export default class Service {
     }
   }
 
-  volumeUp(entity, members) {
+  volumeUp(entity: string, members: Members) {
     this.callMediaService('volume_up', {
       entity_id: entity,
     });
@@ -91,8 +93,8 @@ export default class Service {
     }
   }
 
-  volumeSet(entity, members, volume) {
-    const volumeFloat = volume / 100;
+  volumeSet(entity: string, members: Members, volume: string) {
+    const volumeFloat = Number.parseInt(volume) / 100;
 
     this.callMediaService('volume_set', {
       entity_id: entity,
@@ -107,7 +109,7 @@ export default class Service {
     }
   }
 
-  setSource(entity, favorite) {
+  setSource(entity: string, favorite: string) {
     this.callMediaService('select_source', {
       source: favorite,
       entity_id: entity,
