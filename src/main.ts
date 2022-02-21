@@ -8,6 +8,15 @@ import { getEntityName } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
 import { CardConfig, PlayerGroups } from './types';
 
+// This puts your card into the UI card picker dialog
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: 'custom-sonos-card',
+  name: 'Sonos Card',
+  description: 'Customized media player for your Sonos speakers',
+  preview: true,
+});
+
 export class CustomSonosCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
