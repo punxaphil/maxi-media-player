@@ -22,7 +22,7 @@ class Player extends LitElement {
     let allVolumes = [];
     if (isGroup) {
       allVolumes = activeStateObj.attributes.sonos_group.map((member: string) =>
-        this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member)),
+        this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member), isGroup),
       );
     }
     return html`
@@ -73,6 +73,7 @@ class Player extends LitElement {
           ${this.getVolumeTemplate(
             this.entityId,
             this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
+            isGroup,
             this.members,
           )}
           <div style="display: ${this.main.showVolumes ? 'block' : 'none'}">${allVolumes}</div>
@@ -108,7 +109,7 @@ class Player extends LitElement {
     `;
   }
 
-  getVolumeTemplate(entity: string, name: string, members = {}) {
+  getVolumeTemplate(entity: string, name: string, isGroup: boolean, members = {}) {
     const volume = 100 * this.hass.states[entity].attributes.volume_level;
     let max = 100;
     let inputColor = 'rgb(211, 3, 32)';
@@ -126,7 +127,9 @@ class Player extends LitElement {
       <input
         type="range"
         .value="${volume}"
-        @change=${(e: Event) => this.service.volumeSet(entity, members, (e?.target as HTMLInputElement)?.value)}
+        @change="${(e: Event) => this.service.volumeSet(entity, members, (e?.target as HTMLInputElement)?.value)}"
+        @click="${(e: Event) =>
+          this.volumeClicked(volume, Number.parseInt((e?.target as HTMLInputElement)?.value), isGroup)}"
         min="0"
         max="${max}"
         id="volumeRange"
@@ -135,6 +138,12 @@ class Player extends LitElement {
         max}%, rgb(211, 211, 211) ${(volume * 100) / max}%, rgb(211, 211, 211) 100%);"
       />
     `;
+  }
+
+  private volumeClicked(oldVolume: number, newVolume: number, isGroup: boolean) {
+    if (isGroup && oldVolume === newVolume) {
+      this.toggleShowAllVolumes();
+    }
   }
 
   toggleShowAllVolumes() {
