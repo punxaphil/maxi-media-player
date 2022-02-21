@@ -167,6 +167,7 @@ export class CustomSonosCard extends LitElement {
         --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--primary-text-color));
         --sonos-int-accent-color: var(--sonos-accent-color, var(--accent-color));
         --sonos-int-title-color: var(--sonos-title-color, var(--card-background-color));
+        --sonos-int-border-radius: 0.25rem;
         --mdc-icon-size: 18px;
         color: var(--sonos-int-color);
       }

@@ -24,20 +24,18 @@ class Group extends LitElement {
           </ul>
           <div class="play">
             ${currentTrack
-              ? html`
-                  <div class="content">
+              ? html` <div class="content">
                     <span class="currentTrack">${currentTrack}</span>
                   </div>
-                `
-              : ''}
-            ${stateObj.state === 'playing'
-              ? html`
-                  <div class="player active">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                  </div>
-                `
+                  ${stateObj.state === 'playing'
+                    ? html`
+                        <div class="player active">
+                          <div class="bar"></div>
+                          <div class="bar"></div>
+                          <div class="bar"></div>
+                        </div>
+                      `
+                    : ''}`
               : ''}
           </div>
         </div>
@@ -52,7 +50,7 @@ class Group extends LitElement {
         margin: 0;
       }
       .group .wrap {
-        border-radius: 4px;
+        border-radius: var(--sonos-int-border-radius);
         margin: 2px;
         padding: 9px;
         background-color: var(--sonos-int-background-color);

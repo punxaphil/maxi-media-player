@@ -28,11 +28,9 @@ class Player extends LitElement {
     return html`
       <div
         class="container"
-        style="background-position-x:center;background-repeat: no-repeat;background-size: cover;
-              ${activeStateObj.attributes.entity_picture
+        style="${activeStateObj.attributes.entity_picture
           ? `background-image: url(${activeStateObj.attributes.entity_picture});`
-          : ''}
-              "
+          : ''}"
       >
         <div class="body">
           ${activeStateObj.attributes.media_title
@@ -42,67 +40,50 @@ class Player extends LitElement {
                   <div class="song">${activeStateObj.attributes.media_title}</div>
                   <div class="artist">${activeStateObj.attributes.media_artist}</div>
                 </div>
-                <div
-                  class="${this.main.showVolumes
-                    ? 'hidden'
-                    : `buttons ${activeStateObj.attributes.entity_picture ? 'padded-buttons' : ''}`}"
-                >
-                  <a class="link">
-                    <ha-icon @click="${() => this.service.prev(this.entityId)}" .icon=${'mdi:skip-backward'}></ha-icon>
-                  </a>
-                  <a class="link">
-                    ${activeStateObj.state !== 'playing'
-                      ? html` <ha-icon
-                          @click="${() => this.service.play(this.entityId)}"
-                          .icon=${'mdi:play'}
-                        ></ha-icon>`
-                      : html`
-                          <ha-icon @click="${() => this.service.pause(this.entityId)}" .icon=${'mdi:stop'}></ha-icon>
-                        `}
-                  </a>
-                  <a class="link">
-                    <ha-icon @click="${() => this.service.next(this.entityId)}" .icon=${'mdi:skip-forward'}></ha-icon>
-                  </a>
-                </div>
               `
-            : html` <div style="width: 100%; text-align: center; padding: 3rem 0">
+            : html` <div class="noMediaText">
                 ${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}
               </div>`}
-        </div>
-        <div class="footer">
-          ${this.getVolumeTemplate(
-            this.entityId,
-            this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
-            isGroup,
-            this.members,
-          )}
-          <div style="display: ${this.main.showVolumes ? 'block' : 'none'}">${allVolumes}</div>
-          <div class="footer-icons">
-            <ha-icon
-              @click="${() => this.service.volumeDown(this.entityId, this.members)}"
-              .icon=${'mdi:volume-minus'}
-            ></ha-icon>
-            <ha-icon
-              @click="${() => this.service.shuffle(this.entityId, !activeStateObj.attributes.shuffle)}"
-              .icon=${activeStateObj.attributes.shuffle ? 'mdi:shuffle-variant' : 'mdi:shuffle-disabled'}
-            ></ha-icon>
-            <ha-icon
-              style="display: ${isGroup ? 'block' : 'none'}"
-              @click="${() => this.toggleShowAllVolumes()}"
-              .icon=${this.main.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'}
-            ></ha-icon>
-            <ha-icon
-              @click="${() => this.service.repeat(this.entityId, activeStateObj.attributes.repeat)}"
-              .icon=${activeStateObj.attributes.repeat === 'all'
-                ? 'mdi:repeat'
-                : activeStateObj.attributes.repeat === 'one'
-                ? 'mdi:repeat-once'
-                : 'mdi:repeat-off'}
-            ></ha-icon>
-            <ha-icon
-              @click="${() => this.service.volumeUp(this.entityId, this.members)}"
-              .icon=${'mdi:volume-plus'}
-            ></ha-icon>
+          <div class="footer">
+            ${this.getVolumeTemplate(
+              this.entityId,
+              this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
+              isGroup,
+              this.members,
+            )}
+            <div style="display: ${this.main.showVolumes ? 'block' : 'none'}">${allVolumes}</div>
+            <div class="footer-icons">
+              <ha-icon
+                @click="${() => this.service.volumeDown(this.entityId, this.members)}"
+                .icon=${'mdi:volume-minus'}
+              ></ha-icon>
+              <ha-icon @click="${() => this.service.prev(this.entityId)}" .icon=${'mdi:skip-backward'}></ha-icon>
+              ${activeStateObj.state !== 'playing'
+                ? html` <ha-icon @click="${() => this.service.play(this.entityId)}" .icon=${'mdi:play'}></ha-icon>`
+                : html` <ha-icon @click="${() => this.service.pause(this.entityId)}" .icon=${'mdi:stop'}></ha-icon> `}
+              <ha-icon @click="${() => this.service.next(this.entityId)}" .icon=${'mdi:skip-forward'}></ha-icon>
+              <ha-icon
+                @click="${() => this.service.shuffle(this.entityId, !activeStateObj.attributes.shuffle)}"
+                .icon=${activeStateObj.attributes.shuffle ? 'mdi:shuffle-variant' : 'mdi:shuffle-disabled'}
+              ></ha-icon>
+              <ha-icon
+                @click="${() => this.service.repeat(this.entityId, activeStateObj.attributes.repeat)}"
+                .icon=${activeStateObj.attributes.repeat === 'all'
+                  ? 'mdi:repeat'
+                  : activeStateObj.attributes.repeat === 'one'
+                  ? 'mdi:repeat-once'
+                  : 'mdi:repeat-off'}
+              ></ha-icon>
+              <ha-icon
+                style="display: ${isGroup ? 'block' : 'none'}"
+                @click="${() => this.toggleShowAllVolumes()}"
+                .icon=${this.main.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'}
+              ></ha-icon>
+              <ha-icon
+                @click="${() => this.service.volumeUp(this.entityId, this.members)}"
+                .icon=${'mdi:volume-plus'}
+              ></ha-icon>
+            </div>
           </div>
         </div>
       </div>
@@ -161,25 +142,28 @@ class Player extends LitElement {
     return css`
       .container {
         position: relative;
-        overflow: hidden;
-        z-index: 0;
-        margin: 0;
         background: var(--sonos-int-background-color);
-        border-radius: 0.25rem;
+        border-radius: var(--sonos-int-border-radius);
         border: 8px solid var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
+        padding-bottom: 100%;
+        background-position-x: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
 
       .body {
-        background-repeat: no-repeat;
-        background-size: 10%;
-        background-position-y: center;
+        position: absolute;
+        inset: 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
       .footer {
         background: var(--sonos-int-player-section-background);
-        margin: 1rem;
-        border-radius: 0.25rem;
+        margin: 0.5rem;
+        border-radius: var(--sonos-int-border-radius);
       }
 
       .footer input {
@@ -198,7 +182,7 @@ class Player extends LitElement {
       .volumeRange {
         -webkit-appearance: none;
         height: 5px;
-        border-radius: 5px;
+        border-radius: var(--sonos-int-border-radius);
         outline: none;
         opacity: 0.7;
         -webkit-transition: 0.2s;
@@ -207,10 +191,10 @@ class Player extends LitElement {
       }
 
       .info {
-        margin: 1rem;
+        margin: 0.5rem;
         text-align: center;
         background: var(--sonos-int-player-section-background);
-        border-radius: 0.25rem;
+        border-radius: var(--sonos-int-border-radius);
       }
 
       .album,
@@ -236,42 +220,16 @@ class Player extends LitElement {
         color: var(--sonos-int-accent-color);
       }
 
-      .padded-buttons {
-        padding: 5rem;
+      ha-icon:focus,
+      ha-icon:hover {
+        color: var(--sonos-int-accent-color);
       }
 
-      .buttons {
+      .noMediaText {
+        flex-grow: 1;
         display: flex;
         justify-content: center;
-      }
-
-      .buttons a {
-        padding: 0.8rem;
-        box-shadow: 0 3px 6px rgba(33, 33, 33, 0.1), 0 3px 12px rgba(33, 33, 33, 0.15);
-      }
-
-      .buttons a:focus,
-      .buttons a:hover {
-        color: var(--sonos-int-accent-color);
-        opacity: 1;
-        box-shadow: 0 6px 9px rgba(33, 33, 33, 0.1), 0 6px 16px rgba(33, 33, 33, 0.15);
-      }
-
-      .link {
-        -webkit-transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
-        transition: all 0.25s cubic-bezier(0.4, 0, 1, 1);
-        margin: 1rem;
-        border-radius: 50%;
-        background: var(--sonos-int-player-section-background);
-      }
-
-      .link:focus,
-      .link:hover {
-        color: var(--sonos-int-accent-color);
-      }
-
-      .hidden {
-        display: none;
+        align-items: center;
       }
     `;
   }

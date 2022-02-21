@@ -56,7 +56,7 @@ class FavoriteButtons extends LitElement {
       }
       .favorite {
         flex-grow: 1;
-        border-radius: 4px;
+        border-radius: var(--sonos-int-border-radius);
         margin: 2px;
         padding: 9px;
         display: flex;
