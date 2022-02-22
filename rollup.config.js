@@ -6,8 +6,6 @@ import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
 
-const dev = process.env.ROLLUP_WATCH;
-
 const serveopts = {
   contentBase: ['./dist'],
   host: '0.0.0.0',
@@ -25,10 +23,10 @@ const plugins = [
   json(),
   babel({
     exclude: 'node_modules/**',
-    babelHelpers: 'bundled'
+    babelHelpers: 'bundled',
   }),
-  dev && serve(serveopts),
-  !dev && terser(),
+  process.env.ROLLUP_WATCH && serve(serveopts),
+  !process.env.ROLLUP_WATCH && !process.env.DEV && terser(),
 ];
 
 export default [
@@ -36,7 +34,7 @@ export default [
     input: 'src/main.ts',
     output: {
       format: 'es',
-      file: 'dist/custom-sonos-card.js'
+      file: 'dist/custom-sonos-card.js',
     },
     plugins: [...plugins],
   },
