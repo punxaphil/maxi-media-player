@@ -242,7 +242,7 @@ export class CustomSonosCard extends LitElement {
       }
       @media (max-width: 650px) {
         .content {
-          flex-wrap: wrap;
+          flex-direction: column;
         }
         .players {
           order: 0;
