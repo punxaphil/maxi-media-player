@@ -216,6 +216,7 @@ export class CustomSonosCard extends LitElement {
       }
       .players {
         flex: 0 0 40%;
+        max-width: 40%;
       }
       .content {
         display: flex;
@@ -227,11 +228,13 @@ export class CustomSonosCard extends LitElement {
         margin: 0 20px 0 20px;
         padding: 0;
         flex: 0 0 20%;
+        max-width: 20%;
       }
       .sidebar {
         margin: 0 20px 0 20px;
         padding: 0;
         flex: 0 0 20%;
+        max-width: 20%;
       }
       .title {
         margin-top: 10px;
@@ -252,6 +255,10 @@ export class CustomSonosCard extends LitElement {
         }
         .sidebar {
           order: 2;
+        }
+        .content div {
+          max-width: 100%;
+          margin: 5px;
         }
       }
     `;

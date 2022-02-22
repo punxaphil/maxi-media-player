@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import Service from './service';
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig } from './types';
+import { CardConfig, MediaPlayerItem } from './types';
 
 class FavoriteButtons extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -11,26 +11,30 @@ class FavoriteButtons extends LitElement {
   @property() service!: Service;
   @property() mediaPlayers!: string[];
 
-  @state() private favorites: string[] = [];
+  @state() private favorites: MediaPlayerItem[] = [];
 
   render() {
     if (!this.favorites.length) {
-      this.favorites = this.mediaPlayers
-        .map((entity) => this.hass.states[entity])
-        .flatMap((state) => state.attributes.source_list);
-      this.favorites = [...new Set(this.favorites)];
-      if (this.config.shuffleFavorites) {
-        this.shuffleArray(this.favorites);
-      }
+      this.service.getFavorites(this.mediaPlayers).then((value) => {
+        if (this.config.shuffleFavorites) {
+          this.shuffleArray(value);
+        } else {
+          value = value.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
+        }
+        this.favorites = value;
+      });
     }
     return html`
       <div class="favorites">
         ${this.active !== '' &&
         this.favorites.map(
           (favorite) => html`
-            <div class="favorite" @click="${() => this.service.setSource(this.active, favorite)}">
-              <span>${favorite}</span>
-              <ha-icon .icon=${'mdi:play'}></ha-icon>
+            <div
+              class="favorite"
+              style="background-image: url(${favorite.thumbnail});"
+              @click="${() => this.service.setSource(this.active, favorite.title)}"
+            >
+              <div class="title">${favorite.title}</div>
             </div>
           `,
         )}
@@ -38,7 +42,7 @@ class FavoriteButtons extends LitElement {
     `;
   }
 
-  shuffleArray(array: string[]) {
+  shuffleArray(array: MediaPlayerItem[]) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -51,28 +55,39 @@ class FavoriteButtons extends LitElement {
         padding: 0;
         margin: 0 0 30px 0;
         display: flex;
-        flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
       }
       .favorite {
-        flex-grow: 1;
-        border-radius: var(--sonos-int-border-radius);
+        width: 28%;
+        max-width: 28%;
+        border: 2px solid var(--sonos-int-background-color);
         margin: 2px;
-        padding: 9px;
+        padding: 1px;
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--sonos-int-border-radius);
         display: flex;
         justify-content: center;
         background-color: var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
+        padding-bottom: 21%;
+        background-position-x: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
-      .favorite span {
-        font-size: 12px;
-      }
-      .favorite ha-icon {
+      .title {
+        width: 100%;
+        text-align: center;
         font-size: 10px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        background-color: var(--sonos-int-player-section-background);
       }
-      .favorite:hover ha-icon {
-        color: var(--sonos-int-accent-color);
+      .favorite:focus,
+      .favorite:hover {
+        border-color: var(--sonos-int-accent-color);
       }
     `;
   }

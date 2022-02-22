@@ -142,6 +142,7 @@ class Player extends LitElement {
   static get styles() {
     return css`
       .container {
+        margin-top: 5px;
         position: relative;
         background: var(--sonos-int-background-color);
         border-radius: var(--sonos-int-border-radius);
