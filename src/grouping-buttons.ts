@@ -42,12 +42,20 @@ class GroupingButtons extends LitElement {
               `;
             }
           })}
-        <div class="member" @click="${() => this.service.join(this.active, notJoinedPlayers.join(','))}">
-          <ha-icon .icon=${'mdi:checkbox-multiple-marked-outline'}></ha-icon>
-        </div>
-        <div class="member" @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
-          <ha-icon .icon=${'mdi:minus-box-multiple-outline'}></ha-icon>
-        </div>
+        ${notJoinedPlayers.length
+          ? html`
+              <div class="member" @click="${() => this.service.join(this.active, notJoinedPlayers.join(','))}">
+                <ha-icon .icon=${'mdi:checkbox-multiple-marked-outline'}></ha-icon>
+              </div>
+            `
+          : ''}
+        ${joinedPlayers.length
+          ? html`
+              <div class="member" @click="${() => this.service.unjoin(joinedPlayers.join(','))}">
+                <ha-icon .icon=${'mdi:minus-box-multiple-outline'}></ha-icon>
+              </div>
+            `
+          : ''}
       </div>
     `;
   }
