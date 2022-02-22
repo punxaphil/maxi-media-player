@@ -31,7 +31,7 @@ class FavoriteButtons extends LitElement {
           (favorite) => html`
             <div
               class="favorite ${favorite.thumbnail ? 'image' : ''}"
-              ${favorite.thumbnail ? html` style="background-image: url(${favorite.thumbnail});" ` : ''}
+              style="${favorite.thumbnail ? `background-image: url(${favorite.thumbnail});` : ''}"
               @click="${() => this.service.setSource(this.active, favorite.title)}"
             >
               <div class="title ${favorite.thumbnail ? 'title-with-image' : ''}">${favorite.title}</div>
@@ -82,7 +82,7 @@ class FavoriteButtons extends LitElement {
         text-align: center;
         font-size: 10px;
       }
-      .title-with-image
+      .title-with-image {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
