@@ -139,28 +139,38 @@ export class CustomSonosCard extends LitElement {
   createPlayerGroups(mediaPlayers: string[]): PlayerGroups {
     const groupMasters = mediaPlayers.filter((player) => {
       const state = this.hass.states[player];
-      const stateAttributes = state.attributes;
-      const sonosGroup = stateAttributes.sonos_group.filter((member: string) => mediaPlayers.indexOf(member) > -1);
-      const isGrouped = sonosGroup.length > 1;
-      const isMasterInGroup = isGrouped && sonosGroup[0] === player;
-      return !isGrouped || isMasterInGroup;
+      try {
+        const stateAttributes = state.attributes;
+        const sonosGroup = stateAttributes.sonos_group.filter((member: string) => mediaPlayers.indexOf(member) > -1);
+        const isGrouped = sonosGroup?.length > 1;
+        const isMasterInGroup = isGrouped && sonosGroup && sonosGroup[0] === player;
+        return !isGrouped || isMasterInGroup;
+      } catch (e) {
+        console.error('Failed to determine group master', JSON.stringify(state), e);
+        return false;
+      }
     });
     const groupArray = groupMasters.map((groupMaster) => {
       const state = this.hass.states[groupMaster];
-      const membersArray = state.attributes.sonos_group.filter((member: string) => {
-        return member !== groupMaster && mediaPlayers.indexOf(member) > -1;
-      });
-      return {
-        entity: groupMaster,
-        state: state.state,
-        roomName: getEntityName(this.hass, this.config, groupMaster),
-        members: Object.fromEntries(
-          membersArray.map((member: string) => {
-            const friendlyName = getEntityName(this.hass, this.config, member);
-            return [member, friendlyName];
-          }),
-        ),
-      };
+      try {
+        const membersArray = state.attributes.sonos_group.filter((member: string) => {
+          return member !== groupMaster && mediaPlayers.indexOf(member) > -1;
+        });
+        return {
+          entity: groupMaster,
+          state: state.state,
+          roomName: getEntityName(this.hass, this.config, groupMaster),
+          members: Object.fromEntries(
+            membersArray.map((member: string) => {
+              const friendlyName = getEntityName(this.hass, this.config, member);
+              return [member, friendlyName];
+            }),
+          ),
+        };
+      } catch (e) {
+        console.error('Failed to create group', JSON.stringify(state), e);
+        return {};
+      }
     });
     return Object.fromEntries(groupArray.map((group) => [group.entity, group]));
   }
