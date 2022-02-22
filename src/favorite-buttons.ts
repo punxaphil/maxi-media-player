@@ -30,11 +30,11 @@ class FavoriteButtons extends LitElement {
         this.favorites.map(
           (favorite) => html`
             <div
-              class="favorite"
-              style="background-image: url(${favorite.thumbnail});"
+              class="favorite ${favorite.thumbnail ? 'image' : ''}"
+              ${favorite.thumbnail ? html` style="background-image: url(${favorite.thumbnail});" ` : ''}
               @click="${() => this.service.setSource(this.active, favorite.title)}"
             >
-              <div class="title">${favorite.title}</div>
+              <div class="title ${favorite.thumbnail ? 'title-with-image' : ''}">${favorite.title}</div>
             </div>
           `,
         )}
@@ -67,10 +67,11 @@ class FavoriteButtons extends LitElement {
         display: flex;
         flex-direction: column;
         border-radius: var(--sonos-int-border-radius);
-        display: flex;
         justify-content: center;
         background-color: var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
+      }
+      .image {
         padding-bottom: 21%;
         background-position-x: center;
         background-repeat: no-repeat;
@@ -80,6 +81,8 @@ class FavoriteButtons extends LitElement {
         width: 100%;
         text-align: center;
         font-size: 10px;
+      }
+      .title-with-image
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;

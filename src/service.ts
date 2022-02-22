@@ -117,21 +117,29 @@ export default class Service {
   }
 
   async getFavorites(mediaPlayers: string[]): Promise<MediaPlayerItem[]> {
-    if (mediaPlayers.length) {
-      const playlists = await this.getFavoritesForType(mediaPlayers, 'object.container.playlistContainer');
-      const radioStations = await this.getFavoritesForType(mediaPlayers, 'object.item.audioItem.audioBroadcast');
-      return [...playlists, ...radioStations];
+    const playlists = await this.getFavoritesForType(mediaPlayers, 'object.container.playlistContainer');
+    const radioStations = await this.getFavoritesForType(mediaPlayers, 'object.item.audioItem.audioBroadcast');
+    let result = [...playlists, ...radioStations];
+    if (!result.length) {
+      let titles = mediaPlayers
+        .map((entity) => this.hass.states[entity])
+        .flatMap((state) => state.attributes.source_list);
+      titles = [...new Set(titles)];
+      result = titles.map((title) => ({ title }));
     }
-    return [];
+    return result;
   }
 
   private async getFavoritesForType(mediaPlayers: string[], mediaContentId1: string) {
-    const result = await this.hass.callWS<MediaPlayerItem>({
-      type: 'media_player/browse_media',
-      entity_id: mediaPlayers[0],
-      media_content_id: mediaContentId1,
-      media_content_type: 'favorites_folder',
-    });
-    return result.children || [];
+    if (mediaPlayers.length) {
+      const result = await this.hass.callWS<MediaPlayerItem>({
+        type: 'media_player/browse_media',
+        entity_id: mediaPlayers[0],
+        media_content_id: mediaContentId1,
+        media_content_type: 'favorites_folder',
+      });
+      return result.children || [];
+    }
+    return [];
   }
 }
