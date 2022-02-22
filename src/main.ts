@@ -26,7 +26,7 @@ export class CustomSonosCard extends LitElement {
 
   render() {
     this.service = new Service(this.hass);
-    const mediaPlayers = [...new Set(this.config.entities)].sort().filter((player) => this.hass.states[player]);
+    const mediaPlayers = this.getMediaPlayers();
     const playerGroups = this.createPlayerGroups(mediaPlayers);
     this.determineActivePlayer(playerGroups);
     return html`
@@ -94,6 +94,17 @@ export class CustomSonosCard extends LitElement {
     `;
   }
 
+  private getMediaPlayers() {
+    if (this.config.entities) {
+      return [...new Set(this.config.entities)].sort().filter((player) => this.hass.states[player]);
+    } else {
+      return Object.values(this.hass.states)
+        .filter((state) => state.attributes.sonos_group)
+        .map((state) => state.entity_id)
+        .sort();
+    }
+  }
+
   determineActivePlayer(playerGroups: PlayerGroups) {
     const selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
     if (this.active) {
@@ -128,13 +139,16 @@ export class CustomSonosCard extends LitElement {
     const groupMasters = mediaPlayers.filter((player) => {
       const state = this.hass.states[player];
       const stateAttributes = state.attributes;
-      const isGrouped = stateAttributes.sonos_group.length > 1;
-      const isMasterInGroup = isGrouped && stateAttributes.sonos_group[0] === player;
+      const sonosGroup = stateAttributes.sonos_group.filter((member: string) => mediaPlayers.indexOf(member) > -1);
+      const isGrouped = sonosGroup.length > 1;
+      const isMasterInGroup = isGrouped && sonosGroup[0] === player;
       return !isGrouped || isMasterInGroup;
     });
     const groupArray = groupMasters.map((groupMaster) => {
       const state = this.hass.states[groupMaster];
-      const membersArray = state.attributes.sonos_group.filter((member: string) => member !== groupMaster);
+      const membersArray = state.attributes.sonos_group.filter((member: string) => {
+        return member !== groupMaster && mediaPlayers.indexOf(member) > -1;
+      });
       return {
         entity: groupMaster,
         state: state.state,
@@ -151,9 +165,6 @@ export class CustomSonosCard extends LitElement {
   }
 
   setConfig(config: CardConfig) {
-    if (!config.entities) {
-      throw new Error('You need to define entities');
-    }
     this.config = config;
   }
 

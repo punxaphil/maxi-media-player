@@ -53,8 +53,7 @@ noMediaText: 'No media selected'
 allVolumesText: 'All volumes'
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
-# Required settings:
-entities: 
+entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
