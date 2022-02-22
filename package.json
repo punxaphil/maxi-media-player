@@ -9,8 +9,7 @@
   "license": "",
   "dependencies": {
     "custom-card-helpers": "^1.9.0",
-    "lit-element": "^3.2.0",
-    "lit-html": "^2.2.0"
+    "lit": "^2.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

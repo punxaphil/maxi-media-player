@@ -1,4 +1,5 @@
-import { LitElement, html, css, property } from 'lit-element';
+import { css, html, LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
 import Service from './service';
 import { getEntityName } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';

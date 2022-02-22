@@ -1,4 +1,5 @@
-import { LitElement, html, css, property, state } from 'lit-element';
+import { css, html, LitElement } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { getEntityName } from './utils';
 
 import Service from './service';

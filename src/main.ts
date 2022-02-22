@@ -1,4 +1,5 @@
-import { css, html, LitElement, property, state } from 'lit-element';
+import { css, html, LitElement } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import Service from './service';
 import './player';
 import './group';
