@@ -56,7 +56,6 @@ class FavoriteButtons extends LitElement {
         margin: 0 0 30px 0;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
       }
       .favorite {
         width: 28%;
@@ -91,6 +90,15 @@ class FavoriteButtons extends LitElement {
       .favorite:focus,
       .favorite:hover {
         border-color: var(--sonos-int-accent-color);
+      }
+      @media (max-width: 650px) {
+        .favorite {
+          width: 17%;
+          max-width: 17%;
+        }
+        .image {
+          padding-bottom: 13%;
+        }
       }
     `;
   }

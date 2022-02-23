@@ -215,8 +215,8 @@ export class CustomSonosCard extends LitElement {
         text-overflow: ellipsis;
       }
       .players {
-        flex: 0 0 40%;
-        max-width: 40%;
+        flex: 0 0 45%;
+        max-width: 45%;
       }
       .content {
         display: flex;
@@ -227,14 +227,14 @@ export class CustomSonosCard extends LitElement {
       .groups {
         margin: 0 20px 0 20px;
         padding: 0;
-        flex: 0 0 20%;
-        max-width: 20%;
+        flex: 0 0 25%;
+        max-width: 25%;
       }
       .sidebar {
         margin: 0 20px 0 20px;
         padding: 0;
-        flex: 0 0 20%;
-        max-width: 20%;
+        flex: 0 0 25%;
+        max-width: 25%;
       }
       .title {
         margin-top: 10px;

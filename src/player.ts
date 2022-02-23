@@ -142,7 +142,7 @@ class Player extends LitElement {
   static get styles() {
     return css`
       .container {
-        margin-top: 5px;
+        margin-top: 1rem;
         position: relative;
         background: var(--sonos-int-background-color);
         border-radius: var(--sonos-int-border-radius);
@@ -166,6 +166,7 @@ class Player extends LitElement {
         background: var(--sonos-int-player-section-background);
         margin: 0.5rem;
         border-radius: var(--sonos-int-border-radius);
+        overflow: hidden auto;
       }
 
       .footer input {
@@ -179,6 +180,7 @@ class Player extends LitElement {
 
       .footer div ha-icon {
         padding: 10px;
+        --mdc-icon-size: min(100%, 24px);
       }
 
       .volumeRange {
