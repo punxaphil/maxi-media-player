@@ -41,3 +41,11 @@ export interface MediaPlayerItem {
   thumbnail?: string;
   children?: MediaPlayerItem[];
 }
+
+export interface MediaPlayerItem {
+  title: string;
+  media_content_type?: string;
+  media_content_id?: string;
+  thumbnail?: string;
+  children?: MediaPlayerItem[];
+}

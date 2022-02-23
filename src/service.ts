@@ -117,29 +117,34 @@ export default class Service {
   }
 
   async getFavorites(mediaPlayers: string[]): Promise<MediaPlayerItem[]> {
-    const playlists = await this.getFavoritesForType(mediaPlayers, 'object.container.playlistContainer');
-    const radioStations = await this.getFavoritesForType(mediaPlayers, 'object.item.audioItem.audioBroadcast');
-    let result = [...playlists, ...radioStations];
-    if (!result.length) {
-      let titles = mediaPlayers
-        .map((entity) => this.hass.states[entity])
-        .flatMap((state) => state.attributes.source_list);
-      titles = [...new Set(titles)];
-      result = titles.map((title) => ({ title }));
+    if (!mediaPlayers.length) {
+      return [];
     }
-    return result;
+    const player = mediaPlayers[0];
+    const favoritesRoot = await this.browseMedia(player, 'favorites');
+    const favoriteTypesPromise = favoritesRoot.children?.map((favoriteItem) =>
+      this.browseMedia(player, favoriteItem.media_content_type, favoriteItem.media_content_id),
+    );
+    const favoriteTypes = favoriteTypesPromise ? await Promise.all(favoriteTypesPromise) : [];
+
+    const favorites = favoriteTypes.flatMap((item) => item.children || []);
+    return favorites.length ? favorites : this.getFavoritesFromStates(mediaPlayers);
   }
 
-  private async getFavoritesForType(mediaPlayers: string[], mediaContentId1: string) {
-    if (mediaPlayers.length) {
-      const result = await this.hass.callWS<MediaPlayerItem>({
-        type: 'media_player/browse_media',
-        entity_id: mediaPlayers[0],
-        media_content_id: mediaContentId1,
-        media_content_type: 'favorites_folder',
-      });
-      return result.children || [];
-    }
-    return [];
+  private getFavoritesFromStates(mediaPlayers: string[]) {
+    let titles = mediaPlayers
+      .map((entity) => this.hass.states[entity])
+      .flatMap((state) => state.attributes.source_list);
+    titles = [...new Set(titles)];
+    return titles.map((title) => ({ title }));
+  }
+
+  private async browseMedia(entity_id: string, media_content_type?: string, media_content_id = '') {
+    return await this.hass.callWS<MediaPlayerItem>({
+      type: 'media_player/browse_media',
+      entity_id,
+      media_content_id,
+      media_content_type,
+    });
   }
 }
