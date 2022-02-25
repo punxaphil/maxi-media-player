@@ -3,7 +3,7 @@ Customized media player for sonos speakers!
 
 Thanks to https://github.com/DBuit and https://github.com/exetico for creating this card.
 
-## Features:
+## Features
 
 * Group/Ungroup speakers
 * Control multiple speaker
