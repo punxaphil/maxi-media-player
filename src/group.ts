@@ -52,8 +52,8 @@ class Group extends LitElement {
       }
       .group .wrap {
         border-radius: var(--sonos-int-border-radius);
-        margin: 5px 0;
-        padding: 9px;
+        margin: 0.1rem 0;
+        padding: 0.5rem;
         border: thin solid var(--sonos-int-background-color);
         background-color: var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
@@ -72,8 +72,8 @@ class Group extends LitElement {
       }
       .speakers li {
         display: block;
-        font-size: 12px;
-        margin: 5px 0 0 0;
+        font-size: 0.8rem;
+        margin: 0.25rem 0 0 0;
         color: var(--sonos-int-color);
       }
       .speakers li:first-child {
@@ -88,18 +88,18 @@ class Group extends LitElement {
       }
       .group .play .content .currentTrack {
         display: block;
-        font-size: 10px;
+        font-size: 0.5rem;
       }
       .group .play .player {
-        width: 12px;
+        width: 0.55rem;
         position: relative;
       }
       .group .play .player .bar {
         background: var(--sonos-int-color);
-        bottom: 1px;
-        height: 3px;
+        bottom: 0.05rem;
+        height: 0.15rem;
         position: absolute;
-        width: 3px;
+        width: 0.15rem;
         animation: sound 0ms -800ms linear infinite alternate;
         display: none;
       }
@@ -107,25 +107,25 @@ class Group extends LitElement {
         display: block;
       }
       .group .play .player .bar:nth-child(1) {
-        left: 1px;
+        left: 0.05rem;
         animation-duration: 474ms;
       }
       .group .play .player .bar:nth-child(2) {
-        left: 5px;
+        left: 0.25rem;
         animation-duration: 433ms;
       }
       .group .play .player .bar:nth-child(3) {
-        left: 9px;
+        left: 0.45rem;
         animation-duration: 407ms;
       }
       @keyframes sound {
         0% {
           opacity: 0.35;
-          height: 3px;
+          height: 0.15rem;
         }
         100% {
           opacity: 1;
-          height: 20px;
+          height: 1rem;
         }
       }
     `;

@@ -181,18 +181,18 @@ class Player extends LitElement {
 
       .footer div ha-icon {
         padding: 0.3rem;
-        --mdc-icon-size: min(100%, 24px);
+        --mdc-icon-size: min(100%, 1.25rem);
       }
 
       .volumeRange {
         -webkit-appearance: none;
-        height: 5px;
+        height: 0.25rem;
         border-radius: var(--sonos-int-border-radius);
         outline: none;
         opacity: 0.7;
         -webkit-transition: 0.2s;
         transition: opacity 0.2s;
-        margin: 6px 5px 0 5px;
+        margin: 0.25rem 0.25rem 0 0.25rem;
       }
 
       .info {

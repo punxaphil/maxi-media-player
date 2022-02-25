@@ -150,14 +150,14 @@ export class CustomSonosCard extends LitElement {
         --sonos-int-title-color: var(--sonos-title-color, var(--card-background-color));
         --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
         --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
-        --mdc-icon-size: 18px;
+        --mdc-icon-size: 1rem;
         color: var(--sonos-int-color);
       }
       .header {
-        font-size: 24px;
+        font-size: 1.2rem;
         letter-spacing: -0.012em;
-        line-height: 32px;
-        padding: 4px 0 12px;
+        line-height: 1.6rem;
+        padding: 0.2rem 0 0.6rem;
         display: block;
       }
       .header .name {
@@ -188,7 +188,7 @@ export class CustomSonosCard extends LitElement {
         max-width: 25%;
       }
       .title {
-        margin: 10px 0;
+        margin-top: 0.5rem;
         text-align: center;
         font-weight: bold;
         font-size: larger;
