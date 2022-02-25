@@ -198,7 +198,8 @@ export class CustomSonosCard extends LitElement {
         --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--primary-text-color));
         --sonos-int-accent-color: var(--sonos-accent-color, var(--accent-color));
         --sonos-int-title-color: var(--sonos-title-color, var(--card-background-color));
-        --sonos-int-border-radius: 0.25rem;
+        --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
+        --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
         --mdc-icon-size: 18px;
         color: var(--sonos-int-color);
       }
@@ -237,7 +238,7 @@ export class CustomSonosCard extends LitElement {
         max-width: 25%;
       }
       .title {
-        margin-top: 10px;
+        margin: 10px 0;
         text-align: center;
         font-weight: bold;
         font-size: larger;

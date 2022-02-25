@@ -146,9 +146,9 @@ class Player extends LitElement {
         position: relative;
         background: var(--sonos-int-background-color);
         border-radius: var(--sonos-int-border-radius);
-        border: 8px solid var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
         padding-bottom: 100%;
+        border: var(--sonos-int-border-width) solid var(--sonos-int-background-color);
         background-position-x: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -164,7 +164,8 @@ class Player extends LitElement {
 
       .footer {
         background: var(--sonos-int-player-section-background);
-        margin: 0.5rem;
+        margin: 0.25rem;
+        padding: 0.5rem;
         border-radius: var(--sonos-int-border-radius);
         overflow: hidden auto;
       }
@@ -195,7 +196,8 @@ class Player extends LitElement {
       }
 
       .info {
-        margin: 0.5rem;
+        margin: 0.25rem;
+        padding: 0.5rem;
         text-align: center;
         background: var(--sonos-int-player-section-background);
         border-radius: var(--sonos-int-border-radius);
