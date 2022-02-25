@@ -74,5 +74,13 @@ The following variables are available and can be set in your theme to change the
 | --sonos-border-radius | 0.25rem
 | --sonos-border-width | 0.125rem
 
+## Dynamic volume level slider
+The volume level slider is dynamically adjusting its scale. If volume is below 20% it will show a scale up to 30%. Above 20% it will show a scale up to 100%. The color will also change from green to red clearly indicating which scale is being used.
+
+![img/volume-green.png](img/volume-green.png)
+
+![img/volume-red.png](img/volume-red.png)
+
+
 ## Linking to specific player
 Append `#media_player.my_sonos_player` to page URL to have that player selected. 
