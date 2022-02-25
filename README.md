@@ -17,7 +17,7 @@ Thanks to https://github.com/DBuit and https://github.com/exetico for creating t
 
 and more!
 
-![Screenshot of card](https://github.com/johanfrick/custom-sonos-card/raw/master/screenshot-custom-sonos-card.png)
+![Screenshot of card](https://github.com/johanfrick/custom-sonos-card/raw/master/img/screenshot-custom-sonos-card.png)
 
 ## Support the project
 Do you like the Sonos Card? Support the project with a coffee ☕️
@@ -100,14 +100,14 @@ layout:
 
 Example using the config above for screens wider than 500px:
 
-![img/layout.png](img/layout.png)
+![img/layout.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/layout.png)
 
 And for mobile:
 
-![img/layout_mobile.png](img/layout_mobile.png)
+![img/layout_mobile.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/layout_mobile.png)
 
 Yet another example (with different config):
-![img/layout_2.png](img/layout_2.png)
+![img/layout_2.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/layout_2.png)
 
 ## Theme variables
 The following variables are available and can be set in your theme to change the appearence of the card.
@@ -126,9 +126,9 @@ The following variables are available and can be set in your theme to change the
 ## Dynamic volume level slider
 The volume level slider is dynamically adjusting its scale. If volume is below 20% it will show a scale up to 30%. Above 20% it will show a scale up to 100%. The color will also change from green to red clearly indicating which scale is being used.
 
-![img/volume-green.png](img/volume-green.png)
+![img/volume-green.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume-green.png)
 
-![img/volume-red.png](img/volume-red.png)
+![img/volume-red.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume-red.png)
 
 
 ## Linking to specific player
