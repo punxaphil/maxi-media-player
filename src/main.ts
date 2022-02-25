@@ -218,8 +218,8 @@ export class CustomSonosCard extends LitElement {
 
   setActivePlayer(player: string) {
     this.active = player;
-    const newYouAreEll = window.location.href.replaceAll(/#.*/g, '');
-    window.location.href = `${newYouAreEll}#${player}`;
+    const newUrl = window.location.href.replaceAll(/#.*/g, '');
+    window.location.href = `${newUrl}#${player}`;
   }
 }
 
