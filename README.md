@@ -25,7 +25,6 @@ Do you like the Sonos Card? Support the project with a coffee ☕️
 [![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/punxaphil)
 
 ## Installation
-
 ### HACS
 This card is available in HACS (Home Assistant Community Store)
 
