@@ -7,10 +7,14 @@
     {
       "title": "## 🐛 Fixes",
       "labels": ["fix", "Fix"]
+    },
+    {
+      "title": "## 📚 Documentation",
+      "labels": ["doc"]
     }
   ],
-  "template": "${{CHANGELOG}}\n\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}",
-  "pr_template": "- ${{TITLE}}",
+  "template": "${{CHANGELOG}}\n\n## Under the hood\n\n${{UNCATEGORIZED}}",
+  "pr_template": "- [${{URL}}](${{TITLE}})",
   "empty_template": "- no changes",
   "label_extractor": [
     {
