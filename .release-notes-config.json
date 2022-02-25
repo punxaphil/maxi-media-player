@@ -1,4 +1,21 @@
 {
-  "template": "${{UNCATEGORIZED}}",
-  "pr_template": "- ${{TITLE}}"
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["feature", "Feature"]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": ["fix", "Fix"]
+    }
+  ],
+  "template": "${{CHANGELOG}}\n\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}",
+  "pr_template": "- ${{TITLE}}",
+  "empty_template": "- no changes",
+  "label_extractor": [
+    {
+      "pattern": "(.): (.+)",
+      "target": "$1"
+    }
+  ]
 }
