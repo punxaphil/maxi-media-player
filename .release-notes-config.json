@@ -1,4 +1,25 @@
 {
-  "template": "${{UNCATEGORIZED}}",
-  "pr_template": "- ${{TITLE}}"
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["feature"]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "## 📚 Documentation",
+      "labels": ["doc"]
+    }
+  ],
+  "template": "${{CHANGELOG}}\n\n## 🛠 Under the hood\n\n${{UNCATEGORIZED}}",
+  "pr_template": "- [${{TITLE}}](https://github.com/johanfrick/custom-sonos-card/commit/${{MERGE_SHA}})",
+  "empty_template": "- no changes",
+  "label_extractor": [
+    {
+      "pattern": "(.): (.+)",
+      "target": "$1"
+    }
+  ]
 }
