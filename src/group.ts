@@ -1,10 +1,9 @@
 import { css, html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { getEntityName } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
 import { CardConfig } from './types';
 
-@customElement('sonos-group')
 class Group extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
@@ -132,3 +131,5 @@ class Group extends LitElement {
     `;
   }
 }
+
+customElements.define('sonos-group', Group);

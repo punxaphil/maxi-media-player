@@ -1,11 +1,10 @@
 import { css, html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import Service from './service';
 import { getEntityName } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
 import { CardConfig, PlayerGroups } from './types';
 
-@customElement('sonos-grouping-buttons')
 class GroupingButtons extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
@@ -96,3 +95,5 @@ class GroupingButtons extends LitElement {
     `;
   }
 }
+
+customElements.define('sonos-grouping-buttons', GroupingButtons);
