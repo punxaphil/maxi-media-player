@@ -2,11 +2,11 @@
   "categories": [
     {
       "title": "## 🚀 Features",
-      "labels": ["feature", "Feature"]
+      "labels": ["feature"]
     },
     {
       "title": "## 🐛 Fixes",
-      "labels": ["fix", "Fix"]
+      "labels": ["fix"]
     },
     {
       "title": "## 📚 Documentation",
@@ -14,7 +14,7 @@
     }
   ],
   "template": "${{CHANGELOG}}\n\n## Under the hood\n\n${{UNCATEGORIZED}}",
-  "pr_template": "- [${{URL}}](${{TITLE}})",
+  "pr_template": "- [${{MERGE_SHA}}](${{TITLE}})",
   "empty_template": "- no changes",
   "label_extractor": [
     {
