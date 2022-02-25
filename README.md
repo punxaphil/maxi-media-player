@@ -11,6 +11,9 @@ Thanks to https://github.com/DBuit and https://github.com/exetico for creating t
 * Control individual volumes in a group
 * Artwork background
 * Shuffle and repeat mode
+* Theming
+* Configurable layout
+* Dynamic volume level slider
 
 and more!
 
@@ -53,12 +56,58 @@ noMediaText: 'No media selected'
 allVolumesText: 'All volumes'
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
+layout:
+  mobileThresholdPx: 500 # Default is 650
+  groups: 
+    width: '20%' # Default 25%
+    mobileWidth: '80%' # Default 100%
+  players:
+    width: '20%' # Default 25%
+    mobileWidth: '80%' # Default 100%
+  favorites:
+    width: '20%' # Default 33%
+    mobileWidth: '80%' # Default 100%
+  favorite:
+    width: '20%' # Default 33%
+    mobileWidth: '25%' # Default 16%
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
   - media_player.sonos_livingroom
 ```
+
+## Layout
+As seen in the yaml example above, layout can be controlled for the major sections.
+
+Here is another example:
+```yaml
+layout:
+  mobileThresholdPx: 500
+  groups:
+    width: 20%
+    mobileWidth: 80%
+  players:
+    width: 20%
+    mobileWidth: 90%
+  favorites:
+    width: 60%
+    mobileWidth: 70%
+  favorite:
+    width: 20%
+    mobileWidth: 50%
+```
+
+Example using the config above for screens wider than 500px:
+
+![img/layout.png](img/layout.png)
+
+And for mobile:
+
+![img/layout_mobile.png](img/layout_mobile.png)
+
+Yet another example (with different config):
+![img/layout_2.png](img/layout_2.png)
 
 ## Theme variables
 The following variables are available and can be set in your theme to change the appearence of the card.

@@ -203,20 +203,11 @@ class Player extends LitElement {
         border-radius: var(--sonos-int-border-radius);
       }
 
-      .album,
-      .song {
-        margin-bottom: 0.5rem;
-        white-space: wrap;
-      }
-
       .artist,
       .album {
         font-size: 0.75rem;
         font-weight: 300;
         color: var(--sonos-int-artist-album-text-color);
-      }
-
-      .artist {
         white-space: wrap;
       }
 
@@ -224,6 +215,7 @@ class Player extends LitElement {
         font-size: 1.15rem;
         font-weight: 400;
         color: var(--sonos-int-accent-color);
+        white-space: wrap;
       }
 
       ha-icon:focus,
