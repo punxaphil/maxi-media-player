@@ -61,7 +61,7 @@ class FavoriteButtons extends LitElement {
         flex-wrap: wrap;
       }
       .favorite-wrapper {
-        padding: 0 .6rem 0.4rem 0;
+        padding: 0 0.6rem 0.4rem 0;
         box-sizing: border-box;
       }
       .favorite {
@@ -87,9 +87,6 @@ class FavoriteButtons extends LitElement {
         width: calc(100% - 0.2rem);
         text-align: center;
         font-size: 0.6rem;
-        position: absolute;
-        top: 0.1rem;
-        left: 0.1rem;
       }
       .title-with-image {
         text-overflow: ellipsis;
@@ -97,6 +94,9 @@ class FavoriteButtons extends LitElement {
         white-space: var(--sonos-int-favorites-white-space);
         background-color: var(--sonos-int-player-section-background);
         border-radius: calc(var(--sonos-int-border-radius) - 0.25rem) calc(var(--sonos-int-border-radius) - 0.25rem) 0 0;
+        position: absolute;
+        top: 0.1rem;
+        left: 0.1rem;
       }
       .favorite:focus,
       .favorite:hover {
