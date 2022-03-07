@@ -1,13 +1,13 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { getEntityName } from './utils';
+import { getEntityName } from '../utils';
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig } from './types';
+import { CardConfig } from '../types';
 
 class Group extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
-  @property() active!: string;
+  @property() activePlayer!: string;
   @property() group!: string;
 
   render() {
@@ -17,7 +17,7 @@ class Group extends LitElement {
     }`.replaceAll(/^ - /g, '');
     return html`
       <div class="group">
-        <div class="wrap ${this.active ? 'active' : ''}">
+        <div class="wrap ${this.activePlayer ? 'active' : ''}">
           <ul class="speakers">
             ${stateObj.attributes.sonos_group.map(
               (speaker: string) => html` <li>${getEntityName(this.hass, this.config, speaker)}</li>`,
@@ -53,7 +53,7 @@ class Group extends LitElement {
       .group .wrap {
         border-radius: var(--sonos-int-border-radius);
         margin: 0.5rem 0;
-        padding: 0.5rem;
+        padding: 0.8rem;
         border: thin solid var(--sonos-int-background-color);
         background-color: var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);

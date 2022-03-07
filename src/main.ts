@@ -1,14 +1,17 @@
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import Service from './service';
-import './player';
-import './group';
-import './grouping-buttons';
-import './favorite-buttons';
+import './components/player';
+import './components/group';
+import './components/grouping-buttons';
+import './components/media-button';
+import './components/media-buttons';
 import { createPlayerGroups, getMediaPlayers, getWidth, isMobile } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
 import { CardConfig, PlayerGroups, Size } from './types';
-import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
+import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
+import MediaBrowseService from './services/media-browse-service';
+import MediaControlService from './services/media-control-service';
+import HassService from './services/hass-service';
 
 // This puts your card into the UI card picker dialog
 window.customCards = window.customCards || [];
@@ -22,12 +25,16 @@ window.customCards.push({
 export class CustomSonosCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
-  @state() private active!: string;
+  @state() private activePlayer!: string;
   @state() showVolumes!: boolean;
-  private service!: Service;
+  private mediaBrowseService!: MediaBrowseService;
+  private mediaControlService!: MediaControlService;
+  private hassService!: HassService;
 
   render() {
-    this.service = new Service(this.hass);
+    this.hassService = new HassService(this.hass);
+    this.mediaBrowseService = new MediaBrowseService(this.hass, this.hassService);
+    this.mediaControlService = new MediaControlService(this.hass, this.hassService);
     const mediaPlayers = getMediaPlayers(this.config, this.hass);
     const playerGroups = createPlayerGroups(mediaPlayers, this.hass, this.config);
     this.determineActivePlayer(playerGroups);
@@ -48,7 +55,7 @@ export class CustomSonosCard extends LitElement {
                 .hass=${this.hass}
                 .group=${group}
                 .config=${this.config}
-                .active=${this.active === group}
+                .activePlayer=${this.activePlayer === group}
                 @click="${() => {
                   this.setActivePlayer(group);
                   this.showVolumes = false;
@@ -63,10 +70,10 @@ export class CustomSonosCard extends LitElement {
           <sonos-player
             .hass=${this.hass}
             .config=${this.config}
-            .entityId=${this.active}
+            .entityId=${this.activePlayer}
             .main=${this}
-            .members=${playerGroups[this.active].members}
-            .service=${this.service}
+            .members=${playerGroups[this.activePlayer].members}
+            .mediaControlService=${this.mediaControlService}
           >
           </sonos-player>
           <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
@@ -75,22 +82,22 @@ export class CustomSonosCard extends LitElement {
             .config=${this.config}
             .groups=${playerGroups}
             .mediaPlayers=${mediaPlayers}
-            .active=${this.active}
-            .service=${this.service}
+            .activePlayer=${this.activePlayer}
+            .mediaControlService=${this.mediaControlService}
           >
           </sonos-grouping-buttons>
         </div>
 
         <div style=${this.sidebarStyle()} class="sidebar">
-          <div class="title">${this.config.favoritesTitle ? this.config.favoritesTitle : 'Favorites'}</div>
-          <sonos-favorite-buttons
+          <sonos-media-buttons
             .hass=${this.hass}
             .config=${this.config}
             .mediaPlayers=${mediaPlayers}
-            .active=${this.active}
-            .service=${this.service}
+            .activePlayer=${this.activePlayer}
+            .mediaControlService=${this.mediaControlService}
+            .mediaBrowseService=${this.mediaBrowseService}
           >
-          </sonos-favorite-buttons>
+          </sonos-media-buttons>
         </div>
       </div>
     `;
@@ -105,7 +112,7 @@ export class CustomSonosCard extends LitElement {
   }
 
   private sidebarStyle() {
-    return this.columnStyle(this.config.layout?.favorites, '2', '25%');
+    return this.columnStyle(this.config.layout?.mediaBrowser, '2', '25%');
   }
 
   private columnStyle(size: Size | undefined, order: string, defaultWidth: string) {
@@ -128,10 +135,10 @@ export class CustomSonosCard extends LitElement {
 
   determineActivePlayer(playerGroups: PlayerGroups) {
     const selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
-    if (this.active) {
-      this.setActivePlayer(this.active);
+    if (this.activePlayer) {
+      this.setActivePlayer(this.activePlayer);
     }
-    if (!this.active) {
+    if (!this.activePlayer) {
       for (const player in playerGroups) {
         if (player === selected_player) {
           this.setActivePlayer(player);
@@ -144,20 +151,31 @@ export class CustomSonosCard extends LitElement {
         }
       }
     }
-    if (!this.active) {
+    if (!this.activePlayer) {
       for (const player in playerGroups) {
         if (playerGroups[player].state === 'playing') {
           this.setActivePlayer(player);
         }
       }
     }
-    if (!this.active) {
+    if (!this.activePlayer) {
       this.setActivePlayer(Object.keys(playerGroups)[0]);
     }
   }
 
   setConfig(config: CardConfig) {
-    this.config = config;
+    this.config = JSON.parse(JSON.stringify(config));
+    // Handle deprecated configs
+    const deprecatedMessage = (deprecated: string, instead: string) =>
+      console.log('Sonos Card: ' + deprecated + ' configuration is deprecated. Please use ' + instead + ' instead.');
+    if (this.config.layout && !this.config.layout?.mediaBrowser && this.config.layout.favorites) {
+      deprecatedMessage('layout.favorites', 'layout.mediaBrowser');
+      this.config.layout.mediaBrowser = this.config.layout.favorites;
+    }
+    if (this.config.layout && !this.config.layout?.mediaItem && this.config.layout.favorite) {
+      deprecatedMessage('layout.favorite', 'layout.mediaItem');
+      this.config.layout.mediaItem = this.config.layout.favorite;
+    }
   }
 
   getCardSize() {
@@ -181,7 +199,10 @@ export class CustomSonosCard extends LitElement {
         --sonos-int-title-color: var(--sonos-title-color, var(--card-background-color));
         --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
         --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
-        --sonos-int-favorites-white-space: var(--sonos-favorites-multiline, nowrap);
+        --sonos-int-media-button-white-space: var(
+          --sonos-media-buttons-multiline,
+          var(--sonos-favorites-multiline, nowrap)
+        );
         --mdc-icon-size: 1rem;
         color: var(--sonos-int-color);
       }
@@ -218,7 +239,7 @@ export class CustomSonosCard extends LitElement {
   }
 
   setActivePlayer(player: string) {
-    this.active = player;
+    this.activePlayer = player;
     const newUrl = window.location.href.replaceAll(/#.*/g, '');
     window.location.href = `${newUrl}#${player}`;
   }
