@@ -54,12 +54,12 @@ class Group extends LitElement {
         border-radius: var(--sonos-int-border-radius);
         margin: 0.5rem 0;
         padding: 0.8rem;
-        border: thin solid var(--sonos-int-background-color);
+        border: var(--sonos-int-border-width) solid var(--sonos-int-background-color);
         background-color: var(--sonos-int-background-color);
         box-shadow: var(--sonos-int-box-shadow);
       }
       .group .wrap.active {
-        border: thin solid var(--sonos-int-accent-color);
+        border: var(--sonos-int-border-width) solid var(--sonos-int-accent-color);
       }
       .group .wrap.active .speakers {
         font-weight: bold;
@@ -72,16 +72,16 @@ class Group extends LitElement {
         padding: 0;
       }
       .speakers li:first-child::before {
-        content: "";
+        content: '';
         margin-right: 0;
       }
       .speakers li::before {
-        content: "+";
-        margin-right: .3em;
+        content: '+';
+        margin-right: 0.3em;
       }
       .speakers li {
         display: block;
-        margin-right: .3rem;
+        margin-right: 0.3rem;
         float: left;
         font-size: 1rem;
         color: var(--sonos-int-color);

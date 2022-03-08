@@ -31,7 +31,7 @@ class MediaButton extends LitElement {
       }
       .media-button {
         overflow: hidden;
-        border: 0.1rem solid var(--sonos-int-background-color);
+        border: var(--sonos-int-border-width) solid var(--sonos-int-background-color);
         display: flex;
         flex-direction: column;
         border-radius: var(--sonos-int-border-radius);
