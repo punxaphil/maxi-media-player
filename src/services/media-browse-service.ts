@@ -13,13 +13,13 @@ export default class MediaBrowseService {
 
   async getRoot(mediaPlayer: string): Promise<MediaPlayerItem[]> {
     const root = await this.hassService.browseMedia(mediaPlayer);
-    return root.children || [];
+    return root.children?.filter((item) => item.media_content_id !== 'media-source://tts') || [];
   }
 
   async getDir(mediaPlayer: string, dir: MediaPlayerItem): Promise<MediaPlayerItem[]> {
     try {
-      const root = await this.hassService.browseMedia(mediaPlayer, dir.media_content_type, dir.media_content_id);
-      return root.children || [];
+      const dirItem = await this.hassService.browseMedia(mediaPlayer, dir.media_content_type, dir.media_content_id);
+      return dirItem.children || [];
     } catch (e) {
       console.error(e);
       return [];
