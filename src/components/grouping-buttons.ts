@@ -24,25 +24,28 @@ class GroupingButtons extends LitElement {
     return html`
       <div class="members">
         ${this.activePlayer &&
-        this.mediaPlayers
-          .filter((entity) => entity !== this.activePlayer)
-          .map((entity) => {
-            if (this.groups[this.activePlayer].members[entity]) {
-              return html`
-                <div class="member" @click="${() => this.mediaControlService.unjoin(entity)}">
-                  <span>${this.groups[this.activePlayer].members[entity]} </span>
-                  <ha-icon .icon=${'mdi:minus'}></ha-icon>
-                </div>
-              `;
-            } else {
-              return html`
-                <div class="member" @click="${() => this.mediaControlService.join(this.activePlayer, entity)}">
-                  <span>${getEntityName(this.hass, this.config, entity)} </span>
-                  <ha-icon .icon=${'mdi:plus'}></ha-icon>
-                </div>
-              `;
-            }
-          })}
+        this.mediaPlayers.map((entity) => {
+          if (
+            this.groups[this.activePlayer].members[entity] ||
+            (entity === this.activePlayer && joinedPlayers.length > 0)
+          ) {
+            return html`
+              <div class="member" @click="${() => this.mediaControlService.unjoin(entity)}">
+                <span>${getEntityName(this.hass, this.config, entity)} </span>
+                <ha-icon .icon=${'mdi:minus'}></ha-icon>
+              </div>
+            `;
+          } else if (entity !== this.activePlayer) {
+            return html`
+              <div class="member" @click="${() => this.mediaControlService.join(this.activePlayer, entity)}">
+                <span>${getEntityName(this.hass, this.config, entity)} </span>
+                <ha-icon .icon=${'mdi:plus'}></ha-icon>
+              </div>
+            `;
+          } else {
+            return html``;
+          }
+        })}
         ${notJoinedPlayers.length
           ? html`
               <div
