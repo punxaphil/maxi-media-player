@@ -98,7 +98,15 @@ class MediaButtons extends LitElement {
     } else {
       allFavorites = allFavorites.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
     }
-    return allFavorites;
+    return [
+      ...allFavorites,
+      ...(this.config.customSources?.all?.map(MediaButtons.createSource) || []),
+      ...(this.config.customSources?.[this.activePlayer]?.map(MediaButtons.createSource) || []),
+    ];
+  }
+
+  private static createSource(source: MediaPlayerItem) {
+    return { ...source, can_play: true };
   }
 
   private static shuffleArray(array: MediaPlayerItem[]) {

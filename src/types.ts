@@ -22,6 +22,7 @@ export interface CardConfig extends LovelaceCardConfig {
   entities: string[];
   mediaArtworkOverrides?: MediaArtworkOverride[];
   selectedPlayer?: string;
+  customSources?: CustomSources;
 }
 
 export interface Layout {
@@ -46,6 +47,15 @@ export interface MediaArtworkOverride {
   mediaTitleEquals?: string;
   sizePercentage?: number;
   imageUrl?: string;
+}
+
+export interface CustomSources {
+  [name: string]: CustomSource[];
+}
+
+export interface CustomSource {
+  title: string;
+  thumbnail?: string;
 }
 
 export interface PlayerGroups {

@@ -82,6 +82,10 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
     imageUrl: >-
       https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
 selectedPlayer: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
+customSources: # Main usecase is probably to set tv media player to play TV sound
+  media_player.tv: # set this to 'all' to show the custom source for all players
+    - title: TV
+      thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
