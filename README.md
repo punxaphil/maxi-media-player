@@ -11,6 +11,7 @@ Thanks to https://github.com/DBuit and https://github.com/exetico for creating t
 * Media browser
 * Control individual volumes in a group
 * Artwork background
+* Possibility to override artwork
 * Shuffle and repeat mode
 * Theming
 * Configurable layout
@@ -71,11 +72,34 @@ layout:
   mediaItem:
     width: '20%' # Default 33%
     mobileWidth: '25%' # Default 16%
+mediaArtworkOverrides: # Show your own selected artwork if certain rules match
+  - ifMissing: true
+    imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
+  - mediaTitleEquals: TV
+    imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
+    sizePercentage: 40
+  - mediaTitleEquals: p4malmo-aac-192
+    imageUrl: >-
+      https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
   - media_player.sonos_livingroom
+```
+
+### Override artwork
+Example:
+![img/artwork_override.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/artwork_override.png)
+
+Config:
+```yaml
+...
+mediaArtworkOverrides:
+  - mediaTitleEquals: TV
+    imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
+    sizePercentage: 40
+...
 ```
 
 ## Layout

@@ -7,6 +7,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 
 import { CustomSonosCard } from '../main';
 import MediaControlService from '../services/media-control-service';
+import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
 
 class Player extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -29,9 +30,10 @@ class Player extends LitElement {
     return html`
       <div
         class="container"
-        style="${activeStateObj.attributes.entity_picture
-          ? `background-image: url(${activeStateObj.attributes.entity_picture});`
-          : ''}"
+        style="${this.backgroundImageStyle(
+          activeStateObj.attributes.entity_picture,
+          activeStateObj.attributes.media_title,
+        )}"
       >
         <div class="body">
           ${activeStateObj.attributes.media_title
@@ -164,6 +166,29 @@ class Player extends LitElement {
     }
   }
 
+  private backgroundImageStyle(entityImage?: string, mediaTitle?: string) {
+    let style: StyleInfo = {
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundImage: entityImage ? `url(${entityImage})` : '',
+    };
+    const overrides = this.config.mediaArtworkOverrides;
+    if (mediaTitle && overrides) {
+      const override = overrides.find(
+        (value) => (!entityImage && value.ifMissing) || mediaTitle === value.mediaTitleEquals,
+      );
+      if (override) {
+        style = {
+          ...style,
+          backgroundImage: override.imageUrl ? `url(${override.imageUrl})` : style.backgroundImage,
+          backgroundSize: override.sizePercentage ? `${override.sizePercentage}%` : style.backgroundSize,
+        };
+      }
+    }
+    return styleMap(style);
+  }
+
   static get styles() {
     return css`
       .container {
@@ -174,9 +199,6 @@ class Player extends LitElement {
         box-shadow: var(--sonos-int-box-shadow);
         padding-bottom: 100%;
         border: var(--sonos-int-border-width) solid var(--sonos-int-background-color);
-        background-position-x: center;
-        background-repeat: no-repeat;
-        background-size: cover;
       }
 
       .body {
