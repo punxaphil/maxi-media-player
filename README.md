@@ -81,6 +81,7 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
   - mediaTitleEquals: p4malmo-aac-192
     imageUrl: >-
       https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
+selectedPlayer: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
@@ -135,7 +136,9 @@ Yet another example (with different config):
 ![img/layout_2.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/layout_2.png)
 
 ## Theme variables
-The following variables are available and can be set in your theme to change the appearence of the card.
+The following variables are available and can be set in your theme to change the appearance of the card.
+
+Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
 
 | Name                                | Default                        |
 |-------------------------------------|--------------------------------|
@@ -176,3 +179,5 @@ The volume level slider is dynamically adjusting its scale. If volume is below 2
 
 ## Linking to specific player
 Append `#media_player.my_sonos_player` to page URL to have that player selected. 
+
+If `selectedPlayer` is configured for the card, the url param will be ignored. See more in in the Usage section above.

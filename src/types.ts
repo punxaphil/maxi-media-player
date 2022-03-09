@@ -21,6 +21,7 @@ export interface CardConfig extends LovelaceCardConfig {
   layout?: Layout;
   entities: string[];
   mediaArtworkOverrides?: MediaArtworkOverride[];
+  selectedPlayer?: string;
 }
 
 export interface Layout {

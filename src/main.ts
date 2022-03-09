@@ -134,7 +134,9 @@ export class CustomSonosCard extends LitElement {
   }
 
   determineActivePlayer(playerGroups: PlayerGroups) {
-    const selected_player = window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '';
+    const selected_player =
+      this.config.selectedPlayer ||
+      (window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '');
     if (this.activePlayer) {
       this.setActivePlayer(this.activePlayer);
     }
