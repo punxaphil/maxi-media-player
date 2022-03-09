@@ -10,7 +10,7 @@ class MediaButton extends LitElement {
       <div class="media-button-wrapper">
         <div
           class="media-button ${this.mediaItem.thumbnail || this.mediaItem.can_expand ? 'image' : ''}"
-          style="${this.mediaItem.thumbnail ? `background-image: url(${this.mediaItem.thumbnail});` : ''};"
+          style="${this.getThumbnail()};"
         >
           <div class="title ${this.mediaItem.thumbnail || this.mediaItem.can_expand ? 'title-with-image' : ''}">
             ${this.mediaItem.title}
@@ -21,6 +21,14 @@ class MediaButton extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  private getThumbnail() {
+    let thumbnail = this.mediaItem.thumbnail;
+    thumbnail = thumbnail?.match(/https:\/\/brands.home-assistant.io\/.+\/logo.png/)
+      ? thumbnail?.replace('logo.png', 'icon.png')
+      : thumbnail;
+    return thumbnail ? `background-image: url(${thumbnail});` : '';
   }
 
   static get styles() {
