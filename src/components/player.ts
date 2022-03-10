@@ -108,7 +108,7 @@ class Player extends LitElement {
     `;
   }
 
-  getVolumeTemplate(entity: string, name: string, isGroup: boolean, isGroupMember: boolean, members = {}) {
+  getVolumeTemplate(entity: string, name: string, isGroup: boolean, isGroupMember: boolean, members?: Members) {
     const volume = 100 * this.hass.states[entity].attributes.volume_level;
     let max = 100;
     let inputColor = 'rgb(211, 3, 32)';
@@ -116,13 +116,16 @@ class Player extends LitElement {
       max = 30;
       inputColor = 'rgb(72,187,14)';
     }
-    const volumeMuted = this.hass.states[entity].attributes.is_volume_muted;
+    const volumeMuted =
+      members && Object.keys(members).length
+        ? !Object.keys(members).some((member) => !this.hass.states[member].attributes.is_volume_muted)
+        : this.hass.states[entity].attributes.is_volume_muted;
     return html`
       <div class="volume ${isGroupMember ? 'group-member-volume' : ''}">
         ${name ? html` <div class="volume-name">${name}</div>` : ''}
         <ha-icon
           style="--mdc-icon-size: 1.25rem; align-self: center"
-          @click="${() => this.mediaControlService.volumeMute(entity, members, !volumeMuted)}"
+          @click="${() => this.mediaControlService.volumeMute(entity, !volumeMuted, members)}"
           .icon=${volumeMuted ? 'mdi:volume-mute' : 'mdi:volume-high'}
         ></ha-icon>
         <div class="volume-slider">
@@ -135,7 +138,7 @@ class Player extends LitElement {
             type="range"
             .value="${volume}"
             @change="${(e: Event) =>
-              this.mediaControlService.volumeSet(entity, members, (e?.target as HTMLInputElement)?.value)}"
+              this.mediaControlService.volumeSet(entity, (e?.target as HTMLInputElement)?.value, members)}"
             @click="${(e: Event) =>
               this.volumeClicked(volume, Number.parseInt((e?.target as HTMLInputElement)?.value), isGroup)}"
             min="0"

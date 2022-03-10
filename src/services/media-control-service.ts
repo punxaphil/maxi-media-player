@@ -67,7 +67,7 @@ export default class MediaControlService {
     }
   }
 
-  volumeSet(entity_id: string, members: Members, volume: string) {
+  volumeSet(entity_id: string, volume: string, members?: Members) {
     const volume_level = Number.parseInt(volume) / 100;
 
     this.hassService.callMediaService('volume_set', { entity_id, volume_level: volume_level });
@@ -77,7 +77,7 @@ export default class MediaControlService {
     }
   }
 
-  volumeMute(entity_id: string, members: Members, is_volume_muted: boolean) {
+  volumeMute(entity_id: string, is_volume_muted: boolean, members?: Members) {
     this.hassService.callMediaService('volume_mute', { entity_id, is_volume_muted });
 
     for (const entity_id in members) {
