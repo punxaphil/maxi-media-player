@@ -99,9 +99,9 @@ class MediaButtons extends LitElement {
       allFavorites = allFavorites.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
     }
     return [
-      ...allFavorites,
-      ...(this.config.customSources?.all?.map(MediaButtons.createSource) || []),
       ...(this.config.customSources?.[this.activePlayer]?.map(MediaButtons.createSource) || []),
+      ...(this.config.customSources?.all?.map(MediaButtons.createSource) || []),
+      ...allFavorites,
     ];
   }
 
