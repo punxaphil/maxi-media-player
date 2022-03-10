@@ -19,7 +19,7 @@ export interface CardConfig extends LovelaceCardConfig {
   entityNameRegexToReplace?: string;
   entityNameReplacement?: string;
   layout?: Layout;
-  entities: string[];
+  entities?: string[];
   mediaArtworkOverrides?: MediaArtworkOverride[];
   selectedPlayer?: string;
   customSources?: CustomSources;
