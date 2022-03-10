@@ -13,7 +13,11 @@ export default class MediaBrowseService {
 
   async getRoot(mediaPlayer: string): Promise<MediaPlayerItem[]> {
     const root = await this.hassService.browseMedia(mediaPlayer);
-    return root.children?.filter((item) => item.media_content_id !== 'media-source://tts') || [];
+    return (
+      root.children?.filter((item) => {
+        return ['media-source://tts', 'media-source://camera'].indexOf(item.media_content_id || '') === -1;
+      }) || []
+    );
   }
 
   async getDir(mediaPlayer: string, dir: MediaPlayerItem): Promise<MediaPlayerItem[]> {
