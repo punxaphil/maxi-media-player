@@ -131,7 +131,9 @@ class Player extends LitElement {
         <div class="volume-slider">
           <div class="volume-level">
             <div style="flex: ${volume}">0%</div>
-            ${volume > 0 ? html` <div style="flex: 2">${Math.round(volume)}%</div>` : ''}
+            ${volume > 0 && volume < 95
+              ? html` <div style="flex: 2; font-weight: bold; font-size: 12px;">${Math.round(volume)}%</div>`
+              : ''}
             <div style="flex: ${max - volume};text-align: right">${max}%</div>
           </div>
           <input
