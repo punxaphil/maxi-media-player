@@ -86,6 +86,7 @@ customSources: # Main usecase is probably to set tv media player to play TV soun
   media_player.tv: # set this to 'all' to show the custom source for all players
     - title: TV
       thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
+backgroundBehindButtonSections: true # default is false, which means no background behind the different button sections 
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
@@ -106,6 +107,13 @@ mediaArtworkOverrides:
     sizePercentage: 40
 ...
 ```
+
+### Background behind button sections
+```yaml
+backgroundBehindButtonSections: true
+```
+![img/background-behind-button-sections.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/background-behind-button-sections.png)
+
 
 ## Layout
 As seen in the yaml example above, layout can be controlled for the major sections.

@@ -6,8 +6,9 @@ import { CardConfig, MediaPlayerItem } from '../types';
 import { getWidth } from '../utils';
 import MediaControlService from '../services/media-control-service';
 import { until } from 'lit-html/directives/until.js';
+import sharedStyle from '../sharedStyle';
 
-class MediaButtons extends LitElement {
+class MediaBrowser extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
   @property() activePlayer!: string;
@@ -22,7 +23,7 @@ class MediaButtons extends LitElement {
 
   render() {
     return html`
-      <div>
+      <div class="${this.config.backgroundBehindButtonSections ? 'button-section-background' : ''}">
         <div class="header">
           <div class="play-dir">
             ${this.currentDir?.can_play
@@ -53,7 +54,7 @@ class MediaButtons extends LitElement {
         ${this.activePlayer !== '' &&
         until(
           (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
-            const itemsWithoutImage = MediaButtons.itemsWithoutImage(items);
+            const itemsWithoutImage = MediaBrowser.itemsWithoutImage(items);
             const mediaItemWidth = itemsWithoutImage
               ? getWidth(this.config, '33%', '16%', this.config.layout?.mediaItem)
               : '100%';
@@ -94,13 +95,13 @@ class MediaButtons extends LitElement {
   private async getAllFavorites() {
     let allFavorites = await this.mediaBrowseService.getAllFavorites(this.mediaPlayers);
     if (this.config.shuffleFavorites) {
-      MediaButtons.shuffleArray(allFavorites);
+      MediaBrowser.shuffleArray(allFavorites);
     } else {
       allFavorites = allFavorites.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
     }
     return [
-      ...(this.config.customSources?.[this.activePlayer]?.map(MediaButtons.createSource) || []),
-      ...(this.config.customSources?.all?.map(MediaButtons.createSource) || []),
+      ...(this.config.customSources?.[this.activePlayer]?.map(MediaBrowser.createSource) || []),
+      ...(this.config.customSources?.all?.map(MediaBrowser.createSource) || []),
       ...allFavorites,
     ];
   }
@@ -127,48 +128,51 @@ class MediaButtons extends LitElement {
   }
 
   static get styles() {
-    return css`
-      :host {
-        text-align: center;
-      }
-      .header {
-        margin: 0.5rem 0;
-        font-weight: bold;
-        font-size: larger;
-        color: var(--sonos-int-title-color);
-        display: flex;
-        justify-content: space-between;
-      }
-      .header div {
-        flex: 1;
-        --mdc-icon-size: 1.5rem;
-      }
-      .media-buttons {
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .no-thumbs {
-        flex-direction: column;
-      }
-      .browse {
-        text-align: right;
-        padding-right: 0.5rem;
-        margin-left: -0.5rem;
-      }
-      .play-dir {
-        text-align: left;
-        padding-right: -0.5rem;
-        margin-left: 0.5rem;
-      }
-      .browse:focus,
-      .browse:hover,
-      .play-dir:focus,
-      .play-dir:hover {
-        color: var(--sonos-int-accent-color);
-      }
-    `;
+    return [
+      sharedStyle,
+      css`
+        :host {
+          text-align: center;
+        }
+        .header {
+          margin: 0.5rem 0;
+          font-weight: bold;
+          font-size: larger;
+          color: var(--sonos-int-title-color);
+          display: flex;
+          justify-content: space-between;
+        }
+        .header div {
+          flex: 1;
+          --mdc-icon-size: 1.5rem;
+        }
+        .media-buttons {
+          padding: 0;
+          display: flex;
+          flex-wrap: wrap;
+        }
+        .no-thumbs {
+          flex-direction: column;
+        }
+        .browse {
+          text-align: right;
+          padding-right: 0.5rem;
+          margin-left: -0.5rem;
+        }
+        .play-dir {
+          text-align: left;
+          padding-right: -0.5rem;
+          margin-left: 0.5rem;
+        }
+        .browse:focus,
+        .browse:hover,
+        .play-dir:focus,
+        .play-dir:hover {
+          color: var(--sonos-int-accent-color);
+        }
+      `,
+    ];
   }
 }
 
-customElements.define('sonos-media-buttons', MediaButtons);
+customElements.define('sonos-media-browser', MediaBrowser);
