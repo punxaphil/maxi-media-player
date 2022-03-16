@@ -40,71 +40,73 @@ export class CustomSonosCard extends LitElement {
     const playerGroups = createPlayerGroups(mediaPlayers, this.hass, this.config);
     this.determineActivePlayer(playerGroups);
     return html`
-      ${this.config.name
-        ? html`
-            <div class="header">
-              <div class="name">${this.config.name}</div>
+      <ha-card>
+        ${this.config.name
+          ? html`
+              <div class="header">
+                <div class="name">${this.config.name}</div>
+              </div>
+            `
+          : ''}
+        <div class="content">
+          <div style=${this.groupsStyle()} class="groups">
+            <div class="${this.config.backgroundBehindButtonSections ? 'button-section-background' : ''}">
+              <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
+              ${Object.keys(playerGroups).map(
+                (group) => html`
+                  <sonos-group
+                    .hass=${this.hass}
+                    .group=${group}
+                    .config=${this.config}
+                    .activePlayer=${this.activePlayer === group}
+                    @click="${() => {
+                      this.setActivePlayer(group);
+                      this.showVolumes = false;
+                    }}"
+                  >
+                  </sonos-group>
+                `,
+              )}
             </div>
-          `
-        : ''}
-      <div class="content">
-        <div style=${this.groupsStyle()} class="groups">
-          <div class="${this.config.backgroundBehindButtonSections ? 'button-section-background' : ''}">
-            <div class="title">${this.config.groupsTitle ? this.config.groupsTitle : 'Groups'}</div>
-            ${Object.keys(playerGroups).map(
-              (group) => html`
-                <sonos-group
-                  .hass=${this.hass}
-                  .group=${group}
-                  .config=${this.config}
-                  .activePlayer=${this.activePlayer === group}
-                  @click="${() => {
-                    this.setActivePlayer(group);
-                    this.showVolumes = false;
-                  }}"
-                >
-                </sonos-group>
-              `,
-            )}
           </div>
-        </div>
 
-        <div style=${this.playersStyle()} class="players">
-          <sonos-player
-            .hass=${this.hass}
-            .config=${this.config}
-            .entityId=${this.activePlayer}
-            .main=${this}
-            .members=${playerGroups[this.activePlayer].members}
-            .mediaControlService=${this.mediaControlService}
-          >
-          </sonos-player>
-          <div class="${this.config.backgroundBehindButtonSections ? 'button-section-background' : ''}">
-            <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
-            <sonos-grouping-buttons
+          <div style=${this.playersStyle()} class="players">
+            <sonos-player
               .hass=${this.hass}
               .config=${this.config}
-              .groups=${playerGroups}
+              .entityId=${this.activePlayer}
+              .main=${this}
+              .members=${playerGroups[this.activePlayer].members}
+              .mediaControlService=${this.mediaControlService}
+            >
+            </sonos-player>
+            <div class="${this.config.backgroundBehindButtonSections ? 'button-section-background' : ''}">
+              <div class="title">${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}</div>
+              <sonos-grouping-buttons
+                .hass=${this.hass}
+                .config=${this.config}
+                .groups=${playerGroups}
+                .mediaPlayers=${mediaPlayers}
+                .activePlayer=${this.activePlayer}
+                .mediaControlService=${this.mediaControlService}
+              >
+              </sonos-grouping-buttons>
+            </div>
+          </div>
+
+          <div style=${this.sidebarStyle()} class="sidebar">
+            <sonos-media-browser
+              .hass=${this.hass}
+              .config=${this.config}
               .mediaPlayers=${mediaPlayers}
               .activePlayer=${this.activePlayer}
               .mediaControlService=${this.mediaControlService}
+              .mediaBrowseService=${this.mediaBrowseService}
             >
-            </sonos-grouping-buttons>
+            </sonos-media-browser>
           </div>
         </div>
-
-        <div style=${this.sidebarStyle()} class="sidebar">
-          <sonos-media-browser
-            .hass=${this.hass}
-            .config=${this.config}
-            .mediaPlayers=${mediaPlayers}
-            .activePlayer=${this.activePlayer}
-            .mediaControlService=${this.mediaControlService}
-            .mediaBrowseService=${this.mediaBrowseService}
-          >
-          </sonos-media-browser>
-        </div>
-      </div>
+      </ha-card>
     `;
   }
 
@@ -194,27 +196,34 @@ export class CustomSonosCard extends LitElement {
       sharedStyle,
       css`
         :host {
-          --sonos-int-box-shadow: var(
-            --ha-card-box-shadow,
-            0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-            0px 1px 1px 0px rgba(0, 0, 0, 0.14),
-            0px 1px 3px 0px rgba(0, 0, 0, 0.12)
+          --sonos-int-background-color: var(
+            --sonos-background-color,
+            var(--ha-card-background, var(--card-background-color, white))
           );
-          --sonos-int-background-color: var(--sonos-background-color, var(--card-background-color));
+          --sonos-int-ha-card-background-color: var(
+            --sonos-ha-card-background-color,
+            var(--ha-card-background, var(--card-background-color, white))
+          );
           --sonos-int-player-section-background: var(--sonos-player-section-background, #ffffffe6);
           --sonos-int-color: var(--sonos-color, var(--secondary-text-color));
-          --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--primary-text-color));
+          --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--secondary-text-color));
           --sonos-int-accent-color: var(--sonos-accent-color, var(--accent-color));
-          --sonos-int-title-color: var(--sonos-title-color, var(--card-background-color));
+          --sonos-int-title-color: var(--sonos-title-color, var(--secondary-text-color));
           --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
           --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
           --sonos-int-media-button-white-space: var(
             --sonos-media-buttons-multiline,
             var(--sonos-favorites-multiline, nowrap)
           );
-          --sonos-int-button-section-background-color: var(--sonos-button-section-background-color, #626b75cc);
+          --sonos-int-button-section-background-color: var(
+            --sonos-button-section-background-color,
+            var(--card-background-color)
+          );
           --mdc-icon-size: 1rem;
+        }
+        ha-card {
           color: var(--sonos-int-color);
+          background: var(--sonos-int-ha-card-background-color);
         }
         .header {
           font-size: 1.2rem;

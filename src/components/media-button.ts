@@ -41,13 +41,12 @@ class MediaButton extends LitElement {
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
         overflow: hidden;
-        border: var(--sonos-int-border-width) solid var(--sonos-int-background-color);
+        border: var(--sonos-int-border-width) solid var(--sonos-int-color);
         display: flex;
         flex-direction: column;
         border-radius: var(--sonos-int-border-radius);
         justify-content: center;
         background-color: var(--sonos-int-background-color);
-        box-shadow: var(--sonos-int-box-shadow);
       }
       .image {
         background-size: contain;
@@ -72,6 +71,7 @@ class MediaButton extends LitElement {
       .media-button:focus,
       .media-button:hover {
         border-color: var(--sonos-int-accent-color);
+        color: var(--sonos-int-accent-color);
       }
       .folder {
         margin-bottom: -120%;

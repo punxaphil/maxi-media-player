@@ -152,18 +152,24 @@ The following variables are available and can be set in your theme to change the
 
 Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
 
-| Name                                      | Default                        |
-|-------------------------------------------|--------------------------------|
-| `--sonos-background-color`                | `var(--card-background-color)` |
-| `--sonos-player-section-background`       | `#ffffffe6`                    |
-| `--sonos-color`                           | `var(--secondary-text-color)`  |
-| `--sonos-artist-album-text-color`         | `var(--primary-text-color)`    |
-| `--sonos-accent-color`                    | `var(--accent-color)`          |
-| `--sonos-title-color`                     | `var(--card-background-color)` |
-| `--sonos-border-radius`                   | `0.25rem`                      |
-| `--sonos-border-width`                    | `0.125rem`                     |
-| `--sonos-media-buttons-multiline`         | `nowrap`                       |
-| `--sonos-button-section-background-color` | `#626b75cc`                    |
+| Name                                      | Default                                                           |
+|-------------------------------------------|-------------------------------------------------------------------|
+| `--sonos-background-color`                | `var(--ha-card-background, var(--card-background-color, white))`  |
+| `--sonos-ha-card-background-color`        | `var(--ha-card-background, var(--card-background-color, white))`  |
+| `--sonos-player-section-background`       | `#ffffffe6`                                                       |
+| `--sonos-color`                           | `var(--secondary-text-color)`                                     |
+| `--sonos-artist-album-text-color`         | `var(--secondary-text-color)`                                       |
+| `--sonos-accent-color`                    | `var(--accent-color)`                                             |
+| `--sonos-title-color`                     | `var(--secondary-text-color)`                                    |
+| `--sonos-border-radius`                   | `0.25rem`                                                         |
+| `--sonos-border-width`                    | `0.125rem`                                                        |
+| `--sonos-media-buttons-multiline`         | `nowrap`                                                          |
+| `--sonos-button-section-background-color` | `var(--card-background-color)`                                                       |
+
+### Default theme
+Without changing any theme variables:
+![img/default_theme.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/default_theme.png)
+
 
 ### Example with rounded corners
 Here is a themed version with more rounded corners,different accent color and no transparency (thanks @giuliandenicola1).
