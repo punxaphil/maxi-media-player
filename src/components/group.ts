@@ -12,9 +12,10 @@ class Group extends LitElement {
 
   render() {
     const stateObj = this.hass.states[this.group];
-    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${
-      stateObj.attributes.media_title || ''
-    }`.replaceAll(/^ - /g, '');
+    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replace(
+      /^ - /g,
+      '',
+    );
     return html`
       <div class="group">
         <div class="wrap ${this.activePlayer ? 'active' : ''}">

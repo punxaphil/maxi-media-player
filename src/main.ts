@@ -143,7 +143,7 @@ export class CustomSonosCard extends LitElement {
   determineActivePlayer(playerGroups: PlayerGroups) {
     const selected_player =
       this.config.selectedPlayer ||
-      (window.location.href.indexOf('#') > 0 ? window.location.href.replaceAll(/.*#/g, '') : '');
+      (window.location.href.indexOf('#') > 0 ? window.location.href.replace(/.*#/g, '') : '');
     if (this.activePlayer) {
       this.setActivePlayer(this.activePlayer);
     }
@@ -260,7 +260,7 @@ export class CustomSonosCard extends LitElement {
 
   setActivePlayer(player: string) {
     this.activePlayer = player;
-    const newUrl = window.location.href.replaceAll(/#.*/g, '');
+    const newUrl = window.location.href.replace(/#.*/g, '');
     window.location.href = `${newUrl}#${player}`;
   }
 }
