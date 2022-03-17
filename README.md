@@ -178,6 +178,8 @@ Here is a themed version with more rounded corners,different accent color and no
 ### Example with dark theme
 ```yaml
 sonos-background-color: var(--secondary-background-color)
+sonos-ha-card-background-color: none
+ha-card-box-shadow: none
 sonos-artist-album-text-color: rgb(198, 203, 210)
 sonos-title-color: rgb(198, 203, 210)
 sonos-color: rgb(198, 203, 210)
