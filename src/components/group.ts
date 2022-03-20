@@ -27,7 +27,9 @@ class Group extends LitElement {
           <div class="play">
             ${currentTrack
               ? html` <div class="content">
-                    <span class="currentTrack">${currentTrack}</span>
+                    <span class="currentTrack" style="display: ${this.config.hideGroupCurrentTrack ? 'none' : 'inline'}"
+                      >${currentTrack}</span
+                    >
                   </div>
                   ${stateObj.state === 'playing'
                     ? html`
