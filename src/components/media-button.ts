@@ -51,6 +51,8 @@ class MediaButton extends LitElement {
       }
       .image {
         background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
         position: relative;
         padding-bottom: calc(100% - (var(--sonos-int-border-width) * 2));
       }
