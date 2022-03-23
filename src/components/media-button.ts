@@ -1,21 +1,20 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { MediaPlayerItem } from '../types';
+import { CardConfig, MediaPlayerItem } from '../types';
 
 class MediaButton extends LitElement {
   @property() mediaItem!: MediaPlayerItem;
+  @property() config!: CardConfig;
 
   render() {
+    const thumbnail = this.getThumbnail();
     return html`
       <div class="media-button-wrapper">
-        <div
-          class="media-button ${this.mediaItem.thumbnail || this.mediaItem.can_expand ? 'image' : ''}"
-          style="${this.getThumbnail()};"
-        >
-          <div class="title ${this.mediaItem.thumbnail || this.mediaItem.can_expand ? 'title-with-image' : ''}">
+        <div class="media-button ${thumbnail || this.mediaItem.can_expand ? 'image' : ''}" style="${thumbnail}">
+          <div class="title ${thumbnail || this.mediaItem.can_expand ? 'title-with-image' : ''}">
             ${this.mediaItem.title}
           </div>
-          ${this.mediaItem.can_expand && !this.mediaItem.thumbnail
+          ${this.mediaItem.can_expand && !thumbnail
             ? html` <ha-icon class="folder" .icon=${'mdi:folder-music'}></ha-icon>`
             : ''}
         </div>
@@ -25,9 +24,11 @@ class MediaButton extends LitElement {
 
   private getThumbnail() {
     let thumbnail = this.mediaItem.thumbnail;
-    thumbnail = thumbnail?.match(/https:\/\/brands.home-assistant.io\/.+\/logo.png/)
-      ? thumbnail?.replace('logo.png', 'icon.png')
-      : thumbnail;
+    if (!thumbnail) {
+      thumbnail = this.config.customThumbnailIfMissing?.[this.mediaItem.title] || '';
+    } else if (thumbnail?.match(/https:\/\/brands.home-assistant.io\/.+\/logo.png/)) {
+      thumbnail = thumbnail?.replace('logo.png', 'icon.png');
+    }
     return thumbnail ? `background-image: url(${thumbnail});` : '';
   }
 
