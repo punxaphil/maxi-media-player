@@ -89,6 +89,7 @@ customThumbnailIfMissing: # for the media browser section
   Legendary: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
 backgroundBehindButtonSections: true # default is false, which means no background behind the different button sections
 hideGroupCurrentTrack: true # default is false, which means song/track info for groups will be shown
+skipAdditionalPlayerSwitches: true # default is false, which means additional switches will be shown in player if available (such as crossfade button)
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
