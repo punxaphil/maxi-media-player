@@ -1,7 +1,5 @@
-# Sonos card for Home Assistant's Lovelace UI
+# Sonos card for Home Assistant's Dashboard UI
 Customized media player for sonos speakers!
-
-Thanks to https://github.com/DBuit and https://github.com/exetico for creating this card.
 
 ## Features:
 
@@ -41,26 +39,26 @@ resources:
 ```
 
 ## Usage
-To get the full width of the Sonos Card, please make sure to use `panel` mode in your Lovelace view. 
-Read more here: https://www.home-assistant.io/lovelace/views/
+To get the full width of the Sonos Card, please make sure to use `panel` mode in your Dashboard view.
+Read more here: https://www.home-assistant.io/dashboards/panel/
 
 After that add a card to the view, and in YAML mode add the following (configured according to your preferences):
 ```yaml
 type: custom:custom-sonos-card
 # Optional settings:
-name: '' 
-groupsTitle: '' 
-groupingTitle: '' 
-mediaTitle: '' 
-headerImage: '' 
-shuffleFavorites: false 
-noMediaText: 'No media selected' 
+name: ''
+groupsTitle: ''
+groupingTitle: ''
+mediaTitle: ''
+headerImage: ''
+shuffleFavorites: false
+noMediaText: 'No media selected'
 allVolumesText: 'All volumes'
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
 layout:
   mobileThresholdPx: 500 # Default is 650
-  groups: 
+  groups:
     width: '20%' # Default 25%
     mobileWidth: '80%' # Default 100%
   players:
@@ -239,6 +237,6 @@ The volume level slider is dynamically adjusting its scale. If volume is below 2
 
 
 ## Linking to specific player
-Append `#media_player.my_sonos_player` to page URL to have that player selected. 
+Append `#media_player.my_sonos_player` to page URL to have that player selected.
 
 If `selectedPlayer` is configured for the card, the url param will be ignored. See more in in the Usage section above.
