@@ -11,6 +11,7 @@ import { StyleInfo } from 'lit-html/directives/style-map.js';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { until } from 'lit-html/directives/until.js';
 import HassService from '../services/hass-service';
+import { when } from 'lit/directives/when.js';
 
 class Player extends LitElement {
   @property() main!: CustomSonosCard;
@@ -40,18 +41,21 @@ class Player extends LitElement {
     return html`
       <div style="${this.containerStyle(this.hass.states[this.entityId])}">
         <div style="${this.bodyStyle()}">
-          ${entityAttributes.media_title
-            ? html`
-                <div style="${this.infoStyle()}">
-                  <div style="${this.artistAlbumStyle()}">${entityAttributes.media_album_name}</div>
-                  <div style="${this.songStyle()}">${entityAttributes.media_title}</div>
-                  <div style="${this.artistAlbumStyle()}">${entityAttributes.media_artist}</div>
-                </div>
-              `
-            : html` <div style="${this.noMediaTextStyle()}">
-                ${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}
-              </div>`}
-          <div style="${this.footerStyle()}">
+          ${when(!this.main.showVolumes, () =>
+            entityAttributes.media_title
+              ? html`
+                  <div style="${this.infoStyle()}">
+                    <div style="${this.artistAlbumStyle()}">${entityAttributes.media_album_name}</div>
+                    <div style="${this.songStyle()}">${entityAttributes.media_title}</div>
+                    <div style="${this.artistAlbumStyle()}">${entityAttributes.media_artist}</div>
+                  </div>
+                `
+              : html` <div style="${this.noMediaTextStyle()}">
+                  ${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}
+                </div>`,
+          )}
+          <div style="${this.footerStyle()}" id="footer">
+            <div ?hidden="${!this.main.showVolumes}">${allVolumes}</div>
             ${this.getVolumeTemplate(
               this.entityId,
               this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
@@ -59,7 +63,6 @@ class Player extends LitElement {
               false,
               this.members,
             )}
-            <div ?hidden="${!this.main.showVolumes}">${allVolumes}</div>
             <div style="${this.iconsStyle()}">
               ${this.clickableIcon('mdi:volume-minus', () => this.volumeDownClicked())}
               ${this.clickableIcon('mdi:skip-backward', () => this.mediaControlService.prev(this.entityId))}
@@ -198,11 +201,21 @@ class Player extends LitElement {
     this.main.showVolumes = !this.main.showVolumes;
     clearTimeout(this.timerToggleShowAllVolumes);
     if (this.main.showVolumes) {
+      this.scrollToBottomOfFooter();
       this.timerToggleShowAllVolumes = window.setTimeout(() => {
         this.main.showVolumes = false;
         window.scrollTo(0, 0);
       }, 30000);
     }
+  }
+
+  private scrollToBottomOfFooter() {
+    setTimeout(() => {
+      const footer = this.renderRoot?.querySelector('#footer');
+      if (footer) {
+        footer.scrollTop = footer.scrollHeight;
+      }
+    });
   }
 
   private containerStyle(entityState: HassEntity) {
@@ -244,7 +257,7 @@ class Player extends LitElement {
       inset: '0px',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'space-between',
+      justifyContent: this.main.showVolumes ? 'flex-end' : 'space-between',
     });
   }
 
