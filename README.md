@@ -187,6 +187,25 @@ sonos-accent-color: rgb(198, 203, 210)
 
 (Thanks to BeastHouse)
 
+### Dark theme with focus on favorites
+"I’ve become more reliant on playlists/favorites. I spent some time playing with the settings today that give a more ‘favorites’ focused layout that still looks good on mobile while providing more usable screen real estate on desktop." - Sergeantpup
+![dark-favorites.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/dark-favorites.png)
+```yaml
+layout:
+  mobileThresholdPx: 500
+  groups:
+    width: 20%
+    mobileWidth: 100%
+  players:
+    width: 30%
+    mobileWidth: 100%
+  favorites:
+    width: 50%
+    mobileWidth: 100%
+  favorite:
+    width: 15%
+    mobileWidth: 25%
+```
 ## CSS Styling
 For maximum control of look and feel, define your style with CSS under `styles`.
 
