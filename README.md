@@ -169,7 +169,27 @@ Without changing any theme variables:
 
 
 ### Example with rounded corners
-Here is a themed version with more rounded corners,different accent color and no transparency (thanks @giuliandenicola1).
+
+1. Add the following to your configuration.yaml
+```
+frontend:
+  themes:
+    rounded:
+      sonos-border-radius: 20px
+      sonos-background-color: white
+      sonos-ha-card-background-color: '#eeeeee'
+      sonos-color: black
+      sonos-artist-album-text-color: gray
+      sonos-song-text-color: black
+      sonos-accent-color: green
+      sonos-title-color: black
+      sonos-border-width: 0rem
+      sonos-button-section-background-color: '#ffffff00'
+```
+
+2. Then select theme `rounded`
+3. This will give you:
+
 ![img/themed.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/themed.png)
 
 ### Example with dark theme
@@ -233,7 +253,7 @@ styles:
     color: '#005cbb'
     font-family: Times New Roman
     font-weight: 900
-  mediaBrowser:
+  media-browser:
     order: 0
   member:
     background: '#005cbb'
