@@ -190,7 +190,7 @@ frontend:
 2. Then select theme `rounded`
 3. This will give you:
 
-![img/themed.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/themed.png)
+![img/rounded.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/rounded.png)
 
 ### Example with dark theme
 ```yaml
