@@ -91,7 +91,7 @@ backgroundBehindButtonSections: true # default is false, which means no backgrou
 hideGroupCurrentTrack: true # default is false, which means song/track info for groups will be shown
 skipAdditionalPlayerSwitches: true # default is false, which means additional switches will be shown in player if available (such as crossfade button)
 disableDynamicVolumeSlider: true # default is false. See more in section further down.
-entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
+entities: # Entities are automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
