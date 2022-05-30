@@ -76,6 +76,8 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
   - mediaTitleEquals: TV
     imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
     sizePercentage: 40
+  - mediaContentIdEquals: "x-sonos-htastream:RINCON_949F3EC2E15B01400:spdif"
+    imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108783.png
   - mediaTitleEquals: p4malmo-aac-192
     imageUrl: >-
       https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
