@@ -136,7 +136,9 @@ class Player extends LitElement {
     let max = 100;
     let inputColor = 'rgb(211, 3, 32)';
     if (volume < 20) {
-      max = 30;
+      if (!this.config.disableDynamicVolumeSlider) {
+        max = 30;
+      }
       inputColor = 'rgb(72,187,14)';
     }
     const volumeMuted =

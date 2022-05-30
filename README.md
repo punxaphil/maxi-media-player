@@ -90,6 +90,7 @@ customThumbnailIfMissing: # for the media browser section
 backgroundBehindButtonSections: true # default is false, which means no background behind the different button sections
 hideGroupCurrentTrack: true # default is false, which means song/track info for groups will be shown
 skipAdditionalPlayerSwitches: true # default is false, which means additional switches will be shown in player if available (such as crossfade button)
+disableDynamicVolumeSlider: true # default is false. See more in section further down.
 entities: # Deprecated, entities are now automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway
@@ -275,6 +276,7 @@ The volume level slider is dynamically adjusting its scale. If volume is below 2
 
 ![img/volume-red.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume-red.png)
 
+Disable it in config with `disableDynamicVolumeSlider: true`
 
 ## Linking to specific player
 Append `#media_player.my_sonos_player` to page URL to have that player selected.
