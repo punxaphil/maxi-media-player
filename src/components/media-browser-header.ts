@@ -24,7 +24,7 @@ class MediaBrowserHeader extends LitElement {
           ${this.currentDir?.can_play
             ? html` <ha-icon
                 .icon=${'mdi:play'}
-                @click="${() => this.mediaBrowser.playItem(<MediaPlayerItem>this.currentDir)}"
+                @click="${async () => await this.mediaBrowser.playItem(<MediaPlayerItem>this.currentDir)}"
               ></ha-icon>`
             : ''}
         </div>

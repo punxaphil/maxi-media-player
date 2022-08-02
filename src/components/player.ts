@@ -64,17 +64,17 @@ class Player extends LitElement {
               this.members,
             )}
             <div style="${this.iconsStyle()}">
-              ${this.clickableIcon('mdi:volume-minus', () => this.volumeDownClicked())}
-              ${this.clickableIcon('mdi:skip-backward', () => this.mediaControlService.prev(this.entityId))}
+              ${this.clickableIcon('mdi:volume-minus', async () => await this.volumeDownClicked())}
+              ${this.clickableIcon('mdi:skip-backward', async () => await this.mediaControlService.prev(this.entityId))}
               ${this.hass.states[this.entityId].state !== 'playing'
-                ? this.clickableIcon('mdi:play', () => this.mediaControlService.play(this.entityId))
-                : this.clickableIcon('mdi:stop', () => this.mediaControlService.pause(this.entityId))}
-              ${this.clickableIcon('mdi:skip-forward', () => this.mediaControlService.next(this.entityId))}
-              ${this.clickableIcon(this.shuffleIcon(), () => this.shuffleClicked())}
-              ${this.clickableIcon(this.repeatIcon(), () => this.repeatClicked())}
+                ? this.clickableIcon('mdi:play', async () => await this.mediaControlService.play(this.entityId))
+                : this.clickableIcon('mdi:stop', async () => await this.mediaControlService.pause(this.entityId))}
+              ${this.clickableIcon('mdi:skip-forward', async () => await this.mediaControlService.next(this.entityId))}
+              ${this.clickableIcon(this.shuffleIcon(), async () => await this.shuffleClicked())}
+              ${this.clickableIcon(this.repeatIcon(), async () => await this.repeatClicked())}
               ${until(this.getAdditionalSwitches())}
               ${this.clickableIcon(this.allVolumesIcon(), () => this.toggleShowAllVolumes(), !isGroup)}
-              ${this.clickableIcon('mdi:volume-plus', () => this.volumeUp())}
+              ${this.clickableIcon('mdi:volume-plus', async () => await this.volumeUp())}
             </div>
           </div>
         </div>
@@ -82,8 +82,8 @@ class Player extends LitElement {
     `;
   }
 
-  private volumeDownClicked() {
-    this.mediaControlService.volumeDown(this.entityId, this.members);
+  private async volumeDownClicked() {
+    await this.mediaControlService.volumeDown(this.entityId, this.members);
   }
 
   private allVolumesIcon() {
@@ -94,12 +94,12 @@ class Player extends LitElement {
     return this.getEntityAttributes().shuffle ? 'mdi:shuffle-variant' : 'mdi:shuffle-disabled';
   }
 
-  private shuffleClicked() {
-    this.mediaControlService.shuffle(this.entityId, !this.getEntityAttributes().shuffle);
+  private async shuffleClicked() {
+    await this.mediaControlService.shuffle(this.entityId, !this.getEntityAttributes().shuffle);
   }
 
-  private repeatClicked() {
-    this.mediaControlService.repeat(this.entityId, this.getEntityAttributes().repeat);
+  private async repeatClicked() {
+    await this.mediaControlService.repeat(this.entityId, this.getEntityAttributes().repeat);
   }
 
   private repeatIcon() {
@@ -111,8 +111,8 @@ class Player extends LitElement {
       : 'mdi:repeat-off';
   }
 
-  private volumeUp() {
-    this.mediaControlService.volumeUp(this.entityId, this.members);
+  private async volumeUp() {
+    await this.mediaControlService.volumeUp(this.entityId, this.members);
   }
 
   private clickableIcon(icon: string, click: () => void, hidden = false, additionalStyle?: StyleInfo) {
@@ -150,7 +150,7 @@ class Player extends LitElement {
         ${name ? html` <div style="${this.volumeNameStyle()}">${name}</div>` : ''}
         <ha-icon
           style="${this.muteStyle()}"
-          @click="${() => this.mediaControlService.volumeMute(entity, !volumeMuted, members)}"
+          @click="${async () => await this.mediaControlService.volumeMute(entity, !volumeMuted, members)}"
           .icon=${volumeMuted ? 'mdi:volume-mute' : 'mdi:volume-high'}
         ></ha-icon>
         <div style="${this.volumeSliderStyle()}">
@@ -164,8 +164,8 @@ class Player extends LitElement {
           <input
             type="range"
             .value="${volume}"
-            @change="${(e: Event) =>
-              this.mediaControlService.volumeSet(entity, (e?.target as HTMLInputElement)?.value, members)}"
+            @change="${async (e: Event) =>
+              await this.mediaControlService.volumeSet(entity, (e?.target as HTMLInputElement)?.value, members)}"
             @click="${(e: Event) =>
               this.volumeClicked(volume, Number.parseInt((e?.target as HTMLInputElement)?.value), isGroup)}"
             min="0"

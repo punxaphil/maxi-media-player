@@ -9,12 +9,8 @@ export default class HassService {
     this.hass = hass;
   }
 
-  callSonosService(service: string, inOptions: ServiceCallRequest['serviceData']) {
-    this.hass.callService('sonos', service, inOptions);
-  }
-
-  callMediaService(service: string, inOptions: ServiceCallRequest['serviceData']) {
-    this.hass.callService('media_player', service, inOptions);
+  async callMediaService(service: string, inOptions: ServiceCallRequest['serviceData']) {
+    await this.hass.callService('media_player', service, inOptions);
   }
 
   async browseMedia(entity_id: string, media_content_type?: string, media_content_id?: string) {

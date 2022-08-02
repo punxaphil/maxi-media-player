@@ -48,7 +48,7 @@ export class MediaBrowser extends LitElement {
                     style="width: ${mediaItemWidth};max-width: ${mediaItemWidth};"
                     .mediaItem="${mediaItem}"
                     .config="${this.config}"
-                    @click="${() => this.onMediaItemClick(mediaItem)}"
+                    @click="${async () => await this.onMediaItemClick(mediaItem)}"
                     .main="${this.main}"
                   ></sonos-media-button>
                 `,
@@ -70,20 +70,20 @@ export class MediaBrowser extends LitElement {
     }
   }
 
-  private onMediaItemClick(mediaItem: MediaPlayerItem) {
+  private async onMediaItemClick(mediaItem: MediaPlayerItem) {
     if (mediaItem.can_expand) {
       this.currentDir && this.parentDirs.push(this.currentDir);
       this.currentDir = mediaItem;
     } else if (mediaItem.can_play) {
-      this.playItem(mediaItem);
+      await this.playItem(mediaItem);
     }
   }
 
-  playItem(mediaItem: MediaPlayerItem) {
+  async playItem(mediaItem: MediaPlayerItem) {
     if (mediaItem.media_content_type || mediaItem.media_content_id) {
-      this.mediaControlService.playMedia(this.activePlayer, mediaItem);
+      await this.mediaControlService.playMedia(this.activePlayer, mediaItem);
     } else {
-      this.mediaControlService.setSource(this.activePlayer, mediaItem.title);
+      await this.mediaControlService.setSource(this.activePlayer, mediaItem.title);
     }
   }
 
