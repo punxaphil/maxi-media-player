@@ -1,16 +1,20 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { PlayerGroups } from '../types';
+import { CardConfig, PlayerGroups } from '../types';
 import { getEntityName } from '../utils';
 import { CustomSonosCard } from '../main';
 import { styleMap } from 'lit-html/directives/style-map.js';
+import { titleStyle } from '../sharedStyle';
+import { when } from 'lit/directives/when.js';
 
 class GroupingButtons extends LitElement {
   @property() main!: CustomSonosCard;
   @property() groups!: PlayerGroups;
   @property() mediaPlayers!: string[];
+  private config!: CardConfig;
 
   render() {
+    this.config = this.main.config;
     const activePlayer = this.main.activePlayer;
     const joinedPlayers = this.mediaPlayers.filter(
       (player) => player !== activePlayer && this.groups[activePlayer].members[player],
@@ -21,28 +25,57 @@ class GroupingButtons extends LitElement {
     return html`
       <div style="${this.membersStyle()}">
         ${activePlayer &&
-        this.mediaPlayers.map((entity) => {
-          const name = getEntityName(this.main.hass, this.main.config, entity);
-          if (this.groups[activePlayer].members[entity] || (entity === activePlayer && joinedPlayers.length > 0)) {
-            return this.getButton(() => this.main.mediaControlService.unjoin(entity), 'mdi:minus', name);
-          } else if (entity !== activePlayer) {
-            return this.getButton(() => this.main.mediaControlService.join(activePlayer, entity), 'mdi:plus', name);
-          } else {
-            return html``;
-          }
-        })}
-        ${notJoinedPlayers.length
-          ? this.getButton(
-              () => this.main.mediaControlService.join(activePlayer, notJoinedPlayers.join(',')),
-              'mdi:checkbox-multiple-marked-outline',
-            )
-          : ''}
-        ${joinedPlayers.length
-          ? this.getButton(
-              () => this.main.mediaControlService.unjoin(joinedPlayers.join(',')),
-              'mdi:minus-box-multiple-outline',
-            )
-          : ''}
+        this.mediaPlayers.map((entity) => this.renderMediaPlayerGroupButton(entity, activePlayer, joinedPlayers))}
+        ${when(notJoinedPlayers.length, () =>
+          this.getButton(
+            async () => await this.main.mediaControlService.join(activePlayer, notJoinedPlayers),
+            'mdi:checkbox-multiple-marked-outline',
+          ),
+        )}
+        ${when(joinedPlayers.length, () =>
+          this.getButton(
+            async () => await this.main.mediaControlService.unjoin(joinedPlayers),
+            'mdi:minus-box-multiple-outline',
+          ),
+        )}
+      </div>
+      ${when(this.config.predefinedGroups, () => this.renderPredefinedGroup())}
+    `;
+  }
+
+  private renderMediaPlayerGroupButton(entity: string, activePlayer: string, joinedPlayers: string[]) {
+    const name = getEntityName(this.main.hass, this.config, entity);
+    if (this.groups[activePlayer].members[entity] || (entity === activePlayer && joinedPlayers.length > 0)) {
+      return this.getButton(async () => await this.main.mediaControlService.unjoin([entity]), 'mdi:minus', name);
+    } else if (entity !== activePlayer) {
+      return this.getButton(
+        async () => await this.main.mediaControlService.join(activePlayer, [entity]),
+        'mdi:plus',
+        name,
+      );
+    } else {
+      return html``;
+    }
+  }
+
+  private renderPredefinedGroup() {
+    return html`
+      <div style="${this.main.stylable('title', titleStyle)}">
+        ${this.config.predefinedGroupsTitle ? this.config.predefinedGroupsTitle : 'Predefined groups'}
+      </div>
+      <div style="${this.membersStyle()}">
+        ${this.config.predefinedGroups
+          ?.filter((group) => group.entities.length > 1)
+          .map((group) => {
+            return this.getButton(
+              async () => {
+                await this.main.mediaControlService.unjoin(group.entities);
+                await this.main.mediaControlService.join(group.entities[0], group.entities);
+              },
+              '',
+              group.name,
+            );
+          })}
       </div>
     `;
   }

@@ -96,6 +96,12 @@ disableDynamicVolumeSlider: true # default is false. See more in section further
 mediaBrowserTitlesToIgnore:
   - Local Media
   - My Bad Playlist
+predefinedGroups: # defaults to empty
+  - name: Inside
+    entities:
+      - media_player.matrum
+      - media_player.hall
+predefinedGroupsTitle: 'My predefined groups' # default is 'Predefined Groups'
 entities: # Entities are automatically discovered if you don't supply this setting
   - media_player.sonos_kitchen
   - media_player.sonos_hallway

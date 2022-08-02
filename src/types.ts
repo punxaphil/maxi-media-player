@@ -25,6 +25,7 @@ export interface CardConfig extends LovelaceCardConfig {
   customSources?: CustomSources;
   hideGroupCurrentTrack: boolean;
   customThumbnailIfMissing?: CustomThumbnail;
+  predefinedGroups?: PredefinedGroup[];
 }
 
 export interface Layout {
@@ -89,4 +90,9 @@ export interface MediaPlayerItem {
   can_play?: boolean;
   media_content_type?: string;
   media_content_id?: string;
+}
+
+export interface PredefinedGroup {
+  name: string;
+  entities: string[];
 }
