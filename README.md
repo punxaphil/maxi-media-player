@@ -163,7 +163,7 @@ Possible options are: 'media browser', 'groups', 'player', 'grouping'
 
 Example:
 
-![img/single_section_mode.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/img/single_section_mode.png)
+![img/single_section_mode.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/single_section_mode.png)
 
 ```yaml
 type: horizontal-stack
