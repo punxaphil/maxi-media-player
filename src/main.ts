@@ -6,7 +6,7 @@ import './components/grouping';
 import './components/media-browser';
 import { createPlayerGroups, getMediaPlayers, getWidth, isMobile } from './utils';
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig, PlayerGroups, Size } from './types';
+import { CardConfig, PlayerGroups, Section, Size } from './types';
 import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
 import MediaBrowseService from './services/media-browse-service';
 import MediaControlService from './services/media-control-service';
@@ -22,6 +22,8 @@ window.customCards.push({
   preview: true,
 });
 
+const ACTIVE_PLAYER_EVENT = 'sonos-card-active-player';
+
 export class CustomSonosCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
@@ -30,7 +32,16 @@ export class CustomSonosCard extends LitElement {
   mediaBrowseService!: MediaBrowseService;
   mediaControlService!: MediaControlService;
   hassService!: HassService;
+  activePlayerListener = (event: Event) => (this.activePlayer = (event as CustomEvent).detail.player);
 
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener(ACTIVE_PLAYER_EVENT, this.activePlayerListener);
+  }
+  disconnectedCallback() {
+    window.removeEventListener(ACTIVE_PLAYER_EVENT, this.activePlayerListener);
+    super.disconnectedCallback();
+  }
   render() {
     if (!this.mediaBrowseService) {
       this.hassService = new HassService(this.hass);
@@ -86,18 +97,22 @@ export class CustomSonosCard extends LitElement {
   }
 
   private groupsStyle() {
-    return this.columnStyle(this.config.layout?.groups, '1', '25%', 'groups', {
+    return this.columnStyle(this.config.layout?.groups, '1', this.getDefaultWidth('25%'), 'groups', {
       padding: '0 1rem',
       boxSizing: 'border-box',
     });
   }
 
+  private getDefaultWidth(widthInPanelMode: string) {
+    return this.config.singleSectionMode ? '100%' : widthInPanelMode;
+  }
+
   private playersStyle() {
-    return this.columnStyle(this.config.layout?.players, '0', '40%', 'players');
+    return this.columnStyle(this.config.layout?.players, '0', this.getDefaultWidth('40%'), 'players');
   }
 
   private mediaBrowserStyle() {
-    return this.columnStyle(this.config.layout?.mediaBrowser, '2', '25%', 'media-browser', {
+    return this.columnStyle(this.config.layout?.mediaBrowser, '2', this.getDefaultWidth('25%'), 'media-browser', {
       padding: '0 1rem',
       boxSizing: 'border-box',
     });
@@ -176,9 +191,13 @@ export class CustomSonosCard extends LitElement {
   }
 
   setActivePlayer(player: string) {
-    this.activePlayer = player;
-    const newUrl = window.location.href.replace(/#.*/g, '');
-    window.location.href = `${newUrl}#${player}`;
+    if (this.activePlayer !== player) {
+      this.activePlayer = player;
+      const newUrl = window.location.href.replace(/#.*/g, '');
+      window.location.href = `${newUrl}#${player}`;
+      const event = new CustomEvent(ACTIVE_PLAYER_EVENT, { bubbles: true, composed: true, detail: { player } });
+      window.dispatchEvent(event);
+    }
   }
 
   setConfig(config: CardConfig) {
@@ -193,6 +212,12 @@ export class CustomSonosCard extends LitElement {
     if (this.config.layout && !this.config.layout?.mediaItem && this.config.layout.favorite) {
       deprecatedMessage('layout.favorite', 'layout.mediaItem');
       this.config.layout.mediaItem = this.config.layout.favorite;
+    }
+    if (this.config.singleSectionMode) {
+      if (!Object.values(Section).includes(this.config.singleSectionMode)) {
+        console.log('Sonos Card: invalid value supplied for "singleSectionMode", will show all sections.');
+        this.config.singleSectionMode = undefined;
+      }
     }
   }
 

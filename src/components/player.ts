@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { getEntityName, getGroupMembers } from '../utils';
 
-import { CardConfig, Members } from '../types';
+import { CardConfig, Members, Section } from '../types';
 import { HomeAssistant } from 'custom-card-helpers';
 
 import { CustomSonosCard } from '../main';
@@ -30,56 +30,65 @@ class Player extends LitElement {
     this.config = this.main.config;
     this.mediaControlService = this.main.mediaControlService;
     this.hassService = this.main.hassService;
-    const entityAttributes = this.getEntityAttributes();
-    const isGroup = getGroupMembers(this.hass.states[this.entityId]).length > 1;
-    let allVolumes = [];
-    if (isGroup) {
-      allVolumes = getGroupMembers(this.hass.states[this.entityId]).map((member: string) =>
-        this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member), isGroup, true),
-      );
-    }
-    return html`
-      <div style="${this.containerStyle(this.hass.states[this.entityId])}">
-        <div style="${this.bodyStyle()}">
-          ${when(!this.main.showVolumes, () =>
-            entityAttributes.media_title
-              ? html`
-                  <div style="${this.infoStyle()}">
-                    <div style="${this.artistAlbumStyle()}">${entityAttributes.media_album_name}</div>
-                    <div style="${this.songStyle()}">${entityAttributes.media_title}</div>
-                    <div style="${this.artistAlbumStyle()}">${entityAttributes.media_artist}</div>
-                  </div>
-                `
-              : html` <div style="${this.noMediaTextStyle()}">
-                  ${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}
-                </div>`,
-          )}
-          <div style="${this.footerStyle()}" id="footer">
-            <div ?hidden="${!this.main.showVolumes}">${allVolumes}</div>
-            ${this.getVolumeTemplate(
-              this.entityId,
-              this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
-              isGroup,
-              false,
-              this.members,
+    if (!this.config.singleSectionMode || this.config.singleSectionMode === Section.PLAYER) {
+      const entityAttributes = this.getEntityAttributes();
+      const isGroup = getGroupMembers(this.hass.states[this.entityId]).length > 1;
+      let allVolumes = [];
+      if (isGroup) {
+        allVolumes = getGroupMembers(this.hass.states[this.entityId]).map((member: string) =>
+          this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member), isGroup, true),
+        );
+      }
+      return html`
+        <div style="${this.containerStyle(this.hass.states[this.entityId])}">
+          <div style="${this.bodyStyle()}">
+            ${when(!this.main.showVolumes, () =>
+              entityAttributes.media_title
+                ? html`
+                    <div style="${this.infoStyle()}">
+                      <div style="${this.artistAlbumStyle()}">${entityAttributes.media_album_name}</div>
+                      <div style="${this.songStyle()}">${entityAttributes.media_title}</div>
+                      <div style="${this.artistAlbumStyle()}">${entityAttributes.media_artist}</div>
+                    </div>
+                  `
+                : html` <div style="${this.noMediaTextStyle()}">
+                    ${this.config.noMediaText ? this.config.noMediaText : '🎺 What do you want to play? 🥁'}
+                  </div>`,
             )}
-            <div style="${this.iconsStyle()}">
-              ${this.clickableIcon('mdi:volume-minus', async () => await this.volumeDownClicked())}
-              ${this.clickableIcon('mdi:skip-backward', async () => await this.mediaControlService.prev(this.entityId))}
-              ${this.hass.states[this.entityId].state !== 'playing'
-                ? this.clickableIcon('mdi:play', async () => await this.mediaControlService.play(this.entityId))
-                : this.clickableIcon('mdi:stop', async () => await this.mediaControlService.pause(this.entityId))}
-              ${this.clickableIcon('mdi:skip-forward', async () => await this.mediaControlService.next(this.entityId))}
-              ${this.clickableIcon(this.shuffleIcon(), async () => await this.shuffleClicked())}
-              ${this.clickableIcon(this.repeatIcon(), async () => await this.repeatClicked())}
-              ${until(this.getAdditionalSwitches())}
-              ${this.clickableIcon(this.allVolumesIcon(), () => this.toggleShowAllVolumes(), !isGroup)}
-              ${this.clickableIcon('mdi:volume-plus', async () => await this.volumeUp())}
+            <div style="${this.footerStyle()}" id="footer">
+              <div ?hidden="${!this.main.showVolumes}">${allVolumes}</div>
+              ${this.getVolumeTemplate(
+                this.entityId,
+                this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
+                isGroup,
+                false,
+                this.members,
+              )}
+              <div style="${this.iconsStyle()}">
+                ${this.clickableIcon('mdi:volume-minus', async () => await this.volumeDownClicked())}
+                ${this.clickableIcon(
+                  'mdi:skip-backward',
+                  async () => await this.mediaControlService.prev(this.entityId),
+                )}
+                ${this.hass.states[this.entityId].state !== 'playing'
+                  ? this.clickableIcon('mdi:play', async () => await this.mediaControlService.play(this.entityId))
+                  : this.clickableIcon('mdi:stop', async () => await this.mediaControlService.pause(this.entityId))}
+                ${this.clickableIcon(
+                  'mdi:skip-forward',
+                  async () => await this.mediaControlService.next(this.entityId),
+                )}
+                ${this.clickableIcon(this.shuffleIcon(), async () => await this.shuffleClicked())}
+                ${this.clickableIcon(this.repeatIcon(), async () => await this.repeatClicked())}
+                ${until(this.getAdditionalSwitches())}
+                ${this.clickableIcon(this.allVolumesIcon(), () => this.toggleShowAllVolumes(), !isGroup)}
+                ${this.clickableIcon('mdi:volume-plus', async () => await this.volumeUp())}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
+    }
+    return html``;
   }
 
   private async volumeDownClicked() {

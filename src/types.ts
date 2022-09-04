@@ -6,8 +6,16 @@ declare global {
   }
 }
 
+export enum Section {
+  MEDIA_BROWSER = 'media browser',
+  GROUPS = 'groups',
+  PLAYER = 'player',
+  GROUPING = 'grouping',
+}
+
 export interface CardConfig extends LovelaceCardConfig {
   type: string;
+  singleSectionMode?: Section;
   name?: string;
   groupsTitle?: string;
   groupingTitle?: string;

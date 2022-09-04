@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import MediaBrowseService from '../services/media-browse-service';
-import { CardConfig, MediaPlayerItem } from '../types';
+import { CardConfig, MediaPlayerItem, Section } from '../types';
 import { getWidth } from '../utils';
 import MediaControlService from '../services/media-control-service';
 import { until } from 'lit-html/directives/until.js';
@@ -28,43 +28,46 @@ export class MediaBrowser extends LitElement {
     this.activePlayer = this.main.activePlayer;
     this.mediaControlService = this.main.mediaControlService;
     this.mediaBrowseService = this.main.mediaBrowseService;
-    const currentDirJson = localStorage.getItem(LOCAL_STORAGE_CURRENT_DIR);
-    if (currentDirJson) {
-      this.currentDir = JSON.parse(currentDirJson);
-      this.browse = true;
+    if (!this.config.singleSectionMode || this.config.singleSectionMode === Section.MEDIA_BROWSER) {
+      const currentDirJson = localStorage.getItem(LOCAL_STORAGE_CURRENT_DIR);
+      if (currentDirJson) {
+        this.currentDir = JSON.parse(currentDirJson);
+        this.browse = true;
+      }
+      return html`
+        <div style="${this.main.buttonSectionStyle({ textAlign: 'center' })}">
+          <sonos-media-browser-header
+            .main=${this.main}
+            .mediaBrowser=${this}
+            .browse=${this.browse}
+            .currentDir=${this.currentDir}
+          ></sonos-media-browser-header>
+          ${this.activePlayer !== '' &&
+          until(
+            (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
+              const itemsWithImage = MediaBrowser.itemsWithImage(items);
+              const mediaItemWidth = itemsWithImage
+                ? getWidth(this.config, '33%', '16%', this.config.layout?.mediaItem)
+                : '100%';
+              return html` <div style="${this.mediaButtonsStyle(itemsWithImage)}">
+                ${items.map(
+                  (mediaItem) => html`
+                    <sonos-media-button
+                      style="width: ${mediaItemWidth};max-width: ${mediaItemWidth};"
+                      .mediaItem="${mediaItem}"
+                      .config="${this.config}"
+                      @click="${async () => await this.onMediaItemClick(mediaItem)}"
+                      .main="${this.main}"
+                    ></sonos-media-button>
+                  `,
+                )}
+              </div>`;
+            }),
+          )}
+        </div>
+      `;
     }
-    return html`
-      <div style="${this.main.buttonSectionStyle({ textAlign: 'center' })}">
-        <sonos-media-browser-header
-          .main=${this.main}
-          .mediaBrowser=${this}
-          .browse=${this.browse}
-          .currentDir=${this.currentDir}
-        ></sonos-media-browser-header>
-        ${this.activePlayer !== '' &&
-        until(
-          (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
-            const itemsWithImage = MediaBrowser.itemsWithImage(items);
-            const mediaItemWidth = itemsWithImage
-              ? getWidth(this.config, '33%', '16%', this.config.layout?.mediaItem)
-              : '100%';
-            return html` <div style="${this.mediaButtonsStyle(itemsWithImage)}">
-              ${items.map(
-                (mediaItem) => html`
-                  <sonos-media-button
-                    style="width: ${mediaItemWidth};max-width: ${mediaItemWidth};"
-                    .mediaItem="${mediaItem}"
-                    .config="${this.config}"
-                    @click="${async () => await this.onMediaItemClick(mediaItem)}"
-                    .main="${this.main}"
-                  ></sonos-media-button>
-                `,
-              )}
-            </div>`;
-          }),
-        )}
-      </div>
-    `;
+    return html``;
   }
 
   browseClicked() {

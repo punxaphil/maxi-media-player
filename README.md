@@ -56,6 +56,7 @@ noMediaText: 'No media selected'
 allVolumesText: 'All volumes'
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
+singleSectionMode: '' # Default is empty. Use this to only show a single sub-card, to allow for more flexible layouts. See more below.
 layout:
   mobileThresholdPx: 500 # Default is 650
   groups:
@@ -154,6 +155,50 @@ And for mobile:
 
 Yet another example (with different config):
 ![img/layout_2.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/layout_2.png)
+
+## Single section mode
+In single section mode, only one of the major sections of the Sonos Card will be shown. By enabling this you can utilise the full power of Home Assistant's layout capabilities and also drag in other cards in your Sonos Card view.
+
+Possible options are: 'media browser', 'groups', 'player', 'grouping'
+
+Example:
+
+![img/single_section_mode.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/img/single_section_mode.png)
+
+```yaml
+type: horizontal-stack
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:custom-sonos-card
+        singleSectionMode: groups
+      - type: custom:custom-sonos-card
+        singleSectionMode: media browser
+        layout:
+          mediaItem:
+            width: 15%
+  - type: vertical-stack
+    cards:
+      - type: entities
+        entities:
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: navigate
+              navigation_path: /
+            icon: mdi:arrow-left-circle
+            name: Back to home
+      - type: custom:custom-sonos-card
+        singleSectionMode: player
+        layout:
+          players:
+            width: 70%
+      - type: custom:custom-sonos-card
+        singleSectionMode: grouping
+```
+
+
 
 ## Theme variables
 The following variables are available and can be set in your theme to change the appearance of the card.
