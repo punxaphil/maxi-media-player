@@ -16,7 +16,6 @@ import {
 import { property } from 'lit/decorators.js';
 import { CardConfig, PlayerGroups } from '../types';
 import { when } from 'lit/directives/when.js';
-import { styleMap } from 'lit-html/directives/style-map.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import MediaControlService from '../services/media-control-service';
 import HassService from '../services/hass-service';
@@ -133,8 +132,8 @@ export class Grouping extends LitElement {
   private getButton(click: () => void, icon: string, name?: string) {
     return html`
       <div @click="${click}" style="${this.memberStyle()}" class="hoverable">
-        ${name ? html`<span style="${Grouping.nameStyle()}">${name}</span>` : ''}
-        <ha-icon .icon=${icon} style="${Grouping.iconStyle()}"></ha-icon>
+        ${name ? html`<span style="${this.nameStyle()}">${name}</span>` : ''}
+        <ha-icon .icon=${icon} style="${this.iconStyle()}"></ha-icon>
       </div>
     `;
   }
@@ -164,8 +163,8 @@ export class Grouping extends LitElement {
     });
   }
 
-  private static nameStyle() {
-    return styleMap({
+  private nameStyle() {
+    return stylable('member-name', this.config, {
       alignSelf: 'center',
       fontSize: '1rem',
       overflow: 'hidden',
@@ -173,8 +172,8 @@ export class Grouping extends LitElement {
     });
   }
 
-  private static iconStyle() {
-    return styleMap({
+  private iconStyle() {
+    return stylable('member-icon', this.config, {
       alignSelf: 'center',
       fontSize: '0.5rem',
     });
