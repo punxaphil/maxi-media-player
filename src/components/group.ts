@@ -143,7 +143,7 @@ class Group extends LitElement {
     if (this.activePlayer !== this.group.entity) {
       this.activePlayer = this.group.entity;
       const newUrl = window.location.href.replace(/#.*/g, '');
-      window.location.href = `${newUrl}#${this.group.entity}`;
+      window.location.replace(`${newUrl}#${this.group.entity}`);
       this.dispatchActivePlayerEvent();
     }
   }
