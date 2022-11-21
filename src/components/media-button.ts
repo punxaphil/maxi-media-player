@@ -1,12 +1,13 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { CardConfig, MediaPlayerItem } from '../types';
-import { CustomSonosCard } from '../main';
+import { HomeAssistant } from 'custom-card-helpers';
+import { stylable } from '../utils';
 
 class MediaButton extends LitElement {
   @property() mediaItem!: MediaPlayerItem;
+  @property() hass!: HomeAssistant;
   @property() config!: CardConfig;
-  @property() main!: CustomSonosCard;
 
   render() {
     const thumbnail = this.getThumbnail();
@@ -30,12 +31,12 @@ class MediaButton extends LitElement {
     return thumbnail;
   }
   private wrapperStyle() {
-    return this.main.stylable('media-button-wrapper', {
+    return stylable('media-button-wrapper', this.config, {
       padding: '0 0.3rem 0.6rem 0.3rem',
     });
   }
   private mediaButtonStyle(thumbnail: string) {
-    return this.main.stylable('media-button', {
+    return stylable('media-button', this.config, {
       boxSizing: 'border-box',
       '-moz-box-sizing': 'border-box',
       '-webkit-box-sizing': 'border-box',
@@ -57,7 +58,7 @@ class MediaButton extends LitElement {
     });
   }
   private titleStyle(thumbnail: string) {
-    return this.main.stylable('media-button-title', {
+    return stylable('media-button-title', this.config, {
       width: 'calc(100% - 1rem)',
       fontSize: '1rem',
       padding: '0px 0.5rem',
@@ -75,7 +76,7 @@ class MediaButton extends LitElement {
   }
 
   private folderStyle(thumbnail: string) {
-    return this.main.stylable('media-button-folder', {
+    return stylable('media-button-folder', this.config, {
       marginBottom: '-120%',
       '--mdc-icon-size': '1',
       ...((!this.mediaItem.can_expand || thumbnail) && { display: 'none' }),

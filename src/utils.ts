@@ -1,5 +1,8 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig, PlayerGroups, Size } from './types';
+import { ACTIVE_PLAYER_EVENT, CardConfig, PlayerGroups, REQUEST_PLAYER_EVENT, Size } from './types';
+import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
+import { HassEntity } from 'home-assistant-js-websocket';
+import { css, html, TemplateResult } from 'lit';
 
 export function getEntityName(hass: HomeAssistant, config: CardConfig, entity: string) {
   const name = hass.states[entity].attributes.friendly_name || '';
@@ -15,7 +18,7 @@ export function getEntityName(hass: HomeAssistant, config: CardConfig, entity: s
   return name;
 }
 
-export function getGroupMembers(state: { attributes: { [p: string]: any } }) {
+export function getGroupMembers(state: HassEntity) {
   return state.attributes.sonos_group || state.attributes.group_members;
 }
 
@@ -82,4 +85,106 @@ export function getWidth(config: CardConfig, defaultWidth: string, defaultMobile
 
 export function isMobile(config: CardConfig) {
   return innerWidth < (config.layout?.mobileThresholdPx || 650);
+}
+
+export function stylable(configName: string, config: CardConfig, additionalStyle?: StyleInfo) {
+  return styleMap({
+    ...{
+      '--sonos-card-style-name': configName,
+    },
+    ...additionalStyle,
+    ...config?.styles?.[configName],
+  });
+}
+
+export function buttonSectionStyle(config: CardConfig, additionalStyle?: StyleInfo) {
+  return stylable('button-section', config, {
+    background: 'var(--sonos-int-button-section-background-color)',
+    borderRadius: 'var(--sonos-int-border-radius)',
+    border: 'var(--sonos-int-border-width) solid var(--sonos-int-color)',
+    marginTop: '1rem',
+    padding: '0 0.5rem',
+    ...additionalStyle,
+  });
+}
+
+export const noPlayerHtml = html` <div>
+  No Sonos player selected. Add the Sonos Groups card to this dashboard, or replace this one with the Sonos card
+  containing all sections.
+</div>`;
+
+export function listenForActivePlayer(listener: EventListener) {
+  window.addEventListener(ACTIVE_PLAYER_EVENT, listener);
+  const event = new CustomEvent(REQUEST_PLAYER_EVENT, { bubbles: true, composed: true });
+  window.dispatchEvent(event);
+}
+
+export function stopListeningForActivePlayer(listener: EventListener) {
+  window.removeEventListener(ACTIVE_PLAYER_EVENT, listener);
+}
+
+export function listenForPlayerRequest(listener: EventListener) {
+  window.addEventListener(REQUEST_PLAYER_EVENT, listener);
+}
+
+export function stopListeningForPlayerRequest(listener: EventListener) {
+  window.removeEventListener(REQUEST_PLAYER_EVENT, listener);
+}
+
+export function validateConfig(config: CardConfig) {
+  // Handle deprecated configs
+  const deprecatedMessage = (deprecated: string, instead: string) =>
+    console.error('Sonos Card: ' + deprecated + ' configuration is deprecated. Please use ' + instead + ' instead.');
+  if (config.layout && !config.layout?.mediaBrowser && config.layout.favorites) {
+    deprecatedMessage('layout.favorites', 'layout.mediaBrowser');
+    config.layout.mediaBrowser = config.layout.favorites;
+  }
+  if (config.layout && !config.layout?.mediaItem && config.layout.favorite) {
+    deprecatedMessage('layout.favorite', 'layout.mediaItem');
+    config.layout.mediaItem = config.layout.favorite;
+  }
+  if (config.singleSectionMode) {
+    deprecatedMessage('singleSectionMode', 'individual cards');
+  }
+}
+
+export const sharedStyle = css`
+  :host {
+    --sonos-int-background-color: var(
+      --sonos-background-color,
+      var(--ha-card-background, var(--card-background-color, white))
+    );
+    --sonos-int-ha-card-background-color: var(
+      --sonos-ha-card-background-color,
+      var(--ha-card-background, var(--card-background-color, white))
+    );
+    --sonos-int-player-section-background: var(--sonos-player-section-background, #ffffffe6);
+    --sonos-int-color: var(--sonos-color, var(--secondary-text-color));
+    --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--secondary-text-color));
+    --sonos-int-song-text-color: var(--sonos-song-text-color, var(--sonos-accent-color, var(--accent-color)));
+    --sonos-int-accent-color: var(--sonos-accent-color, var(--accent-color));
+    --sonos-int-title-color: var(--sonos-title-color, var(--secondary-text-color));
+    --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
+    --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
+    --sonos-int-media-button-white-space: var(
+      --sonos-media-buttons-multiline,
+      var(--sonos-favorites-multiline, nowrap)
+    );
+    --sonos-int-button-section-background-color: var(
+      --sonos-button-section-background-color,
+      var(--card-background-color)
+    );
+    --mdc-icon-size: 1rem;
+  }
+`;
+
+export function wrapInHaCardUnlessAllSectionsShown(cardHtml: TemplateResult, config: CardConfig) {
+  return config.showAllSections ? cardHtml : html` <ha-card style="${haCardStyle(config)}"> ${cardHtml}</ha-card>`;
+}
+
+export function haCardStyle(config: CardConfig) {
+  return stylable('ha-card', config, {
+    color: 'var(--sonos-int-color)',
+    background: 'var(--sonos-int-ha-card-background-color)',
+  });
 }

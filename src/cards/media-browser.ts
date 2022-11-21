@@ -1,43 +1,77 @@
 import { html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import MediaBrowseService from '../services/media-browse-service';
-import { CardConfig, MediaPlayerItem, Section } from '../types';
-import { getWidth } from '../utils';
-import MediaControlService from '../services/media-control-service';
+import { CardConfig, MediaPlayerItem } from '../types';
+import {
+  buttonSectionStyle,
+  getMediaPlayers,
+  getWidth,
+  listenForActivePlayer,
+  noPlayerHtml,
+  sharedStyle,
+  stopListeningForActivePlayer,
+  stylable,
+  validateConfig,
+  wrapInHaCardUnlessAllSectionsShown,
+} from '../utils';
 import { until } from 'lit-html/directives/until.js';
-import { CustomSonosCard } from '../main';
-import './media-button';
-import './media-browser-header';
+import '../components/media-button';
+import '../components/media-browser-header';
+import { HomeAssistant } from 'custom-card-helpers';
+import HassService from '../services/hass-service';
+import MediaControlService from '../services/media-control-service';
+import MediaBrowseService from '../services/media-browse-service';
 
 const LOCAL_STORAGE_CURRENT_DIR = 'custom-sonos-card_currentDir';
 
 export class MediaBrowser extends LitElement {
-  @property() main!: CustomSonosCard;
-  @property() mediaPlayers!: string[];
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
   @state() private browse!: boolean;
   @state() private currentDir?: MediaPlayerItem;
   @state() private mediaItems: MediaPlayerItem[] = [];
+  @state() private activePlayer!: string;
+  private mediaPlayers!: string[];
   private parentDirs: MediaPlayerItem[] = [];
-  private config!: CardConfig;
-  private activePlayer!: string;
   private mediaControlService!: MediaControlService;
   private mediaBrowseService!: MediaBrowseService;
+  private hassService!: HassService;
+
+  activePlayerListener = (event: Event) => {
+    this.activePlayer = (event as CustomEvent).detail.player;
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    listenForActivePlayer(this.activePlayerListener);
+  }
+
+  disconnectedCallback() {
+    stopListeningForActivePlayer(this.activePlayerListener);
+    super.disconnectedCallback();
+  }
+
+  setConfig(config: CardConfig) {
+    const parsed = JSON.parse(JSON.stringify(config));
+    validateConfig(parsed);
+    this.config = parsed;
+  }
 
   render() {
-    this.config = this.main.config;
-    this.activePlayer = this.main.activePlayer;
-    this.mediaControlService = this.main.mediaControlService;
-    this.mediaBrowseService = this.main.mediaBrowseService;
-    if (!this.config.singleSectionMode || this.config.singleSectionMode === Section.MEDIA_BROWSER) {
+    if (this.activePlayer && this.hass) {
+      this.hassService = new HassService(this.hass);
+      this.mediaBrowseService = new MediaBrowseService(this.hass, this.hassService);
+      this.mediaControlService = new MediaControlService(this.hass, this.hassService);
+      this.mediaPlayers = getMediaPlayers(this.config, this.hass);
       const currentDirJson = localStorage.getItem(LOCAL_STORAGE_CURRENT_DIR);
       if (currentDirJson) {
         this.currentDir = JSON.parse(currentDirJson);
         this.browse = true;
       }
-      return html`
-        <div style="${this.main.buttonSectionStyle({ textAlign: 'center' })}">
+      const cardHtml = html`
+        <div style="${buttonSectionStyle(this.config, { textAlign: 'center' })}">
           <sonos-media-browser-header
-            .main=${this.main}
+            .config=${this.config}
+            .hass=${this.hass}
             .mediaBrowser=${this}
             .browse=${this.browse}
             .currentDir=${this.currentDir}
@@ -57,7 +91,8 @@ export class MediaBrowser extends LitElement {
                       .mediaItem="${mediaItem}"
                       .config="${this.config}"
                       @click="${async () => await this.onMediaItemClick(mediaItem)}"
-                      .main="${this.main}"
+                      .config=${this.config}
+                      .hass=${this.hass}
                     ></sonos-media-button>
                   `,
                 )}
@@ -66,8 +101,10 @@ export class MediaBrowser extends LitElement {
           )}
         </div>
       `;
+      return wrapInHaCardUnlessAllSectionsShown(cardHtml, this.config);
+    } else {
+      return noPlayerHtml;
     }
-    return html``;
   }
 
   browseClicked() {
@@ -143,14 +180,17 @@ export class MediaBrowser extends LitElement {
       ? this.mediaBrowseService.getDir(this.activePlayer, mediaItem, this.config.mediaBrowserTitlesToIgnore)
       : this.mediaBrowseService.getRoot(this.activePlayer, this.config.mediaBrowserTitlesToIgnore));
   }
+
   private mediaButtonsStyle(itemsWithImage: boolean) {
-    return this.main.stylable('media-buttons', {
+    return stylable('media-buttons', this.config, {
       padding: '0',
       display: 'flex',
       flexWrap: 'wrap',
       ...(!itemsWithImage && { flexDirection: 'column' }),
     });
   }
-}
 
-customElements.define('sonos-media-browser', MediaBrowser);
+  static get styles() {
+    return sharedStyle;
+  }
+}

@@ -1,36 +1,67 @@
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { getEntityName, getGroupMembers } from '../utils';
+import {
+  createPlayerGroups,
+  getEntityName,
+  getGroupMembers,
+  getMediaPlayers,
+  listenForActivePlayer,
+  noPlayerHtml,
+  sharedStyle,
+  stopListeningForActivePlayer,
+  stylable,
+  validateConfig,
+  wrapInHaCardUnlessAllSectionsShown,
+} from '../utils';
 
-import { CardConfig, Members, Section } from '../types';
-import { HomeAssistant } from 'custom-card-helpers';
-
-import { CustomSonosCard } from '../main';
-import MediaControlService from '../services/media-control-service';
+import { CardConfig, Members } from '../types';
 import { StyleInfo } from 'lit-html/directives/style-map.js';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { until } from 'lit-html/directives/until.js';
-import HassService from '../services/hass-service';
 import { when } from 'lit/directives/when.js';
+import HassService from '../services/hass-service';
+import MediaControlService from '../services/media-control-service';
+import { HomeAssistant } from 'custom-card-helpers';
 
-class Player extends LitElement {
-  @property() main!: CustomSonosCard;
-  @property() members!: Members;
-  private hass!: HomeAssistant;
-  private config!: CardConfig;
-  private entityId!: string;
-  private mediaControlService!: MediaControlService;
-  private hassService!: HassService;
+export class Player extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @property() config!: CardConfig;
+  mediaControlService!: MediaControlService;
+  hassService!: HassService;
+  @state() private members!: Members;
+  @state() private entityId!: string;
+  @state() showVolumes!: boolean;
 
   @state() private timerToggleShowAllVolumes!: number;
 
+  activePlayerListener = (event: Event) => {
+    this.entityId = (event as CustomEvent).detail.player;
+    this.showVolumes = false;
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    listenForActivePlayer(this.activePlayerListener);
+  }
+
+  disconnectedCallback() {
+    stopListeningForActivePlayer(this.activePlayerListener);
+    super.disconnectedCallback();
+  }
+
+  setConfig(config: CardConfig) {
+    const parsed = JSON.parse(JSON.stringify(config));
+    validateConfig(parsed);
+    this.config = parsed;
+  }
+
   render() {
-    this.hass = this.main.hass;
-    this.entityId = this.main.activePlayer;
-    this.config = this.main.config;
-    this.mediaControlService = this.main.mediaControlService;
-    this.hassService = this.main.hassService;
-    if (!this.config.singleSectionMode || this.config.singleSectionMode === Section.PLAYER) {
+    if (this.entityId && this.hass) {
+      this.hassService = new HassService(this.hass);
+      this.mediaControlService = new MediaControlService(this.hass, this.hassService);
+      const mediaPlayers = getMediaPlayers(this.config, this.hass);
+      const groups = createPlayerGroups(mediaPlayers, this.hass, this.config);
+      this.members = groups[this.entityId].members;
       const entityAttributes = this.getEntityAttributes();
       const isGroup = getGroupMembers(this.hass.states[this.entityId]).length > 1;
       let allVolumes = [];
@@ -39,10 +70,10 @@ class Player extends LitElement {
           this.getVolumeTemplate(member, getEntityName(this.hass, this.config, member), isGroup, true),
         );
       }
-      return html`
+      const cardHtml = html`
         <div style="${this.containerStyle(this.hass.states[this.entityId])}">
           <div style="${this.bodyStyle()}">
-            ${when(!this.main.showVolumes, () =>
+            ${when(!this.showVolumes, () =>
               entityAttributes.media_title
                 ? html`
                     <div style="${this.infoStyle()}">
@@ -56,10 +87,10 @@ class Player extends LitElement {
                   </div>`,
             )}
             <div style="${this.footerStyle()}" id="footer">
-              <div ?hidden="${!this.main.showVolumes}">${allVolumes}</div>
+              <div ?hidden="${!this.showVolumes}">${allVolumes}</div>
               ${this.getVolumeTemplate(
                 this.entityId,
-                this.main.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
+                this.showVolumes ? (this.config.allVolumesText ? this.config.allVolumesText : 'All') : '',
                 isGroup,
                 false,
                 this.members,
@@ -87,8 +118,9 @@ class Player extends LitElement {
           </div>
         </div>
       `;
+      return wrapInHaCardUnlessAllSectionsShown(cardHtml, this.config);
     }
-    return html``;
+    return noPlayerHtml;
   }
 
   private async volumeDownClicked() {
@@ -96,7 +128,7 @@ class Player extends LitElement {
   }
 
   private allVolumesIcon() {
-    return this.main.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical';
+    return this.showVolumes ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical';
   }
 
   private shuffleIcon() {
@@ -209,12 +241,12 @@ class Player extends LitElement {
   }
 
   toggleShowAllVolumes() {
-    this.main.showVolumes = !this.main.showVolumes;
+    this.showVolumes = !this.showVolumes;
     clearTimeout(this.timerToggleShowAllVolumes);
-    if (this.main.showVolumes) {
+    if (this.showVolumes) {
       this.scrollToBottomOfFooter();
       this.timerToggleShowAllVolumes = window.setTimeout(() => {
-        this.main.showVolumes = false;
+        this.showVolumes = false;
         window.scrollTo(0, 0);
       }, 30000);
     }
@@ -255,7 +287,7 @@ class Player extends LitElement {
         };
       }
     }
-    return this.main.stylable('player-container', {
+    return stylable('player-container', this.config, {
       marginTop: '1rem',
       position: 'relative',
       background: 'var(--sonos-int-background-color)',
@@ -267,17 +299,17 @@ class Player extends LitElement {
   }
 
   private bodyStyle() {
-    return this.main.stylable('player-body', {
+    return stylable('player-body', this.config, {
       position: 'absolute',
       inset: '0px',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: this.main.showVolumes ? 'flex-end' : 'space-between',
+      justifyContent: this.showVolumes ? 'flex-end' : 'space-between',
     });
   }
 
   private footerStyle() {
-    return this.main.stylable('player-footer', {
+    return stylable('player-footer', this.config, {
       background: 'var(--sonos-int-player-section-background)',
       margin: '0.25rem',
       padding: '0.5rem',
@@ -287,14 +319,14 @@ class Player extends LitElement {
   }
 
   private iconsStyle() {
-    return this.main.stylable('player-footer-icons', {
+    return stylable('player-footer-icons', this.config, {
       justifyContent: 'space-between',
       display: 'flex',
     });
   }
 
   private iconStyle(additionalStyle?: StyleInfo) {
-    return this.main.stylable('player-footer-icon', {
+    return stylable('player-footer-icon', this.config, {
       padding: '0.3rem',
       '--mdc-icon-size': 'min(100%, 1.25rem)',
       ...additionalStyle,
@@ -302,7 +334,7 @@ class Player extends LitElement {
   }
 
   private volumeRangeStyle(inputColor: string, volume: number, max: number) {
-    return this.main.stylable('player-volume-range', {
+    return stylable('player-volume-range', this.config, {
       '-webkit-appearance': 'none',
       height: '0.25rem',
       borderRadius: 'var(--sonos-int-border-radius)',
@@ -319,7 +351,7 @@ class Player extends LitElement {
   }
 
   private infoStyle() {
-    return this.main.stylable('player-info', {
+    return stylable('player-info', this.config, {
       margin: '0.25rem',
       padding: '0.5rem',
       textAlign: 'center',
@@ -329,7 +361,7 @@ class Player extends LitElement {
   }
 
   private artistAlbumStyle() {
-    return this.main.stylable('player-artist-album', {
+    return stylable('player-artist-album', this.config, {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       fontSize: '0.75rem',
@@ -340,7 +372,7 @@ class Player extends LitElement {
   }
 
   private songStyle() {
-    return this.main.stylable('player-song', {
+    return stylable('player-song', this.config, {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       fontSize: '1.15rem',
@@ -351,7 +383,7 @@ class Player extends LitElement {
   }
 
   private noMediaTextStyle() {
-    return this.main.stylable('no-media-text', {
+    return stylable('no-media-text', this.config, {
       flexGrow: '1',
       display: 'flex',
       justifyContent: 'center',
@@ -360,7 +392,7 @@ class Player extends LitElement {
   }
 
   private volumeStyle(isGroupMember: boolean) {
-    return this.main.stylable('player-volume', {
+    return stylable('player-volume', this.config, {
       display: 'flex',
       ...(isGroupMember && {
         borderTop: 'dotted var(--sonos-int-color)',
@@ -370,7 +402,7 @@ class Player extends LitElement {
   }
 
   private volumeNameStyle() {
-    return this.main.stylable('player-volume-name', {
+    return stylable('player-volume-name', this.config, {
       marginTop: '1rem',
       marginLeft: '0.4rem',
       flex: '1',
@@ -381,13 +413,13 @@ class Player extends LitElement {
   }
 
   private volumeSliderStyle() {
-    return this.main.stylable('player-volume-slider', {
+    return stylable('player-volume-slider', this.config, {
       flex: '4',
     });
   }
 
   private volumeLevelStyle() {
-    return this.main.stylable('player-volume-level', {
+    return stylable('player-volume-level', this.config, {
       fontSize: 'x-small',
       margin: '0 0.4rem',
       display: 'flex',
@@ -395,20 +427,21 @@ class Player extends LitElement {
   }
 
   private muteStyle() {
-    return this.main.stylable('player-mute', {
+    return stylable('player-mute', this.config, {
       '--mdc-icon-size': '1.25rem',
       alignSelf: 'center',
     });
   }
 
   static get styles() {
-    return css`
-      .hoverable:focus,
-      .hoverable:hover {
-        color: var(--sonos-int-accent-color);
-      }
-    `;
+    return [
+      css`
+        .hoverable:focus,
+        .hoverable:hover {
+          color: var(--sonos-int-accent-color);
+        }
+      `,
+      sharedStyle,
+    ];
   }
 }
-
-customElements.define('sonos-player', Player);

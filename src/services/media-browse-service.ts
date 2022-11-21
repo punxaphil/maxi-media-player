@@ -67,7 +67,9 @@ export default class MediaBrowseService {
       .map((entity) => this.hass.states[entity])
       .flatMap((state) => state.attributes.source_list);
     titles = [...new Set(titles)];
-    if (!titles.length) console.log('Custom Sonos Card: No favorites found');
+    if (!titles.length) {
+      console.log('Custom Sonos Card: No favorites found');
+    }
     return titles.map((title) => ({ title }));
   }
 }

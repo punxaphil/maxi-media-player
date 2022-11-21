@@ -1,261 +1,49 @@
-import { css, html, LitElement } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import './components/player';
-import './components/groups';
-import './components/grouping';
-import './components/media-browser';
-import { createPlayerGroups, getMediaPlayers, getWidth, isMobile } from './utils';
-import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig, PlayerGroups, Section, Size } from './types';
-import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
-import MediaBrowseService from './services/media-browse-service';
-import MediaControlService from './services/media-control-service';
-import HassService from './services/hass-service';
-import { titleStyle } from './sharedStyle';
+import { Player } from './cards/player';
+import { AllSections } from './cards/all-sections';
+import { Grouping } from './cards/grouping';
+import { Groups } from './cards/groups';
+import { MediaBrowser } from './cards/media-browser';
+import { CustomSonosCard } from './cards/custom-sonos-card';
 
-// This puts your card into the UI card picker dialog
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: 'custom-sonos-card',
-  name: 'Sonos Card',
-  description: 'Customized media player for your Sonos speakers',
-  preview: true,
-});
+const name = (type?: string) => `Sonos${type ? ` (${type})` : ''}`;
+const desc = (type?: string) => `Media player for your Sonos speakers${type ? ` (${type})` : ''}`;
 
-const ACTIVE_PLAYER_EVENT = 'sonos-card-active-player';
-
-export class CustomSonosCard extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
-  @property() config!: CardConfig;
-  @state() activePlayer!: string;
-  @state() showVolumes!: boolean;
-  mediaBrowseService!: MediaBrowseService;
-  mediaControlService!: MediaControlService;
-  hassService!: HassService;
-  activePlayerListener = (event: Event) => (this.activePlayer = (event as CustomEvent).detail.player);
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener(ACTIVE_PLAYER_EVENT, this.activePlayerListener);
-  }
-  disconnectedCallback() {
-    window.removeEventListener(ACTIVE_PLAYER_EVENT, this.activePlayerListener);
-    super.disconnectedCallback();
-  }
-  render() {
-    if (!this.mediaBrowseService) {
-      this.hassService = new HassService(this.hass);
-      this.mediaBrowseService = new MediaBrowseService(this.hass, this.hassService);
-      this.mediaControlService = new MediaControlService(this.hass, this.hassService);
-    }
-    const mediaPlayers = getMediaPlayers(this.config, this.hass);
-    const playerGroups = createPlayerGroups(mediaPlayers, this.hass, this.config);
-    this.determineActivePlayer(playerGroups);
-    return html`
-      <ha-card style="${this.haCardStyle()}">
-        <div style="${this.titleStyle()}">${this.config.name}</div>
-        <div style="${this.contentStyle()}">
-          <div style=${this.groupsStyle()}>
-            <sonos-groups .main="${this}" .groups="${playerGroups}" .activePlayer="${this.activePlayer}" />
-          </div>
-
-          <div style=${this.playersStyle()}>
-            <sonos-player .main=${this} .members=${playerGroups[this.activePlayer].members}></sonos-player>
-            <sonos-grouping .main=${this} .groups=${playerGroups} .mediaPlayers=${mediaPlayers}></sonos-grouping>
-          </div>
-
-          <div style=${this.mediaBrowserStyle()}>
-            <sonos-media-browser .main=${this} .mediaPlayers=${mediaPlayers}></sonos-media-browser>
-          </div>
-        </div>
-      </ha-card>
-    `;
-  }
-
-  stylable(configName: string, additionalStyle?: StyleInfo) {
-    return styleMap({
-      ...{
-        '--sonos-card-style-name': configName,
-      },
-      ...additionalStyle,
-      ...this.config?.styles?.[configName],
-    });
-  }
-
-  buttonSectionStyle(additionalStyle?: StyleInfo) {
-    return this.stylable('button-section', {
-      background: 'var(--sonos-int-button-section-background-color)',
-      borderRadius: 'var(--sonos-int-border-radius)',
-      border: 'var(--sonos-int-border-width) solid var(--sonos-int-color)',
-      marginTop: '1rem',
-      padding: '0 0.5rem',
-      ...additionalStyle,
-    });
-  }
-  private titleStyle() {
-    return this.stylable('title', { display: this.config.name ? 'block' : 'none', ...titleStyle });
-  }
-
-  private groupsStyle() {
-    return this.columnStyle(this.config.layout?.groups, '1', this.getDefaultWidth('25%'), 'groups', {
-      padding: '0 1rem',
-      boxSizing: 'border-box',
-    });
-  }
-
-  private getDefaultWidth(widthInPanelMode: string) {
-    return this.config.singleSectionMode ? '100%' : widthInPanelMode;
-  }
-
-  private playersStyle() {
-    return this.columnStyle(this.config.layout?.players, '0', this.getDefaultWidth('40%'), 'players');
-  }
-
-  private mediaBrowserStyle() {
-    return this.columnStyle(this.config.layout?.mediaBrowser, '2', this.getDefaultWidth('25%'), 'media-browser', {
-      padding: '0 1rem',
-      boxSizing: 'border-box',
-    });
-  }
-
-  private columnStyle(
-    size: Size | undefined,
-    order: string,
-    defaultWidth: string,
-    name: string,
-    additionalStyle?: StyleInfo,
-  ) {
-    const width = getWidth(this.config, defaultWidth, '100%', size);
-    let style: StyleInfo = {
-      width: width,
-      maxWidth: width,
-      ...additionalStyle,
-    };
-    if (isMobile(this.config)) {
-      style = {
-        ...style,
-        order,
-        padding: '0.5rem',
-        margin: '0',
-        boxSizing: 'border-box',
-      };
-    }
-    return this.stylable(name, style);
-  }
-
-  private haCardStyle() {
-    return this.stylable('ha-card', {
-      color: 'var(--sonos-int-color)',
-      background: 'var(--sonos-int-ha-card-background-color)',
-    });
-  }
-
-  private contentStyle() {
-    return this.stylable('content', {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-    });
-  }
-
-  determineActivePlayer(playerGroups: PlayerGroups) {
-    const selected_player =
-      this.config.selectedPlayer ||
-      (window.location.href.indexOf('#') > 0 ? window.location.href.replace(/.*#/g, '') : '');
-    if (this.activePlayer) {
-      this.setActivePlayer(this.activePlayer);
-    }
-    if (!this.activePlayer) {
-      for (const player in playerGroups) {
-        if (player === selected_player) {
-          this.setActivePlayer(player);
-        } else {
-          for (const member in playerGroups[player].members) {
-            if (member === selected_player) {
-              this.setActivePlayer(player);
-            }
-          }
-        }
-      }
-    }
-    if (!this.activePlayer) {
-      for (const player in playerGroups) {
-        if (playerGroups[player].state === 'playing') {
-          this.setActivePlayer(player);
-        }
-      }
-    }
-    if (!this.activePlayer) {
-      this.setActivePlayer(Object.keys(playerGroups)[0]);
-    }
-  }
-
-  setActivePlayer(player: string) {
-    if (this.activePlayer !== player) {
-      this.activePlayer = player;
-      const newUrl = window.location.href.replace(/#.*/g, '');
-      window.location.href = `${newUrl}#${player}`;
-      const event = new CustomEvent(ACTIVE_PLAYER_EVENT, { bubbles: true, composed: true, detail: { player } });
-      window.dispatchEvent(event);
-    }
-  }
-
-  setConfig(config: CardConfig) {
-    this.config = JSON.parse(JSON.stringify(config));
-    // Handle deprecated configs
-    const deprecatedMessage = (deprecated: string, instead: string) =>
-      console.log('Sonos Card: ' + deprecated + ' configuration is deprecated. Please use ' + instead + ' instead.');
-    if (this.config.layout && !this.config.layout?.mediaBrowser && this.config.layout.favorites) {
-      deprecatedMessage('layout.favorites', 'layout.mediaBrowser');
-      this.config.layout.mediaBrowser = this.config.layout.favorites;
-    }
-    if (this.config.layout && !this.config.layout?.mediaItem && this.config.layout.favorite) {
-      deprecatedMessage('layout.favorite', 'layout.mediaItem');
-      this.config.layout.mediaItem = this.config.layout.favorite;
-    }
-    if (this.config.singleSectionMode) {
-      if (!Object.values(Section).includes(this.config.singleSectionMode)) {
-        console.log('Sonos Card: invalid value supplied for "singleSectionMode", will show all sections.');
-        this.config.singleSectionMode = undefined;
-      }
-    }
-  }
-
-  getCardSize() {
-    return 3;
-  }
-
-  static get styles() {
-    return css`
-      :host {
-        --sonos-int-background-color: var(
-          --sonos-background-color,
-          var(--ha-card-background, var(--card-background-color, white))
-        );
-        --sonos-int-ha-card-background-color: var(
-          --sonos-ha-card-background-color,
-          var(--ha-card-background, var(--card-background-color, white))
-        );
-        --sonos-int-player-section-background: var(--sonos-player-section-background, #ffffffe6);
-        --sonos-int-color: var(--sonos-color, var(--secondary-text-color));
-        --sonos-int-artist-album-text-color: var(--sonos-artist-album-text-color, var(--secondary-text-color));
-        --sonos-int-song-text-color: var(--sonos-song-text-color, var(--sonos-accent-color, var(--accent-color)));
-        --sonos-int-accent-color: var(--sonos-accent-color, var(--accent-color));
-        --sonos-int-title-color: var(--sonos-title-color, var(--secondary-text-color));
-        --sonos-int-border-radius: var(--sonos-border-radius, 0.25rem);
-        --sonos-int-border-width: var(--sonos-border-width, 0.125rem);
-        --sonos-int-media-button-white-space: var(
-          --sonos-media-buttons-multiline,
-          var(--sonos-favorites-multiline, nowrap)
-        );
-        --sonos-int-button-section-background-color: var(
-          --sonos-button-section-background-color,
-          var(--card-background-color)
-        );
-        --mdc-icon-size: 1rem;
-      }
-    `;
-  }
-}
+window.customCards.push(
+  {
+    type: 'sonos-card',
+    name: name(),
+    description: desc(),
+    preview: true,
+  },
+  {
+    type: 'sonos-grouping',
+    name: name('Grouping section'),
+    description: desc('Grouping section'),
+    preview: true,
+  },
+  {
+    type: 'sonos-groups',
+    name: name('Groups section'),
+    description: desc('Groups section'),
+    preview: true,
+  },
+  {
+    type: 'sonos-media-browser',
+    name: name('Media Browser section'),
+    description: desc('Media Browser section'),
+    preview: true,
+  },
+  {
+    type: 'sonos-player',
+    name: name('Player section'),
+    description: 'Media player for your Sonos speakers (Player section)',
+    preview: true,
+  },
+);
 
 customElements.define('custom-sonos-card', CustomSonosCard);
+customElements.define('sonos-card', AllSections);
+customElements.define('sonos-grouping', Grouping);
+customElements.define('sonos-groups', Groups);
+customElements.define('sonos-media-browser', MediaBrowser);
+customElements.define('sonos-player', Player);

@@ -15,7 +15,8 @@ export enum Section {
 
 export interface CardConfig extends LovelaceCardConfig {
   type: string;
-  singleSectionMode?: Section;
+  singleSectionMode?: Section; //deprecated
+  showAllSections?: boolean;
   name?: string;
   groupsTitle?: string;
   groupingTitle?: string;
@@ -104,3 +105,6 @@ export interface PredefinedGroup {
   name: string;
   entities: string[];
 }
+
+export const ACTIVE_PLAYER_EVENT = 'sonos-card-active-player';
+export const REQUEST_PLAYER_EVENT = 'sonos-card-request-player';

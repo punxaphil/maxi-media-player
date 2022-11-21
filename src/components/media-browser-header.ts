@@ -1,23 +1,21 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { MediaPlayerItem } from '../types';
-import MediaControlService from '../services/media-control-service';
+import { CardConfig, MediaPlayerItem } from '../types';
 import { titleStyle } from '../sharedStyle';
-import { CustomSonosCard } from '../main';
 import './media-button';
-import { MediaBrowser } from './media-browser';
+import { HomeAssistant } from 'custom-card-helpers';
+import { stylable } from '../utils';
+import { MediaBrowser } from '../cards/media-browser';
 
 class MediaBrowserHeader extends LitElement {
-  @property() main!: CustomSonosCard;
+  @property() hass!: HomeAssistant;
+  @property() config!: CardConfig;
+
   @property() mediaBrowser!: MediaBrowser;
   @property() browse!: boolean;
   @property() currentDir!: MediaPlayerItem;
-  private activePlayer!: string;
-  private mediaControlService!: MediaControlService;
 
   render() {
-    this.activePlayer = this.main.activePlayer;
-    this.mediaControlService = this.main.mediaControlService;
     return html`
       <div style="${this.headerStyle()}" class="hoverable">
         <div style="${this.playDirStyle()}" class="hoverable">
@@ -28,7 +26,7 @@ class MediaBrowserHeader extends LitElement {
               ></ha-icon>`
             : ''}
         </div>
-        <div style="${this.titleStyle()}">${this.main.config.mediaTitle ? this.main.config.mediaTitle : 'Media'}</div>
+        <div style="${this.titleStyle()}">${this.config.mediaTitle ? this.config.mediaTitle : 'Media'}</div>
         <div style="${this.browseStyle()}" @click="${() => this.mediaBrowser.browseClicked()}">
           <ha-icon .icon=${this.browse ? 'mdi:arrow-left-bold' : 'mdi:play-box-multiple'}></ha-icon>
         </div>
@@ -37,7 +35,7 @@ class MediaBrowserHeader extends LitElement {
   }
 
   private headerStyle() {
-    return this.main.stylable('media-browser-header', {
+    return stylable('media-browser-header', this.config, {
       display: 'flex',
       justifyContent: 'space-between',
       ...titleStyle,
@@ -50,19 +48,20 @@ class MediaBrowserHeader extends LitElement {
   };
 
   private titleStyle() {
-    return this.main.stylable('title', this.headerChildStyle);
+    return stylable('title', this.config, this.headerChildStyle);
   }
 
   private playDirStyle() {
-    return this.main.stylable('media-browser-play-dir', {
+    return stylable('media-browser-play-dir', this.config, {
       textAlign: 'left',
       paddingRight: '-0.5rem',
       marginLeft: '0.5rem',
       ...this.headerChildStyle,
     });
   }
+
   private browseStyle() {
-    return this.main.stylable('media-browse', {
+    return stylable('media-browse', this.config, {
       textAlign: 'right',
       paddingRight: '0.5rem',
       marginLeft: '-0.5rem',
