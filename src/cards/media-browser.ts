@@ -5,10 +5,10 @@ import {
   buttonSectionStyle,
   getMediaPlayers,
   getWidth,
-  listenForActivePlayer,
+  listenForEntityId,
   noPlayerHtml,
   sharedStyle,
-  stopListeningForActivePlayer,
+  stopListeningForEntityId,
   stylable,
   validateConfig,
   wrapInHaCardUnlessAllSectionsShown,
@@ -29,24 +29,24 @@ export class MediaBrowser extends LitElement {
   @state() private browse!: boolean;
   @state() private currentDir?: MediaPlayerItem;
   @state() private mediaItems: MediaPlayerItem[] = [];
-  @state() private activePlayer!: string;
+  @state() private entityId!: string;
   private mediaPlayers!: string[];
   private parentDirs: MediaPlayerItem[] = [];
   private mediaControlService!: MediaControlService;
   private mediaBrowseService!: MediaBrowseService;
   private hassService!: HassService;
 
-  activePlayerListener = (event: Event) => {
-    this.activePlayer = (event as CustomEvent).detail.player;
+  entityIdListener = (event: Event) => {
+    this.entityId = (event as CustomEvent).detail.entityId;
   };
 
   connectedCallback() {
     super.connectedCallback();
-    listenForActivePlayer(this.activePlayerListener);
+    listenForEntityId(this.entityIdListener);
   }
 
   disconnectedCallback() {
-    stopListeningForActivePlayer(this.activePlayerListener);
+    stopListeningForEntityId(this.entityIdListener);
     super.disconnectedCallback();
   }
 
@@ -57,7 +57,10 @@ export class MediaBrowser extends LitElement {
   }
 
   render() {
-    if (this.activePlayer && this.hass) {
+    if (!this.entityId && this.config.entityId) {
+      this.entityId = this.config.entityId;
+    }
+    if (this.entityId && this.hass) {
       this.hassService = new HassService(this.hass);
       this.mediaBrowseService = new MediaBrowseService(this.hass, this.hassService);
       this.mediaControlService = new MediaControlService(this.hass, this.hassService);
@@ -76,7 +79,7 @@ export class MediaBrowser extends LitElement {
             .browse=${this.browse}
             .currentDir=${this.currentDir}
           ></sonos-media-browser-header>
-          ${this.activePlayer !== '' &&
+          ${this.entityId !== '' &&
           until(
             (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
               const itemsWithImage = MediaBrowser.itemsWithImage(items);
@@ -137,9 +140,9 @@ export class MediaBrowser extends LitElement {
 
   async playItem(mediaItem: MediaPlayerItem) {
     if (mediaItem.media_content_type || mediaItem.media_content_id) {
-      await this.mediaControlService.playMedia(this.activePlayer, mediaItem);
+      await this.mediaControlService.playMedia(this.entityId, mediaItem);
     } else {
-      await this.mediaControlService.setSource(this.activePlayer, mediaItem.title);
+      await this.mediaControlService.setSource(this.entityId, mediaItem.title);
     }
   }
 
@@ -154,7 +157,7 @@ export class MediaBrowser extends LitElement {
       allFavorites = allFavorites.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
     }
     return [
-      ...(this.config.customSources?.[this.activePlayer]?.map(MediaBrowser.createSource) || []),
+      ...(this.config.customSources?.[this.entityId]?.map(MediaBrowser.createSource) || []),
       ...(this.config.customSources?.all?.map(MediaBrowser.createSource) || []),
       ...allFavorites,
     ];
@@ -177,8 +180,8 @@ export class MediaBrowser extends LitElement {
 
   private async loadMediaDir(mediaItem?: MediaPlayerItem) {
     return await (mediaItem
-      ? this.mediaBrowseService.getDir(this.activePlayer, mediaItem, this.config.mediaBrowserTitlesToIgnore)
-      : this.mediaBrowseService.getRoot(this.activePlayer, this.config.mediaBrowserTitlesToIgnore));
+      ? this.mediaBrowseService.getDir(this.entityId, mediaItem, this.config.mediaBrowserTitlesToIgnore)
+      : this.mediaBrowseService.getRoot(this.entityId, this.config.mediaBrowserTitlesToIgnore));
   }
 
   private mediaButtonsStyle(itemsWithImage: boolean) {

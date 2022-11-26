@@ -5,10 +5,10 @@ import {
   getEntityName,
   getGroupMembers,
   getMediaPlayers,
-  listenForActivePlayer,
+  listenForEntityId,
   noPlayerHtml,
   sharedStyle,
-  stopListeningForActivePlayer,
+  stopListeningForEntityId,
   stylable,
   validateConfig,
   wrapInHaCardUnlessAllSectionsShown,
@@ -35,18 +35,18 @@ export class Player extends LitElement {
   @state() showVolumes!: boolean;
   @state() private timerToggleShowAllVolumes!: number;
 
-  activePlayerListener = (event: Event) => {
-    this.entityId = (event as CustomEvent).detail.player;
+  entityIdListener = (event: Event) => {
+    this.entityId = (event as CustomEvent).detail.entityId;
     this.showVolumes = false;
   };
 
   connectedCallback() {
     super.connectedCallback();
-    listenForActivePlayer(this.activePlayerListener);
+    listenForEntityId(this.entityIdListener);
   }
 
   disconnectedCallback() {
-    stopListeningForActivePlayer(this.activePlayerListener);
+    stopListeningForEntityId(this.entityIdListener);
     super.disconnectedCallback();
   }
 
@@ -57,6 +57,9 @@ export class Player extends LitElement {
   }
 
   render() {
+    if (!this.entityId && this.config.entityId) {
+      this.entityId = this.config.entityId;
+    }
     if (this.entityId && this.hass) {
       this.entity = this.hass.states[this.entityId];
       this.hassService = new HassService(this.hass);

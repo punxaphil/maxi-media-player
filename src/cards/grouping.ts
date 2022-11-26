@@ -5,10 +5,10 @@ import {
   createPlayerGroups,
   getEntityName,
   getMediaPlayers,
-  listenForActivePlayer,
+  listenForEntityId,
   noPlayerHtml,
   sharedStyle,
-  stopListeningForActivePlayer,
+  stopListeningForEntityId,
   stylable,
   validateConfig,
   wrapInHaCardUnlessAllSectionsShown,
@@ -23,24 +23,24 @@ import HassService from '../services/hass-service';
 export class Grouping extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
-  @property() private activePlayer!: string;
+  @property() private entityId!: string;
   mediaControlService!: MediaControlService;
   hassService!: HassService;
 
   private groups!: PlayerGroups;
   private mediaPlayers!: string[];
 
-  activePlayerListener = (event: Event) => {
-    this.activePlayer = (event as CustomEvent).detail.player;
+  entityIdListener = (event: Event) => {
+    this.entityId = (event as CustomEvent).detail.entityId;
   };
 
   connectedCallback() {
     super.connectedCallback();
-    listenForActivePlayer(this.activePlayerListener);
+    listenForEntityId(this.entityIdListener);
   }
 
   disconnectedCallback() {
-    stopListeningForActivePlayer(this.activePlayerListener);
+    stopListeningForEntityId(this.entityIdListener);
     super.disconnectedCallback();
   }
 
@@ -51,16 +51,19 @@ export class Grouping extends LitElement {
   }
 
   render() {
-    if (this.activePlayer && this.hass) {
+    if (!this.entityId && this.config.entityId) {
+      this.entityId = this.config.entityId;
+    }
+    if (this.entityId && this.hass) {
       this.hassService = new HassService(this.hass);
       this.mediaControlService = new MediaControlService(this.hass, this.hassService);
       this.mediaPlayers = getMediaPlayers(this.config, this.hass);
       this.groups = createPlayerGroups(this.mediaPlayers, this.hass, this.config);
       const joinedPlayers = this.mediaPlayers.filter(
-        (player) => player !== this.activePlayer && this.groups[this.activePlayer].members[player],
+        (player) => player !== this.entityId && this.groups[this.entityId].members[player],
       );
       const notJoinedPlayers = this.mediaPlayers.filter(
-        (player) => player !== this.activePlayer && !this.groups[this.activePlayer].members[player],
+        (player) => player !== this.entityId && !this.groups[this.entityId].members[player],
       );
       const cardHtml = html`
         <div style="${buttonSectionStyle(this.config)}">
@@ -68,11 +71,11 @@ export class Grouping extends LitElement {
             ${this.config.groupingTitle ? this.config.groupingTitle : 'Grouping'}
           </div>
           <div style="${this.membersStyle()}">
-            ${this.activePlayer &&
+            ${this.entityId &&
             this.mediaPlayers.map((entity) => this.renderMediaPlayerGroupButton(entity, joinedPlayers))}
             ${when(notJoinedPlayers.length, () => {
               return this.getButton(
-                async () => await this.mediaControlService.join(this.activePlayer, notJoinedPlayers),
+                async () => await this.mediaControlService.join(this.entityId, notJoinedPlayers),
                 'mdi:checkbox-multiple-marked-outline',
               );
             })}
@@ -94,14 +97,10 @@ export class Grouping extends LitElement {
 
   private renderMediaPlayerGroupButton(entity: string, joinedPlayers: string[]) {
     const name = getEntityName(this.hass, this.config, entity);
-    if (this.groups[this.activePlayer].members[entity] || (entity === this.activePlayer && joinedPlayers.length > 0)) {
+    if (this.groups[this.entityId].members[entity] || (entity === this.entityId && joinedPlayers.length > 0)) {
       return this.getButton(async () => await this.mediaControlService.unjoin([entity]), 'mdi:minus', name);
-    } else if (entity !== this.activePlayer) {
-      return this.getButton(
-        async () => await this.mediaControlService.join(this.activePlayer, [entity]),
-        'mdi:plus',
-        name,
-      );
+    } else if (entity !== this.entityId) {
+      return this.getButton(async () => await this.mediaControlService.join(this.entityId, [entity]), 'mdi:plus', name);
     } else {
       return html``;
     }

@@ -109,17 +109,21 @@ export function buttonSectionStyle(config: CardConfig, additionalStyle?: StyleIn
 }
 
 export const noPlayerHtml = html` <div>
-  No Sonos player selected. Add the Sonos Groups card to this dashboard, or replace this one with the Sonos card
-  containing all sections.
+  No Sonos player selected. Do one of the following:
+  <ul>
+    <li>Add the Sonos Groups card to this dashboard</li>
+    <li>Configure <i>entityId</i> for the card</li>
+    <li>Replace this one with the Sonos card containing all sections.</li>
+  </ul>
 </div>`;
 
-export function listenForActivePlayer(listener: EventListener) {
+export function listenForEntityId(listener: EventListener) {
   window.addEventListener(ACTIVE_PLAYER_EVENT, listener);
   const event = new CustomEvent(REQUEST_PLAYER_EVENT, { bubbles: true, composed: true });
   window.dispatchEvent(event);
 }
 
-export function stopListeningForActivePlayer(listener: EventListener) {
+export function stopListeningForEntityId(listener: EventListener) {
   window.removeEventListener(ACTIVE_PLAYER_EVENT, listener);
 }
 
@@ -145,6 +149,10 @@ export function validateConfig(config: CardConfig) {
   }
   if (config.singleSectionMode) {
     deprecatedMessage('singleSectionMode', 'individual cards');
+  }
+  if (config.selectedPlayer) {
+    deprecatedMessage('selectedPlayer', 'entityId');
+    config.entityId = config.selectedPlayer;
   }
 }
 

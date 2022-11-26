@@ -74,6 +74,7 @@ type: custom:sonos-card # or one of the individual sections mentioned above
 # All settings below are optional
 
 # common for all cards
+entityId: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
 entities: # Entities are automatically discovered if you don't supply this setting
@@ -87,7 +88,6 @@ name: ''
 
 # sonos-groups specific
 groupsTitle: ''
-selectedPlayer: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
 hideGroupCurrentTrack: true # default is false, which means song/track info for groups will be shown
 
 # sonos-groupings specific
@@ -387,4 +387,4 @@ Disable it in config with `disableDynamicVolumeSlider: true`
 
 Append `#media_player.my_sonos_player` to page URL to have that player selected.
 
-If `selectedPlayer` is configured for the card, the url param will be ignored. See more in the Usage section above.
+If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.

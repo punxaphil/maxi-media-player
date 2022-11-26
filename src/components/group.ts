@@ -1,9 +1,9 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
-  listenForActivePlayer,
+  listenForEntityId,
   listenForPlayerRequest,
-  stopListeningForActivePlayer,
+  stopListeningForEntityId,
   stopListeningForPlayerRequest,
   stylable,
 } from '../utils';
@@ -16,30 +16,30 @@ class Group extends LitElement {
   @property() hass!: HomeAssistant;
   @property() config!: CardConfig;
   @property() group!: PlayerGroup;
-  @property() activePlayer!: string;
+  @property() selected = false;
 
   connectedCallback() {
     super.connectedCallback();
-    listenForActivePlayer(this.activePlayerListener);
-    listenForPlayerRequest(this.dispatchActivePlayerEvent);
+    listenForEntityId(this.entityIdListener);
+    listenForPlayerRequest(this.dispatchEntityIdEvent);
   }
 
   disconnectedCallback() {
-    stopListeningForActivePlayer(this.activePlayerListener);
-    stopListeningForPlayerRequest(this.dispatchActivePlayerEvent);
+    stopListeningForEntityId(this.entityIdListener);
+    stopListeningForPlayerRequest(this.dispatchEntityIdEvent);
     super.disconnectedCallback();
   }
 
-  activePlayerListener = (event: Event) => {
-    this.activePlayer = (event as CustomEvent).detail.player;
+  entityIdListener = (event: Event) => {
+    this.selected = (event as CustomEvent).detail.entityId === this.group?.entity;
   };
 
-  dispatchActivePlayerEvent = () => {
-    if (this.activePlayer) {
+  dispatchEntityIdEvent = () => {
+    if (this.selected) {
       const event = new CustomEvent(ACTIVE_PLAYER_EVENT, {
         bubbles: true,
         composed: true,
-        detail: { player: this.activePlayer },
+        detail: { entityId: this.group.entity },
       });
       window.dispatchEvent(event);
     }
@@ -52,7 +52,7 @@ class Group extends LitElement {
       '',
     );
     const speakerList = [this.group.roomName, ...Object.values(this.group.members)].join(' + ');
-    this.dispatchActivePlayerEvent();
+    this.dispatchEntityIdEvent();
     return html`
       <div @click="${() => this.handleGroupClicked()}" style="${this.groupStyle()}">
         <ul style="${this.speakersStyle()}">
@@ -84,7 +84,7 @@ class Group extends LitElement {
       padding: '0.8rem',
       border: 'var(--sonos-int-border-width) solid var(--sonos-int-color)',
       backgroundColor: 'var(--sonos-int-background-color)',
-      ...(this.activePlayer === this.group.entity && {
+      ...(this.selected && {
         border: 'var(--sonos-int-border-width) solid var(--sonos-int-accent-color)',
         color: 'var(--sonos-int-accent-color)',
         fontWeight: 'bold',
@@ -140,11 +140,11 @@ class Group extends LitElement {
   }
 
   private handleGroupClicked() {
-    if (this.activePlayer !== this.group.entity) {
-      this.activePlayer = this.group.entity;
+    if (!this.selected) {
+      this.selected = true;
       const newUrl = window.location.href.replace(/#.*/g, '');
       window.location.replace(`${newUrl}#${this.group.entity}`);
-      this.dispatchActivePlayerEvent();
+      this.dispatchEntityIdEvent();
     }
   }
 

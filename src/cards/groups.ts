@@ -19,7 +19,7 @@ export class Groups extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() config!: CardConfig;
   private groups!: PlayerGroups;
-  private activePlayer!: string;
+  private entityId!: string;
 
   setConfig(config: CardConfig) {
     const parsed = JSON.parse(JSON.stringify(config));
@@ -31,7 +31,7 @@ export class Groups extends LitElement {
     if (this.hass) {
       const mediaPlayers = getMediaPlayers(this.config, this.hass);
       this.groups = createPlayerGroups(mediaPlayers, this.hass, this.config);
-      this.determineActivePlayer(this.groups);
+      this.determineEntityId(this.groups);
       const cardHtml = html`
         <div style="${buttonSectionStyle(this.config)}">
           <div style="${stylable('title', this.config, titleStyle)}">
@@ -44,7 +44,7 @@ export class Groups extends LitElement {
                   .config=${this.config}
                   .hass=${this.hass}
                   .group=${group}
-                  .activePlayer="${this.activePlayer}"
+                  .selected="${this.entityId === group.entity}"
                 ></sonos-group>
               `,
           )}
@@ -55,31 +55,30 @@ export class Groups extends LitElement {
     return noPlayerHtml;
   }
 
-  determineActivePlayer(playerGroups: PlayerGroups) {
-    if (!this.activePlayer) {
-      const selected_player =
-        this.config.selectedPlayer ||
-        (window.location.href.indexOf('#') > 0 ? window.location.href.replace(/.*#/g, '') : '');
+  determineEntityId(playerGroups: PlayerGroups) {
+    if (!this.entityId) {
+      const entityId =
+        this.config.entityId || (window.location.href.indexOf('#') > 0 ? window.location.href.replace(/.*#/g, '') : '');
       for (const player in playerGroups) {
-        if (player === selected_player) {
-          this.activePlayer = player;
+        if (player === entityId) {
+          this.entityId = player;
         } else {
           for (const member in playerGroups[player].members) {
-            if (member === selected_player) {
-              this.activePlayer = player;
+            if (member === entityId) {
+              this.entityId = player;
             }
           }
         }
       }
-      if (!this.activePlayer) {
+      if (!this.entityId) {
         for (const player in playerGroups) {
           if (playerGroups[player].state === 'playing') {
-            this.activePlayer = player;
+            this.entityId = player;
           }
         }
       }
-      if (!this.activePlayer) {
-        this.activePlayer = Object.keys(playerGroups)[0];
+      if (!this.entityId) {
+        this.entityId = Object.keys(playerGroups)[0];
       }
     }
   }
