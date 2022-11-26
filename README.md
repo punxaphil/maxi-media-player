@@ -15,6 +15,7 @@ Customized media player for sonos speakers!
 * Theming
 * Configurable layout
 * Dynamic volume level slider
+* Track progress bar
 
 and more!
 
