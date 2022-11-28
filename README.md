@@ -390,3 +390,11 @@ Disable it in config with `disableDynamicVolumeSlider: true`
 Append `#media_player.my_sonos_player` to page URL to have that player selected.
 
 If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.
+
+## Media browser as list instead of icons
+
+```
+mediaBrowserItemsAsList: true
+```
+
+![img/mediaBrowserItemsAsList.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/mediaBrowserItemsAsList.png)
