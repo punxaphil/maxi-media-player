@@ -36,14 +36,6 @@ export abstract class MediaItem extends LitElement {
     });
   }
 
-  folderStyle(thumbnail: string) {
-    return stylable('media-button-folder', this.config, {
-      marginBottom: '-120%',
-      '--mdc-icon-size': '1',
-      ...((!this.mediaItem.can_expand || thumbnail) && { display: 'none' }),
-    });
-  }
-
   static get styles() {
     return css`
       .hoverable:focus,

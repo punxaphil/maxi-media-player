@@ -3,14 +3,21 @@ import { MediaItem } from './media-item';
 import { stylable } from '../utils';
 
 class MediaListItem extends MediaItem {
+  private iconStyle = {
+    position: 'relative',
+    flexShrink: '0',
+    width: '30px',
+    height: '30px',
+  };
+
   render() {
     const thumbnail = this.getThumbnail();
     return html`
       <div style="${this.wrapperStyle()}">
         <div style="${this.listItemStyle()}">
           <div style="${this.thumbnailStyle(thumbnail)}" class="hoverable"></div>
-          <div style="${this.titleStyle(thumbnail)}">${this.mediaItem.title}</div>
           <ha-icon style="${this.folderStyle(thumbnail)}" .icon=${'mdi:folder-music'}></ha-icon>
+          <div style="${this.titleStyle(thumbnail)}">${this.mediaItem.title}</div>
         </div>
       </div>
     `;
@@ -27,17 +34,21 @@ class MediaListItem extends MediaItem {
   }
 
   private thumbnailStyle(thumbnail: string) {
-    return stylable('media-button', this.config, {
-      ...((thumbnail || this.mediaItem.can_expand) && {
-        width: '30px',
-        height: '30px',
-        backgroundSize: '30px',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'left',
-        position: 'relative',
-        flexShrink: '0',
-      }),
-      ...(thumbnail && { backgroundImage: 'url(' + thumbnail + ')' }),
+    return stylable('media-button-thumb', this.config, {
+      ...this.iconStyle,
+      backgroundSize: '30px',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'left',
+      backgroundImage: 'url(' + thumbnail + ')',
+      ...(!thumbnail && { display: 'none' }),
+    });
+  }
+
+  private folderStyle(thumbnail: string) {
+    return stylable('media-button-folder', this.config, {
+      ...this.iconStyle,
+      '--mdc-icon-size': '90%',
+      ...((!this.mediaItem.can_expand || thumbnail) && { display: 'none' }),
     });
   }
 

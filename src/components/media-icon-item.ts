@@ -57,6 +57,14 @@ class MediaIconItem extends MediaItem {
       }),
     });
   }
+
+  private folderStyle(thumbnail: string) {
+    return stylable('media-button-folder', this.config, {
+      marginBottom: '-120%',
+      '--mdc-icon-size': '70%',
+      ...((!this.mediaItem.can_expand || thumbnail) && { display: 'none' }),
+    });
+  }
 }
 
 customElements.define('sonos-media-icon-item', MediaIconItem);
