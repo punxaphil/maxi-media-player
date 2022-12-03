@@ -36,8 +36,11 @@ export class Player extends LitElement {
   @state() private timerToggleShowAllVolumes!: number;
 
   entityIdListener = (event: Event) => {
-    this.entityId = (event as CustomEvent).detail.entityId;
-    this.showVolumes = false;
+    const newEntityId = (event as CustomEvent).detail.entityId;
+    if (newEntityId !== this.entityId) {
+      this.entityId = newEntityId;
+      this.showVolumes = false;
+    }
   };
 
   connectedCallback() {
