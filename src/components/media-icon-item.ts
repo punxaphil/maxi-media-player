@@ -7,7 +7,6 @@ import { MediaItem } from './media-item';
 
 class MediaIconItem extends MediaItem {
   @property() mediaItem!: MediaPlayerItem;
-  @property() hass!: HomeAssistant;
   @property() config!: CardConfig;
 
   render() {

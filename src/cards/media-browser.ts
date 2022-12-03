@@ -84,28 +84,27 @@ export class MediaBrowser extends LitElement {
           until(
             (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
               const itemsWithImage = MediaBrowser.itemsWithImage(items);
-              const mediaItemWidth = itemsWithImage
-                ? getWidth(this.config, '33%', '16%', this.config.layout?.mediaItem)
-                : '100%';
+              const mediaItemWidth = this.getMediaItemWidth(itemsWithImage);
               return html` <div style="${this.mediaButtonsStyle(itemsWithImage)}">
-                ${items.map((mediaItem) => {
+                ${items.map((item) => {
+                  const itemClick = async () => await this.onMediaItemClick(item);
+                  const style = `width: ${mediaItemWidth};max-width: ${mediaItemWidth};`;
                   if (this.config.mediaBrowserItemsAsList) {
                     return html`
                       <sonos-media-list-item
-                        style="width: 100%;max-width: 100%;"
-                        .mediaItem="${mediaItem}"
+                        style="${style}"
+                        .mediaItem="${item}"
                         .config="${this.config}"
-                        @click="${() => this.onMediaItemClick(mediaItem)}"
+                        @click="${itemClick}"
                       ></sonos-media-list-item>
                     `;
                   } else {
                     return html`
                       <sonos-media-icon-item
-                        style="width: ${mediaItemWidth};max-width: ${mediaItemWidth};"
-                        .mediaItem="${mediaItem}"
+                        style="${style}"
+                        .mediaItem="${item}"
                         .config="${this.config}"
-                        @click="${async () => await this.onMediaItemClick(mediaItem)}"
-                        .hass=${this.hass}
+                        @click="${itemClick}"
                       ></sonos-media-icon-item>
                     `;
                   }
@@ -118,6 +117,18 @@ export class MediaBrowser extends LitElement {
       return wrapInHaCardUnlessAllSectionsShown(cardHtml, this.config);
     } else {
       return noPlayerHtml;
+    }
+  }
+
+  private getMediaItemWidth(itemsWithImage: boolean) {
+    if (itemsWithImage) {
+      if (this.config.mediaBrowserItemsAsList) {
+        return getWidth(this.config, '100%', '100%', this.config.layout?.mediaItem);
+      } else {
+        return getWidth(this.config, '33%', '16%', this.config.layout?.mediaItem);
+      }
+    } else {
+      return '100%';
     }
   }
 
