@@ -13,9 +13,9 @@ class MediaListItem extends MediaItem {
   render() {
     const thumbnail = this.getThumbnail();
     return html`
-      <div style="${this.wrapperStyle()}">
+      <div style="${this.wrapperStyle()}" class="hoverable">
         <div style="${this.listItemStyle()}">
-          <div style="${this.thumbnailStyle(thumbnail)}" class="hoverable"></div>
+          <div style="${this.thumbnailStyle(thumbnail)}"></div>
           <ha-icon style="${this.folderStyle(thumbnail)}" .icon=${'mdi:folder-music'}></ha-icon>
           <div style="${this.titleStyle(thumbnail)}">${this.mediaItem.title}</div>
         </div>
