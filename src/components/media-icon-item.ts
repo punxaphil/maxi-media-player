@@ -1,7 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { CardConfig, MediaPlayerItem } from '../types';
-import { HomeAssistant } from 'custom-card-helpers';
 import { stylable } from '../utils';
 import { MediaItem } from './media-item';
 
