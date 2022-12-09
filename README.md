@@ -380,9 +380,7 @@ The volume level slider is dynamically adjusting its scale. If volume is below 2
 20% it will show a scale up to 100%. The color will also change from green to red clearly indicating which scale is
 being used.
 
-![img/volume-green.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume-green.png)
-
-![img/volume-red.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume-red.png)
+![img/volume.png](https://github.com/johanfrick/custom-sonos-card/raw/master/img/volume.png)
 
 Disable it in config with `disableDynamicVolumeSlider: true`
 
