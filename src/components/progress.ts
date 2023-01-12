@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { stylable } from '../utils';
+import { isPlaying, stylable } from '../utils';
 import { CardConfig } from '../types';
 
 class Progress extends LitElement {
@@ -68,9 +68,9 @@ class Progress extends LitElement {
 
   trackProgress() {
     const position = this.entity?.attributes.media_position || 0;
-    const isPlaying = this.entity?.state === 'playing';
+    const playing = isPlaying(this.entity?.state);
     const updatedAt = this.entity?.attributes.media_position_updated_at || 0;
-    if (isPlaying) {
+    if (playing) {
       this.playingProgress = position + (Date.now() - new Date(updatedAt).getTime()) / 1000.0;
     } else {
       this.playingProgress = position;
@@ -78,7 +78,7 @@ class Progress extends LitElement {
     if (!this.tracker) {
       this.tracker = setInterval(() => this.trackProgress(), 1000);
     }
-    if (!isPlaying) {
+    if (!playing) {
       clearInterval(this.tracker);
       this.tracker = undefined;
     }

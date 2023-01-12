@@ -123,10 +123,7 @@ export class Grouping extends LitElement {
         ?.filter((group) => group.entities.length > 1)
         .map((group) => {
           return this.getButton(
-            async () => {
-              await this.mediaControlService.unjoin(group.entities);
-              await this.mediaControlService.join(group.entities[0], group.entities);
-            },
+            async () => await this.mediaControlService.createGroup(group.entities, this.groups),
             this.config.predefinedGroupsNoSeparateSection ? 'mdi:speaker-multiple' : '',
             group.name,
             this.config.predefinedGroupsNoSeparateSection ? { fontStyle: 'italic' } : {},

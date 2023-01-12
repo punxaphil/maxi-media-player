@@ -1,6 +1,7 @@
-import { MediaPlayerItem, Members } from '../types';
+import { MediaPlayerItem, Members, PlayerGroup, PlayerGroups } from '../types';
 import HassService from './hass-service';
 import { HomeAssistant } from 'custom-card-helpers';
+import { isPlaying } from '../utils';
 
 export default class MediaControlService {
   private hassService: HassService;
@@ -22,6 +23,33 @@ export default class MediaControlService {
     await this.hassService.callMediaService('unjoin', {
       entity_id: entities,
     });
+  }
+
+  async createGroup(toBeGrouped: string[], currentGroups: PlayerGroups) {
+    let candidateGroup!: PlayerGroup;
+    for (const group of Object.values(currentGroups)) {
+      if (toBeGrouped.indexOf(group.entity) > -1) {
+        if (isPlaying(group.state)) {
+          await this.modifyExistingGroup(group, toBeGrouped);
+          return;
+        }
+        candidateGroup = candidateGroup || group;
+      }
+    }
+    if (candidateGroup) {
+      await this.modifyExistingGroup(candidateGroup, toBeGrouped);
+    } else {
+      await this.join(toBeGrouped[0], toBeGrouped);
+    }
+  }
+
+  private async modifyExistingGroup(group: PlayerGroup, toBeGrouped: string[]) {
+    const members = Object.keys(group.members);
+    const membersNotToBeGrouped = members.filter((member) => toBeGrouped.indexOf(member) === -1);
+    if (membersNotToBeGrouped?.length) {
+      await this.unjoin(membersNotToBeGrouped);
+    }
+    await this.join(group.entity, toBeGrouped);
   }
 
   async pause(entity_id: string) {

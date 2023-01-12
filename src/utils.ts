@@ -196,3 +196,7 @@ export function haCardStyle(config: CardConfig) {
     background: 'var(--sonos-int-ha-card-background-color)',
   });
 }
+
+export function isPlaying(state: string) {
+  return state === 'playing';
+}

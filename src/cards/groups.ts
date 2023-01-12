@@ -6,6 +6,7 @@ import {
   buttonSectionStyle,
   createPlayerGroups,
   getMediaPlayers,
+  isPlaying,
   noPlayerHtml,
   sharedStyle,
   stylable,
@@ -72,7 +73,7 @@ export class Groups extends LitElement {
       }
       if (!this.entityId) {
         for (const player in playerGroups) {
-          if (playerGroups[player].state === 'playing') {
+          if (isPlaying(playerGroups[player].state)) {
             this.entityId = player;
           }
         }

@@ -1,6 +1,7 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
+  isPlaying,
   listenForEntityId,
   listenForPlayerRequest,
   stopListeningForEntityId,
@@ -62,7 +63,7 @@ class Group extends LitElement {
           ${currentTrack
             ? html` <div style="flex: 1"><span style="${this.currentTrackStyle()}">${currentTrack}</span></div>
                 ${when(
-                  this.group.state === 'playing',
+                  isPlaying(this.group.state),
                   () => html`
                     <div style="width: 0.55rem; position: relative;">
                       <div style="${Group.barStyle(1)}"></div>

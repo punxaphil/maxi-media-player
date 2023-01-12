@@ -1,6 +1,14 @@
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { createPlayerGroups, getEntityName, getGroupMembers, getMediaPlayers, sharedStyle, stylable } from '../utils';
+import {
+  createPlayerGroups,
+  getEntityName,
+  getGroupMembers,
+  getMediaPlayers,
+  isPlaying,
+  sharedStyle,
+  stylable,
+} from '../utils';
 import { CardConfig, Members } from '../types';
 import { HomeAssistant } from 'custom-card-helpers';
 import { until } from 'lit-html/directives/until.js';
@@ -36,7 +44,7 @@ class MediaControls extends LitElement {
     if (this.isGroup) {
       allVolumes = getGroupMembers(this.entity).map((entityId: string) => this.groupMemberVolume(entityId));
     }
-    const playing = this.entity.state !== 'playing';
+    const playing = !isPlaying(this.entity.state);
     return html`
       <div style="${this.mainStyle()}" id="mediaControls">
         <div ?hidden="${!this.showVolumes}">${allVolumes}</div>
