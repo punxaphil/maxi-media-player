@@ -200,3 +200,8 @@ export function haCardStyle(config: CardConfig) {
 export function isPlaying(state: string) {
   return state === 'playing';
 }
+
+export function getCurrentTrack(hassEntity: HassEntity) {
+  const attributes = hassEntity.attributes;
+  return `${attributes.media_artist || ''} - ${attributes.media_title || ''}`.replace(/^ - /g, '');
+}

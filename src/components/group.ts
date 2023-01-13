@@ -1,6 +1,7 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
+  getCurrentTrack,
   isPlaying,
   listenForEntityId,
   listenForPlayerRequest,
@@ -47,11 +48,7 @@ class Group extends LitElement {
   };
 
   render() {
-    const stateObj = this.hass.states[this.group.entity];
-    const currentTrack = `${stateObj.attributes.media_artist || ''} - ${stateObj.attributes.media_title || ''}`.replace(
-      /^ - /g,
-      '',
-    );
+    const currentTrack = getCurrentTrack(this.hass.states[this.group.entity]);
     const speakerList = [this.group.roomName, ...Object.values(this.group.members)].join(' + ');
     this.dispatchEntityIdEvent();
     return html`
