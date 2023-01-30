@@ -39,6 +39,7 @@ export interface CardConfig extends LovelaceCardConfig {
   predefinedGroupsTitle?: string;
   predefinedGroupsNoSeparateSection?: boolean;
   mediaBrowserItemsAsList?: boolean;
+  artworkHostname?: string;
 }
 
 export interface Layout {
