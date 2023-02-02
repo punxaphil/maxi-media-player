@@ -93,6 +93,7 @@ export class MediaBrowser extends LitElement {
                     return html`
                       <sonos-media-list-item
                         style="${style}"
+                        .itemsWithImage="${itemsWithImage}"
                         .mediaItem="${item}"
                         .config="${this.config}"
                         @click="${itemClick}"
@@ -102,6 +103,7 @@ export class MediaBrowser extends LitElement {
                     return html`
                       <sonos-media-icon-item
                         style="${style}"
+                        .itemsWithImage="${itemsWithImage}"
                         .mediaItem="${item}"
                         .config="${this.config}"
                         @click="${itemClick}"
@@ -197,7 +199,7 @@ export class MediaBrowser extends LitElement {
   }
 
   private static itemsWithImage(items: MediaPlayerItem[]) {
-    return items.some((item) => item.thumbnail || item.can_expand);
+    return items.some((item) => item.thumbnail);
   }
 
   private async loadMediaDir(mediaItem?: MediaPlayerItem) {
