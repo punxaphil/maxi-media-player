@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { MediaPlayerItem } from '../types';
+import { MediaPlayerItem, TemplateResult } from '../types';
 import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
 
 export default class HassService {
@@ -23,11 +23,20 @@ export default class HassService {
   }
 
   async getRelatedSwitchEntities(entityId: string) {
-    const response = await this.hass.callApi('POST', 'template', {
-      template: "{{ device_entities(device_id('" + entityId + "')) }}",
+    return new Promise<string[]>(async (resolve, reject) => {
+      const subscribeMessage = {
+        type: 'render_template',
+        template: "{{ device_entities(device_id('" + entityId + "')) }}",
+      };
+      try {
+        const unsubscribe = await this.hass.connection.subscribeMessage<TemplateResult>((response) => {
+          unsubscribe();
+          resolve(response.result.filter((item: string) => item.indexOf('switch') > -1));
+        }, subscribeMessage);
+      } catch (e) {
+        reject(e);
+      }
     });
-    const items = JSON.parse((response as string).replace(/'/g, '"'));
-    return items.filter((item: string) => item.indexOf('switch') > -1);
   }
 
   async toggle(entity_id: string) {

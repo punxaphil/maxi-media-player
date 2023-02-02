@@ -111,5 +111,9 @@ export interface PredefinedGroup {
   entities: string[];
 }
 
+export interface TemplateResult {
+  result: string[];
+}
+
 export const ACTIVE_PLAYER_EVENT = 'sonos-card-active-player';
 export const REQUEST_PLAYER_EVENT = 'sonos-card-request-player';
