@@ -13,7 +13,7 @@ export abstract class MediaItem extends LitElement {
     if (!thumbnail) {
       thumbnail = this.config.customThumbnailIfMissing?.[this.mediaItem.title] || '';
       if (this.itemsWithImage && !thumbnail) {
-        thumbnail = this.config.customThumbnailIfMissing?.['default'] || DEFAULT_MEDIA_THUMBNAIL;
+        thumbnail = this.config.customThumbnailIfMissing?.fallback || DEFAULT_MEDIA_THUMBNAIL;
       }
     } else if (thumbnail?.match(/https:\/\/brands.home-assistant.io\/.+\/logo.png/)) {
       thumbnail = thumbnail?.replace('logo.png', 'icon.png');
