@@ -347,8 +347,8 @@ styles:
     border: 1px solid blue
   ha-card:
     padding: 3rem
-    background-size: contain
-    background-image: >-
+    backgroundSize: contain
+    backgroundImage: >-
       url(https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Ukraine.svg/1200px-Flag_of_Ukraine.svg.png)
   groups:
     order: 1
@@ -358,8 +358,8 @@ styles:
     border: 5px black dashed
   player-song:
     color: '#005cbb'
-    font-family: Times New Roman
-    font-weight: 900
+    fontFamily: Times New Roman
+    fontWeight: 900
   media-browser:
     order: 0
   member:
