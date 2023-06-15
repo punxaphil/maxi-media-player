@@ -81,6 +81,7 @@ sections: # see explanation further up
   - player
 widthPercentage: 75 # default is 100. Use this to reduce the width of the card.
 heightPercentage: 75 # default is 100. Use this to reduce the height of the card.
+entityId: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
 entities: # Entities are automatically discovered if you don't supply this setting
@@ -222,3 +223,4 @@ Enable it in config with `dynamicVolumeSlider: true`
 
 Append `#media_player.my_sonos_player` to page URL to have that player selected.
 
+If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.
