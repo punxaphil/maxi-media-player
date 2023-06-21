@@ -11,7 +11,7 @@ export abstract class BaseEditor extends LitElement {
   @property() store!: Store;
 
   setConfig(config: CardConfig) {
-    this.config = config;
+    this.config = JSON.parse(JSON.stringify(config));
   }
   static get styles() {
     return editorStyle;
