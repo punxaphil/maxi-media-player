@@ -156,9 +156,7 @@ cards:
     cards:
       - type: entities
         entities:
-          - show_name: true
-            show_icon: true
-            type: button
+          - type: button
             tap_action:
               action: navigate
               navigation_path: /
