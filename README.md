@@ -104,6 +104,7 @@ predefinedGroups: # defaults to empty
       - media_player.hall
 
 # player specific
+showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume
 labelWhenNoMediaIsSelected: 'No media selected'
 labelForTheAllVolumesSlider: 'All volumes'
 mediaArtworkOverrides: # Show your own selected artwork if certain rules match

@@ -18,6 +18,10 @@ export const GENERAL_SCHEMA = [
     name: 'title',
   },
   {
+    name: 'showVolumeUpAndDownButtons',
+    selector: { boolean: {} },
+  },
+  {
     type: 'integer',
     name: 'widthPercentage',
     default: 100,

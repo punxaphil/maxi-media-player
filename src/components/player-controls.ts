@@ -17,6 +17,8 @@ import {
   mdiShuffleVariant,
   mdiSkipNext,
   mdiSkipPrevious,
+  mdiVolumeMinus,
+  mdiVolumePlus,
 } from '@mdi/js';
 import { iconButton } from './icon-button';
 import { styleMap } from 'lit-html/directives/style-map.js';
@@ -53,9 +55,11 @@ class PlayerControls extends LitElement {
     return html`
       <div style="${this.mainStyle()}" id="mediaControls">
         <div style="${this.iconsStyle()}">
-          ${iconButton(this.shuffleIcon(), this.shuffle)} ${iconButton(mdiSkipPrevious, this.prev, undefined)}
+          ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumeMinus, this.volDown) : ''}
+          ${iconButton(this.shuffleIcon(), this.shuffle)} ${iconButton(mdiSkipPrevious, this.prev)}
           ${iconButton(playing ? mdiPauseCircle : mdiPlayCircle, playing ? this.pause : this.play, { big: true })}
-          ${iconButton(mdiSkipNext, this.next, undefined)} ${iconButton(this.repeatIcon(), this.repeat)}
+          ${iconButton(mdiSkipNext, this.next)} ${iconButton(this.repeatIcon(), this.repeat)}
+          ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumePlus, this.volUp) : ''}
         </div>
         <sonos-volume .store=${this.store} .entityId=${this.entityId} .members=${this.members}></sonos-volume>
       </div>
@@ -67,6 +71,8 @@ class PlayerControls extends LitElement {
   private next = async () => await this.mediaControlService.next(this.entityId);
   private shuffle = async () => await this.mediaControlService.shuffle(this.entityId, !this.entity?.attributes.shuffle);
   private repeat = async () => await this.mediaControlService.repeat(this.entityId, this.entity?.attributes.repeat);
+  private volDown = async () => await this.mediaControlService.volumeDown(this.entityId, this.members);
+  private volUp = async () => await this.mediaControlService.volumeUp(this.entityId, this.members);
 
   private shuffleIcon() {
     return this.entity?.attributes.shuffle ? mdiShuffleVariant : mdiShuffleDisabled;

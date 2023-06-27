@@ -16,6 +16,7 @@ export enum Section {
 
 export interface CardConfig extends LovelaceCardConfig {
   sections?: Section[];
+  showVolumeUpAndDownButtons: boolean;
   entities?: string[];
   predefinedGroups?: PredefinedGroup[];
   title?: string;
