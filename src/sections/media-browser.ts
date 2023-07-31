@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { html, LitElement } from 'lit';
+import { css, html, LitElement } from 'lit';
 import { until } from 'lit-html/directives/until.js';
 import { property, state } from 'lit/decorators.js';
 import '../components/media-list-item';
@@ -8,9 +8,8 @@ import MediaBrowseService from '../services/media-browse-service';
 import MediaControlService from '../services/media-control-service';
 import Store from '../store';
 import { CardConfig, MediaPlayerItem, Section } from '../types';
-import { dispatchShowSection, listStyle } from '../utils';
-import { BROWSE_CLICKED, BROWSE_STATE, PLAY_DIR } from '../constants';
-import { styleMap } from 'lit-html/directives/style-map.js';
+import { dispatchShowSection } from '../utils';
+import { BROWSE_CLICKED, BROWSE_STATE, listStyle, PLAY_DIR } from '../constants';
 
 const LOCAL_STORAGE_CURRENT_DIR = 'custom-sonos-card_currentDir';
 
@@ -70,11 +69,11 @@ export class MediaBrowser extends LitElement {
       until(
         (this.browse ? this.loadMediaDir(this.currentDir) : this.getAllFavorites()).then((items) => {
           const itemsWithImage = MediaBrowser.itemsWithImage(items);
-          return html` <mwc-list multi style="${listStyle()}">
+          return html` <mwc-list multi class="list">
             ${items.map((item) => {
               const itemClick = async () => await this.onMediaItemClick(item);
               return html`
-                <mwc-list-item @click="${itemClick}" style="${this.mwcListItemStyle()}">
+                <mwc-list-item @click="${itemClick}">
                   <sonos-media-list-item
                     .itemsWithImage="${itemsWithImage}"
                     .mediaItem="${item}"
@@ -105,10 +104,6 @@ export class MediaBrowser extends LitElement {
         },
       }),
     );
-  }
-
-  private mwcListItemStyle() {
-    return styleMap({ height: '40px' });
   }
 
   private browseClicked() {
@@ -167,13 +162,6 @@ export class MediaBrowser extends LitElement {
     return { ...source, can_play: true };
   }
 
-  private static shuffleArray(array: MediaPlayerItem[]) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
   private static itemsWithImage(items: MediaPlayerItem[]) {
     return items.some((item) => item.thumbnail);
   }
@@ -182,5 +170,16 @@ export class MediaBrowser extends LitElement {
     return await (mediaItem
       ? this.mediaBrowseService.getDir(this.entityId, mediaItem, this.config.mediaBrowserTitlesToIgnore)
       : this.mediaBrowseService.getRoot(this.entityId, this.config.mediaBrowserTitlesToIgnore));
+  }
+
+  static get styles() {
+    return [
+      listStyle,
+      css`
+        mwc-list-item {
+          height: 40px;
+        }
+      `,
+    ];
   }
 }

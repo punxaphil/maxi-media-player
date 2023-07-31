@@ -6,7 +6,6 @@ import Store from '../store';
 import { CardConfig, Members } from '../types';
 import { mdiVolumeHigh, mdiVolumeMute } from '@mdi/js';
 import { iconButton } from './icon-button';
-import { styleMap } from 'lit-html/directives/style-map.js';
 
 class Volume extends LitElement {
   @property() store!: Store;
@@ -31,17 +30,17 @@ class Volume extends LitElement {
         ? !Object.keys(this.members).some((member) => !this.hass.states[member].attributes.is_volume_muted)
         : this.hass.states[this.entityId].attributes.is_volume_muted;
     return html`
-      <div style="${this.volumeStyle()}">
+      <div class="volume">
         ${iconButton(
           volumeMuted ? mdiVolumeMute : mdiVolumeHigh,
           async () => await this.mediaControlService.volumeMute(this.entityId, !volumeMuted, this.members),
         )}
-        <div style="${this.volumeSliderStyle()}">
+        <div class="volume-slider">
           <ha-control-slider .value="${volume}" max=${max} @value-changed=${this.volumeChanged}> </ha-control-slider>
-          <div style="${this.volumeLevelStyle()}">
+          <div class="volume-level">
             <div style="flex: ${volume}">0%</div>
             ${volume >= max / 10 && volume <= 100 - max / 10
-              ? html` <div style="flex: 2; font-weight: bold; font-size: 12px;">${Math.round(volume)}%</div>`
+              ? html` <div class="percentage">${Math.round(volume)}%</div>`
               : ''}
             <div style="flex: ${max - volume};text-align: right">${max}%</div>
           </div>
@@ -59,31 +58,30 @@ class Volume extends LitElement {
     return await this.mediaControlService.volumeSet(this.entityId, volume, this.members);
   }
 
-  private volumeStyle() {
-    return styleMap({
-      display: 'flex',
-      flex: '1',
-    });
-  }
-
-  private volumeSliderStyle() {
-    return styleMap({
-      flex: '1',
-      paddingRight: '0.6rem',
-    });
-  }
-
-  private volumeLevelStyle() {
-    return styleMap({
-      fontSize: 'x-small',
-      display: 'flex',
-    });
-  }
-
   static get styles() {
     return css`
       ha-control-slider {
         --control-slider-color: var(--accent-color);
+      }
+
+      .volume {
+        display: flex;
+        flex: 1;
+      }
+
+      .volume-slider {
+        flex: 1;
+        padding-right: 0.6rem;
+      }
+
+      .volume-level {
+        font-size: x-small;
+        display: flex;
+      }
+      .percentage {
+        flex: 2;
+        font-weight: bold;
+        font-size: 12px;
       }
     `;
   }

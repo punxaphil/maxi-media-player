@@ -1,6 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement } from 'lit';
-import { styleMap } from 'lit-html/directives/style-map.js';
 import { property } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 import Store from '../store';
@@ -52,41 +51,26 @@ class Group extends LitElement {
         ?activated="${this.selected}"
         @click="${() => this.handleGroupClicked()}"
       >
-        <div style=${wrapperStyle()}>
-          <ha-icon .icon=${icon} style=${iconStyle()} ?hidden=${!icon}></ha-icon>
-          <div style=${textStyle()}>
-            <span style="${this.speakersStyle()}">${speakerList}</span>
-            <span style="${this.songTitleStyle()}">${currentTrack}</span>
+        <div class="wrapper">
+          <ha-icon .icon=${icon} ?hidden=${!icon}></ha-icon>
+          <div class="text">
+            <span class="speakers">${speakerList}</span>
+            <span class="song-title">${currentTrack}</span>
           </div>
         </div>
 
         ${when(
           isPlaying(this.group.state),
           () => html`
-            <div style=${barsStyle()} slot="meta">
-              <div style="${barStyle(1)}"></div>
-              <div style="${barStyle(2)}"></div>
-              <div style="${barStyle(3)}"></div>
+            <div class="bars" slot="meta">
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
           `,
         )}
       </mwc-list-item>
     `;
-  }
-
-  private speakersStyle() {
-    return styleMap({
-      whiteSpace: 'initial',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-      color: 'var(--secondary-text-color)',
-    });
-  }
-  private songTitleStyle() {
-    return styleMap({
-      fontSize: '0.9rem',
-      fontWeight: 'bold',
-    });
   }
 
   private handleGroupClicked() {
@@ -117,37 +101,57 @@ class Group extends LitElement {
         border-radius: 1rem;
         background: var(--secondary-background-color);
       }
+      .wrapper {
+        display: flex;
+        margin: 1rem 0;
+      }
+      .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .speakers {
+        white-space: initial;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--secondary-text-color);
+      }
+      .song-title {
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+      ha-icon {
+        --mdc-icon-size: 3rem;
+        margin-right: 1rem;
+      }
+      .bars {
+        width: 0.55rem;
+        position: relative;
+        margin-left: 1rem;
+      }
+      .bars > div {
+        background: var(--secondary-text-color);
+        bottom: 0.05rem;
+        height: 0.15rem;
+        position: absolute;
+        width: 0.15rem;
+        animation: sound 0ms -800ms linear infinite alternate;
+        display: block;
+      }
+      .bars:first-child {
+        left: 0.05rem;
+        animation-duration: 474ms;
+      }
+      .bars:nth-child(1) {
+        left: 0.25rem;
+        animation-duration: 433ms;
+      }
+      .bars:last-child {
+        left: 0.45rem;
+        animation-duration: 407ms;
+      }
     `;
   }
-}
-
-function wrapperStyle() {
-  return styleMap({ display: 'flex', margin: '1rem 0' });
-}
-
-function iconStyle() {
-  return styleMap({ '--mdc-icon-size': '3rem', marginRight: '1rem' });
-}
-function textStyle() {
-  return styleMap({ display: 'flex', flexDirection: 'column', justifyContent: 'center' });
-}
-
-function barsStyle() {
-  return styleMap({ width: '0.55rem', position: 'relative', marginLeft: '1rem' });
-}
-
-function barStyle(order: number) {
-  return styleMap({
-    background: 'var(--secondary-text-color)',
-    bottom: '0.05rem',
-    height: '0.15rem',
-    position: 'absolute',
-    width: '0.15rem',
-    animation: 'sound 0ms -800ms linear infinite alternate',
-    display: 'block',
-    left: order == 1 ? '0.05rem' : order == 2 ? '0.25rem' : '0.45rem',
-    animationDuration: order == 1 ? '474ms' : order == 2 ? '433ms' : '407ms',
-  });
 }
 
 customElements.define('sonos-group', Group);

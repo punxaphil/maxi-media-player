@@ -10,7 +10,6 @@ import Store from '../store';
 import { CardConfig } from '../types';
 
 import { MUSIC_NOTES_BASE64_IMAGE, TV_BASE64_IMAGE } from '../constants';
-import { styleMap } from 'lit-html/directives/style-map.js';
 
 export class Player extends LitElement {
   @property() store!: Store;
@@ -21,34 +20,12 @@ export class Player extends LitElement {
   render() {
     ({ config: this.config, entity: this.entity, entityId: this.entityId } = this.store);
     return html`
-      <div style="${this.bodyStyle()}">
+      <div class="wrapper">
         <sonos-player-header .store=${this.store}></sonos-player-header>
-        <div style="${this.artworkStyle()}"></div>
+        <div class="artwork" style="background-image: ${this.getBackgroundImage()}"></div>
         <sonos-player-controls style="overflow-y:auto" .store=${this.store}></sonos-player-controls>
       </div>
     `;
-  }
-
-  private bodyStyle() {
-    return styleMap({
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      minHeight: '100%',
-    });
-  }
-
-  private artworkStyle() {
-    return styleMap({
-      alignSelf: 'center',
-      flexGrow: '1',
-      flexShrink: '0',
-      width: '100%',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'contain',
-      backgroundImage: this.getBackgroundImage(),
-    });
   }
 
   private getBackgroundImage() {
@@ -84,16 +61,32 @@ export class Player extends LitElement {
   }
 
   static get styles() {
-    return [
-      css`
-        .hoverable:focus,
-        .hoverable:hover {
-          color: var(--accent-color);
-        }
-        .hoverable:active {
-          color: var(--primary-color);
-        }
-      `,
-    ];
+    return css`
+      .hoverable:focus,
+      .hoverable:hover {
+        color: var(--accent-color);
+      }
+
+      .hoverable:active {
+        color: var(--primary-color);
+      }
+
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100%;
+      }
+
+      .artwork {
+        align-self: center;
+        flex-grow: 1;
+        flex-shrink: 0;
+        width: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+    `;
   }
 }

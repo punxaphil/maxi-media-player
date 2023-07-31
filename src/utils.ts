@@ -2,7 +2,6 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { CardConfig, PlayerGroup, Section } from './types';
 import { ACTIVE_PLAYER_EVENT, BROWSE_CLICKED, PLAY_DIR, REQUEST_PLAYER_EVENT, SHOW_SECTION } from './constants';
-import { styleMap } from 'lit-html/directives/style-map.js';
 
 export function getEntityName(hass: HomeAssistant, config: CardConfig, entity: string) {
   const name = hass.states[entity].attributes.friendly_name || '';
@@ -42,14 +41,6 @@ export function isPlaying(state: string) {
 export function getCurrentTrack(hassEntity: HassEntity) {
   const attributes = hassEntity.attributes;
   return `${attributes.media_artist || ''} - ${attributes.media_title || ''}`.replace(/^ - /g, '');
-}
-
-export function listStyle() {
-  return styleMap({
-    '--mdc-theme-primary': 'var(--accent-color)',
-    '--mdc-list-vertical-padding': '0px',
-    overflow: 'hidden',
-  });
 }
 
 export function getSpeakerList(group: PlayerGroup, config: CardConfig) {

@@ -1,6 +1,6 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { html, LitElement } from 'lit';
+import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import HassService from '../services/hass-service';
 import MediaControlService from '../services/media-control-service';
@@ -21,7 +21,6 @@ import {
   mdiVolumePlus,
 } from '@mdi/js';
 import { iconButton } from './icon-button';
-import { styleMap } from 'lit-html/directives/style-map.js';
 
 class PlayerControls extends LitElement {
   @property() store!: Store;
@@ -53,8 +52,8 @@ class PlayerControls extends LitElement {
     // ${until(this.getAdditionalSwitches())}
 
     return html`
-      <div style="${this.mainStyle()}" id="mediaControls">
-        <div style="${this.iconsStyle()}">
+      <div class="main" id="mediaControls">
+        <div class="icons">
           ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumeMinus, this.volDown) : ''}
           ${iconButton(this.shuffleIcon(), this.shuffle)} ${iconButton(mdiSkipPrevious, this.prev)}
           ${iconButton(playing ? mdiPauseCircle : mdiPlayCircle, playing ? this.pause : this.play, { big: true })}
@@ -83,20 +82,19 @@ class PlayerControls extends LitElement {
     return repeatState === 'all' ? mdiRepeat : repeatState === 'one' ? mdiRepeatOnce : mdiRepeatOff;
   }
 
-  private mainStyle() {
-    return styleMap({
-      margin: '0.25rem',
-      padding: '0.5rem',
-      overflow: 'hidden auto',
-    });
-  }
-
-  private iconsStyle() {
-    return styleMap({
-      justifyContent: 'center',
-      display: 'flex',
-      alignItems: 'center',
-    });
+  static get styles() {
+    return css`
+      .main {
+        margin: 0.25rem;
+        padding: 0.5rem;
+        overflow: hidden auto;
+      }
+      .icons {
+        justify-content: center;
+        display: flex;
+        align-items: center;
+      }
+    `;
   }
 }
 

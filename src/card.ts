@@ -40,8 +40,8 @@ export class Card extends LitElement {
         <div class="loader" ?hidden="${!this.showLoader}">
           <ha-circular-progress active="" progress="0"></ha-circular-progress>
         </div>
-        <div style="${this.contentStyle(contentHeight)}">
-          ${title ? html`<div style="${this.titleStyle()}">${title}</div>` : html``}
+        <div class="content" style="${this.contentStyle(contentHeight)}">
+          ${title ? html`<div class="title">${title}</div>` : html``}
           ${choose(this.section, [
             [PLAYER, () => html` <sonos-player .store=${this.store}></sonos-player>`],
             [GROUPS, () => html` <sonos-groups .store=${this.store}></sonos-groups>`],
@@ -158,16 +158,6 @@ export class Card extends LitElement {
     });
   }
 
-  private titleStyle() {
-    return styleMap({
-      margin: '0.5rem 0',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: 'larger',
-      color: 'var(--secondary-text-color)',
-    });
-  }
-
   setConfig(config: CardConfig) {
     const newConfig = JSON.parse(JSON.stringify(config));
     for (const [key, value] of Object.entries(newConfig)) {
@@ -194,18 +184,23 @@ export class Card extends LitElement {
   }
 
   static get styles() {
-    return [
-      css`
-        .loader {
-          position: absolute;
-          z-index: 1000;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          --mdc-theme-primary: var(--accent-color);
-        }
-      `,
-    ];
+    return css`
+      .loader {
+        position: absolute;
+        z-index: 1000;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        --mdc-theme-primary: var(--accent-color);
+      }
+      .title {
+        margin: 0.5rem 0;
+        text-align: center;
+        font-weight: bold;
+        font-size: larger;
+        color: var(--secondary-text-color);
+      }
+    `;
   }
 }
 

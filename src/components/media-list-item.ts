@@ -33,9 +33,9 @@ class MediaListItem extends LitElement {
   render() {
     const thumbnail = this.getThumbnail();
     return html`
-      <div style="${this.thumbnailStyle(thumbnail)}"></div>
-      <ha-icon style="${this.folderStyle(thumbnail)}" .icon=${'mdi:folder-music'}></ha-icon>
-      <div style="${this.titleStyle(thumbnail)}">${this.mediaItem.title}</div>
+      <div class="thumbnail" style="${this.thumbnailStyle(thumbnail)}"></div>
+      <ha-icon class="folder" style="${this.folderStyle(thumbnail)}" .icon=${'mdi:folder-music'}></ha-icon>
+      <div class="title" style="${this.titleStyle(thumbnail)}">${this.mediaItem.title}</div>
     `;
   }
 

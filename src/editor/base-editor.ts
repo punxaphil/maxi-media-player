@@ -1,8 +1,7 @@
-import { LitElement } from 'lit';
+import { css, LitElement } from 'lit';
 import { fireEvent, HomeAssistant } from 'custom-card-helpers';
 import { property } from 'lit/decorators.js';
 import { CardConfig } from '../types';
-import { editorStyle } from './editor-utils';
 import Store from '../store';
 
 export abstract class BaseEditor extends LitElement {
@@ -14,7 +13,20 @@ export abstract class BaseEditor extends LitElement {
     this.config = JSON.parse(JSON.stringify(config));
   }
   static get styles() {
-    return editorStyle;
+    return css`
+      ha-svg-icon {
+        margin: 5px;
+      }
+      ha-control-button {
+        white-space: nowrap;
+      }
+      ha-control-button-group {
+        margin: 5px;
+      }
+      div {
+        margin-top: 20px;
+      }
+    `;
   }
 
   protected configChanged() {

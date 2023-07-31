@@ -37,16 +37,11 @@ class Volumes extends LitElement {
 
   private volumeWithName(entityId: string, name: string, members?: Members) {
     return html` <div class="wrapper">
-      <div style="${this.volumeNameStyle()}">
-        <div style="${this.volumeNameTextStyle()}">${name}</div>
+      <div class="volume-name">
+        <div class="volume-name-text">${name}</div>
       </div>
-      <div style="display:flex">
-        <sonos-volume
-          .store=${this.store}
-          .entityId=${entityId}
-          style=${this.volumeStyle()}
-          .members=${members}
-        ></sonos-volume>
+      <div class="slider-row">
+        <sonos-volume .store=${this.store} .entityId=${entityId} .members=${members}></sonos-volume>
         ${when(!members, () =>
           iconButton(this.showSwitches[entityId] ? mdiCogOff : mdiCog, () => {
             this.showSwitches[entityId] = !this.showSwitches[entityId];
@@ -54,45 +49,10 @@ class Volumes extends LitElement {
           }),
         )}
       </div>
-      <div style="${this.switchesStyle()}">
+      <div class="switches">
         ${when(!members && this.showSwitches[entityId], () => until(this.getAdditionalSwitches(entityId)))}
       </div>
     </div>`;
-  }
-
-  private switchesStyle() {
-    return styleMap({
-      display: 'flex',
-      justifyContent: 'center',
-      gap: '1rem',
-      marginBottom: '1rem',
-    });
-  }
-
-  private volumeNameStyle() {
-    return styleMap({
-      flex: '1',
-      overflow: 'hidden',
-      flexDirection: 'column',
-      textAlign: 'center',
-    });
-  }
-
-  private volumeNameTextStyle() {
-    return styleMap({
-      flex: '1',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-    });
-  }
-
-  private volumeStyle() {
-    return styleMap({
-      flex: '4',
-    });
   }
 
   private getAdditionalSwitches(entityId: string) {
@@ -112,19 +72,43 @@ class Volumes extends LitElement {
   }
 
   static get styles() {
-    return [
-      css`
-        .wrapper {
-          display: flex;
-          flex-direction: column;
-          padding-top: 1rem;
-          padding-right: 1rem;
-        }
-        .wrapper:not(:first-child) {
-          border-top: solid var(--secondary-background-color);
-        }
-      `,
-    ];
+    return css`
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        padding-top: 1rem;
+        padding-right: 1rem;
+      }
+      .wrapper:not(:first-child) {
+        border-top: solid var(--secondary-background-color);
+      }
+      .switches {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .volume-name {
+        flex: 1;
+        overflow: hidden;
+        flex-direction: column;
+        text-align: center;
+      }
+      .volume-name-text {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+      .slider-row {
+        display: flex;
+      }
+      sonos-volume {
+        flex: 4;
+      }
+    `;
   }
 }
 

@@ -5,7 +5,6 @@ import { dispatchBrowseClicked, dispatchPlayDir } from '../utils';
 import { mdiArrowUpLeftBold, mdiPlay, mdiPlayBoxMultiple, mdiStarOutline } from '@mdi/js';
 import { BROWSE_STATE } from '../constants';
 import { iconButton } from './icon-button';
-import { styleMap } from 'lit-html/directives/style-map.js';
 
 class MediaBrowserHeader extends LitElement {
   @property() config!: CardConfig;
@@ -21,14 +20,14 @@ class MediaBrowserHeader extends LitElement {
       ? mdiArrowUpLeftBold
       : mdiStarOutline;
     return html`
-      <div style="${styleMap({ flex: '1' })}">
+      <div class="play">
         ${this.browseCanPlay
           ? iconButton(mdiPlay, () => dispatchPlayDir(), {
               additionalStyle: { padding: '0.5rem' },
             })
           : ''}
       </div>
-      <div style="${this.titleStyle()}">${this.title}</div>
+      <div class="title">${this.title}</div>
       ${iconButton(browseIcon, () => dispatchBrowseClicked(), {
         additionalStyle: { padding: '0.5rem', flex: '1', textAlign: 'right' },
       })}
@@ -51,19 +50,19 @@ class MediaBrowserHeader extends LitElement {
         display: flex;
         justify-content: space-between;
       }
+      .play {
+        flex: 1;
+      }
+      .title {
+        flex: 6;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     `;
-  }
-
-  private titleStyle() {
-    return styleMap({
-      flex: '6',
-      textAlign: 'center',
-      fontSize: '1.2rem',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    });
   }
 }
 
