@@ -215,11 +215,7 @@ function stopListeningForEntityId(listener: EventListener) {
 
 function getWidthOrHeight(confValue?: number) {
   if (confValue) {
-    if (confValue < 50 || confValue > 100) {
-      console.error('width/height percentage must be between 50 and 100');
-    } else {
-      return (confValue / 100) * CARD_HEIGHT;
-    }
+    return (confValue / 100) * CARD_HEIGHT;
   }
   return CARD_HEIGHT;
 }

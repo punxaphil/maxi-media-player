@@ -26,16 +26,12 @@ export const GENERAL_SCHEMA = [
     name: 'widthPercentage',
     default: 100,
     required: true,
-    valueMin: 50,
-    valueMax: 100,
   },
   {
     type: 'integer',
     name: 'heightPercentage',
     default: 100,
     required: true,
-    valueMin: 50,
-    valueMax: 100,
   },
 ];
 
