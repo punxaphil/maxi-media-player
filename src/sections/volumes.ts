@@ -9,17 +9,25 @@ import { until } from 'lit-html/directives/until.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { when } from 'lit/directives/when.js';
 import { iconButton } from '../components/icon-button';
-import { mdiCog, mdiCogOff } from '@mdi/js';
+import { mdiCog, mdiCogOff, mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
+import MediaControlService from '../services/media-control-service';
 
 class Volumes extends LitElement {
   @property() store!: Store;
   private hass!: HomeAssistant;
   private config!: CardConfig;
   private entity!: HassEntity;
+  private mediaControlService!: MediaControlService;
   @state() private showSwitches: { [entity: string]: boolean } = {};
 
   render() {
-    ({ config: this.config, hass: this.hass, entity: this.entity } = this.store);
+    ({
+      config: this.config,
+      hass: this.hass,
+      mediaControlService: this.mediaControlService,
+
+      entity: this.entity,
+    } = this.store);
     const members = getGroupMembers(this.entity);
     return html`
       ${when(members.length > 1, () =>
@@ -36,12 +44,17 @@ class Volumes extends LitElement {
   }
 
   private volumeWithName(entityId: string, name: string, members?: Members) {
+    const volDown = async () => await this.mediaControlService.volumeDown(entityId);
+    const volUp = async () => await this.mediaControlService.volumeUp(entityId);
     return html` <div class="wrapper">
       <div class="volume-name">
         <div class="volume-name-text">${name}</div>
       </div>
       <div class="slider-row">
+        ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumeMinus, volDown) : ''}
+
         <sonos-volume .store=${this.store} .entityId=${entityId} .members=${members}></sonos-volume>
+        ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumePlus, volUp) : ''}
         ${when(!members, () =>
           iconButton(this.showSwitches[entityId] ? mdiCogOff : mdiCog, () => {
             this.showSwitches[entityId] = !this.showSwitches[entityId];
