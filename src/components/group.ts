@@ -138,15 +138,15 @@ class Group extends LitElement {
         animation: sound 0ms -800ms linear infinite alternate;
         display: block;
       }
-      .bars:first-child {
+      .bars > div:first-child {
         left: 0.05rem;
         animation-duration: 474ms;
       }
-      .bars:nth-child(1) {
+      .bars > div:nth-child(2) {
         left: 0.25rem;
         animation-duration: 433ms;
       }
-      .bars:last-child {
+      .bars > div:last-child {
         left: 0.45rem;
         animation-duration: 407ms;
       }
