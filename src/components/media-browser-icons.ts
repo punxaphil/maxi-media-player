@@ -39,6 +39,7 @@ export class MediaBrowserIcons extends LitElement {
   }
   static get styles() {
     return [
+      mediaBrowserTitleStyle,
       css`
         .icons {
           display: flex;
@@ -73,10 +74,10 @@ export class MediaBrowserIcons extends LitElement {
           width: 100%;
           line-height: 160%;
           bottom: 0;
+          color: #7f7f7f;
           background-color: #ffffffbb;
         }
       `,
-      mediaBrowserTitleStyle,
     ];
   }
 }
