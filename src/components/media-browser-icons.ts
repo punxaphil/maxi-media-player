@@ -74,8 +74,7 @@ export class MediaBrowserIcons extends LitElement {
           width: 100%;
           line-height: 160%;
           bottom: 0;
-          color: #7f7f7f;
-          background-color: #ffffffbb;
+          background-color: rgba(var(--rgb-card-background-color), 0.733);
         }
       `,
     ];
