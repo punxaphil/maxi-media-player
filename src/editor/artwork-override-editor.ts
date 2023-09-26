@@ -25,6 +25,14 @@ class ArtworkOverrideEditor extends BaseEditor {
         name: 'imageUrl',
         type: 'string',
       },
+      {
+        type: 'integer',
+        name: 'sizePercentage',
+        default: 100,
+        required: true,
+        valueMin: 1,
+        valueMax: 100,
+      },
     ];
     return html`
       Add/Edit Artwork Override

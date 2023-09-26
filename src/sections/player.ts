@@ -23,27 +23,29 @@ export class Player extends LitElement {
     return html`
       <div class="row">
         <sonos-player-header .store=${this.store}></sonos-player-header>
-        <div class="artwork" style="background-image: ${this.getBackgroundImage()}"></div>
+        <div class="artwork" style="${this.getBackgroundImage()}"></div>
         <sonos-player-controls style="overflow-y:auto" .store=${this.store}></sonos-player-controls>
       </div>
     `;
   }
 
   private getBackgroundImage() {
-    let backgroundImage = `url(${
+    const backgroundImage = `url(${
       this.activePlayer.attributes.media_title === 'TV' ? TV_BASE64_IMAGE : MUSIC_NOTES_BASE64_IMAGE
     })`;
     const image = this.getArtworkImage();
     if (image) {
-      backgroundImage = `url(${image}), ${backgroundImage}`;
+      return `background-image: url(${image.entityImage}), ${backgroundImage}; background-size: ${image.sizePercentage}%`;
+    } else {
+      return `background-image: ${backgroundImage}`;
     }
-    return backgroundImage;
   }
 
   private getArtworkImage() {
     const prefix = this.config.artworkHostname || '';
     const { media_title, media_content_id, entity_picture } = this.activePlayer.attributes;
     let entityImage = entity_picture ? prefix + entity_picture : entity_picture;
+    let sizePercentage = 100;
     const overrides = this.config.mediaArtworkOverrides;
     if (overrides) {
       let override = overrides.find(
@@ -56,9 +58,10 @@ export class Player extends LitElement {
       }
       if (override?.imageUrl) {
         entityImage = override.imageUrl;
+        sizePercentage = override?.sizePercentage ?? sizePercentage;
       }
     }
-    return entityImage;
+    return { entityImage, sizePercentage };
   }
 
   static get styles() {

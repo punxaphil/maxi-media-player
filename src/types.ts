@@ -46,6 +46,7 @@ export interface MediaArtworkOverride {
   mediaTitleEquals?: string;
   mediaContentIdEquals?: string;
   imageUrl?: string;
+  sizePercentage?: number;
 }
 
 export interface CustomSources {
