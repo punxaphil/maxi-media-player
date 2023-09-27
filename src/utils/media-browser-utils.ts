@@ -8,7 +8,7 @@ function hasItemsWithImage(items: MediaPlayerItem[]) {
   return items.some((item) => item.thumbnail);
 }
 function getThumbnail(mediaItem: MediaPlayerItem, config: CardConfig, itemsWithImage: boolean) {
-  let thumbnail = mediaItem.thumbnail;
+  let thumbnail = config.customThumbnail?.[mediaItem.title] ?? mediaItem.thumbnail;
   if (!thumbnail) {
     thumbnail = config.customThumbnailIfMissing?.[mediaItem.title];
     if (itemsWithImage && !thumbnail) {

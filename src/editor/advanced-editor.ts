@@ -37,6 +37,7 @@ class AdvancedEditor extends BaseEditor {
         The following needs to be configured using code (YAML): 
         <ul>
           <li>customSources</li>
+          <li>customThumbnail</li>
           <li>customThumbnailIfMissing</li>
           <li>mediaBrowserTitlesToIgnore</li>
         </ul>

@@ -35,6 +35,7 @@ export interface CardConfig extends LovelaceCardConfig {
   dynamicVolumeSlider: boolean;
   mediaArtworkOverrides?: MediaArtworkOverride[];
   customSources?: CustomSources;
+  customThumbnail?: CustomThumbnail;
   customThumbnailIfMissing?: CustomThumbnail;
   mediaBrowserTitlesToIgnore?: string[];
   mediaBrowserItemsPerRow: number;
