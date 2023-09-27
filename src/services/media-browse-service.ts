@@ -1,12 +1,13 @@
 import { MediaPlayerItem } from '../types';
 import HassService from './hass-service';
 import { MediaPlayer } from '../model/media-player';
+import { indexOfWithoutSpecialChars } from '../utils/media-browser-utils';
 
 function mediaBrowserFilter(ignoredTitles: string[] = [], items?: MediaPlayerItem[]) {
   return items?.filter(
     (item) =>
       ['media-source://tts', 'media-source://camera'].indexOf(item.media_content_id || '') === -1 &&
-      ignoredTitles.indexOf(item.title) === -1,
+      indexOfWithoutSpecialChars(ignoredTitles, item.title) === -1,
   );
 }
 

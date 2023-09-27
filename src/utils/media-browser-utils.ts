@@ -7,10 +7,20 @@ const DEFAULT_MEDIA_THUMBNAIL =
 function hasItemsWithImage(items: MediaPlayerItem[]) {
   return items.some((item) => item.thumbnail);
 }
+
+function getValueFromKeyIgnoreSpecialChars(array: { [title: string]: string } | undefined, str: string) {
+  for (const key in array) {
+    if (removeSpecialChars(key) === removeSpecialChars(str)) {
+      return array[key];
+    }
+  }
+  return undefined;
+}
+
 function getThumbnail(mediaItem: MediaPlayerItem, config: CardConfig, itemsWithImage: boolean) {
-  let thumbnail = config.customThumbnail?.[mediaItem.title] ?? mediaItem.thumbnail;
+  let thumbnail = getValueFromKeyIgnoreSpecialChars(config.customThumbnail, mediaItem.title) ?? mediaItem.thumbnail;
   if (!thumbnail) {
-    thumbnail = config.customThumbnailIfMissing?.[mediaItem.title];
+    thumbnail = getValueFromKeyIgnoreSpecialChars(config.customThumbnailIfMissing, mediaItem.title);
     if (itemsWithImage && !thumbnail) {
       thumbnail = config.customThumbnailIfMissing?.['default'] || DEFAULT_MEDIA_THUMBNAIL;
     }
@@ -18,6 +28,20 @@ function getThumbnail(mediaItem: MediaPlayerItem, config: CardConfig, itemsWithI
     thumbnail = thumbnail?.replace('logo.png', 'icon.png');
   }
   return thumbnail || '';
+}
+
+function removeSpecialChars(str: string) {
+  return str.replace(/[^a-zA-Z ]/g, '');
+}
+
+export function indexOfWithoutSpecialChars(array: string[], str: string) {
+  let result = -1;
+  array.forEach((value, index) => {
+    if (removeSpecialChars(value) === removeSpecialChars(str)) {
+      result = index;
+    }
+  });
+  return result;
 }
 
 export function itemsWithFallbacks(mediaPlayerItems: MediaPlayerItem[], config: CardConfig) {

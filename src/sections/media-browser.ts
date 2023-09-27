@@ -11,6 +11,7 @@ import { CardConfig, MediaPlayerItem, Section } from '../types';
 import { dispatchShowSection } from '../utils/utils';
 import { BROWSE_CLICKED, BROWSE_STATE, MEDIA_ITEM_SELECTED, PLAY_DIR } from '../constants';
 import { MediaPlayer } from '../model/media-player';
+import { indexOfWithoutSpecialChars } from '../utils/media-browser-utils';
 
 const LOCAL_STORAGE_CURRENT_DIR = 'custom-sonos-card_currentDir';
 
@@ -141,8 +142,8 @@ export class MediaBrowser extends LitElement {
     );
     allFavorites = allFavorites.sort((a, b) => {
       const topFavorites = this.config.topFavorites ?? [];
-      const aIndex = topFavorites.indexOf(a.title);
-      const bIndex = topFavorites.indexOf(b.title);
+      const aIndex = indexOfWithoutSpecialChars(topFavorites, a.title);
+      const bIndex = indexOfWithoutSpecialChars(topFavorites, b.title);
       if (aIndex > -1 && bIndex > -1) {
         return aIndex - bIndex;
       } else {
