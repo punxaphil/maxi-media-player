@@ -35,7 +35,9 @@ export class Player extends LitElement {
     })`;
     const image = this.getArtworkImage();
     if (image) {
-      return `background-image: url(${image.entityImage}), ${backgroundImage}; background-size: ${image.sizePercentage}%`;
+      return `background-image: url(${image.entityImage}), ${backgroundImage}${
+        image.sizePercentage ? `; background-size: ${image.sizePercentage}%` : ''
+      }`;
     } else {
       return `background-image: ${backgroundImage}`;
     }
@@ -45,7 +47,7 @@ export class Player extends LitElement {
     const prefix = this.config.artworkHostname || '';
     const { media_title, media_content_id, entity_picture } = this.activePlayer.attributes;
     let entityImage = entity_picture ? prefix + entity_picture : entity_picture;
-    let sizePercentage = 100;
+    let sizePercentage = undefined;
     const overrides = this.config.mediaArtworkOverrides;
     if (overrides) {
       let override = overrides.find(
