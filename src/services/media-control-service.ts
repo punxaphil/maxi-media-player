@@ -61,6 +61,9 @@ export default class MediaControlService {
       if (volume) {
         await this.volumeSet(pgp.player, volume, false);
       }
+      if (pg.unmuteWhenGrouped) {
+        await this.setVolumeMute(pgp.player, false, false);
+      }
     }
     if (pg.media) {
       await this.setSource(pg.entities[0].player, pg.media);

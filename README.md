@@ -100,6 +100,7 @@ groupingTitle: ''
 predefinedGroups: # defaults to empty
   - name: Inside
     volume: 15 # If you want to set the volume of all speakers when grouping
+    unmuteWhenGrouped: true # If you want to unmute all speakers when grouping
     entities:
       - media_player.bedroom
       - media_player.hall
