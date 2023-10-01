@@ -30,8 +30,8 @@ class Volume extends LitElement {
     return html`
       <div class="volume">
         ${iconButton(
-          this.player.isMuted() ? mdiVolumeMute : mdiVolumeHigh,
-          async () => await this.mediaControlService.volumeMute(this.player, this.updateMembers),
+          this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh,
+          async () => await this.mediaControlService.toggleMute(this.player, this.updateMembers),
         )}
         <div class="volume-slider">
           <ha-control-slider .value="${volume}" max=${max} @value-changed=${this.volumeChanged}> </ha-control-slider>

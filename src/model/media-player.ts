@@ -40,8 +40,11 @@ export class MediaPlayer {
     return this.state === 'playing';
   }
 
-  isMuted(): boolean {
-    return (this.attributes.is_volume_muted as boolean) || this.members.some((member) => member.isMuted());
+  isMuted(checkMembers: boolean): boolean {
+    return (
+      (this.attributes.is_volume_muted as boolean) ||
+      (checkMembers && this.members.some((member) => member.isMuted(true)))
+    );
   }
   getCurrentTrack() {
     return `${this.attributes.media_artist || ''} - ${this.attributes.media_title || ''}`.replace(/^ - /g, '');
