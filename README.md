@@ -150,6 +150,7 @@ topFavorites: # Show these favorites at the top of the list
   - Legendary
   - Country Rocks
   - Kacey Musgraves Radio
+numberOfFavoritesToShow: 10 # Use this to limit the amount of favorites to show
 ```
 
 ## Using individual section cards
