@@ -10,7 +10,13 @@ export function dispatchShowSection(section: Section) {
 export function getSpeakerList(mainPlayer: MediaPlayer, predefinedGroups: PredefinedGroup[] = []) {
   const playerIds = [mainPlayer.id, ...mainPlayer.members.map((member) => member.id)].sort();
   if (predefinedGroups?.length) {
-    const found = predefinedGroups.find((pg) => pg.entities.sort().toString() === playerIds.toString());
+    const found = predefinedGroups.find(
+      (pg) =>
+        pg.entities
+          .map((p) => p.player.id)
+          .sort()
+          .toString() === playerIds.toString(),
+    );
     if (found) {
       return found.name;
     }
