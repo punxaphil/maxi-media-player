@@ -91,15 +91,18 @@ export default class Store {
   }
 
   public getMediaPlayerHassEntities(hass: HomeAssistant) {
-    if (this.config.entities) {
-      return [...new Set(this.config.entities)]
-        .map((player) => hass.states[player])
-        .filter((hassEntity) => hassEntity !== undefined);
-    } else {
-      return Object.values(hass.states)
-        .filter(getGroupPlayerIds)
-        .sort((a, b) => a.entity_id.localeCompare(b.entity_id));
-    }
+    const configEntities = [...new Set(this.config.entities)];
+    return Object.values(hass.states)
+      .filter(getGroupPlayerIds)
+      .filter((hassEntity) => {
+        const indexOfEntity = configEntities.indexOf(hassEntity.entity_id);
+        return configEntities.length
+          ? this.config.excludeItemsInEntitiesList
+            ? indexOfEntity === -1
+            : indexOfEntity > -1
+          : true;
+      })
+      .sort((a, b) => a.entity_id.localeCompare(b.entity_id));
   }
 
   private createPlayerGroups(mediaPlayerHassEntities: HassEntity[]) {

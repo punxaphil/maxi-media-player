@@ -12,6 +12,10 @@ export const ENTITIES_RENAME_SCHEMA = [
     type: 'string',
     name: 'entityNameReplacement',
   },
+  {
+    type: 'boolean',
+    name: 'excludeItemsInEntitiesList',
+  },
 ];
 
 export const ENTITIES_SCHEMA = [

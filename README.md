@@ -89,6 +89,7 @@ entities: # Entities are automatically discovered if you don't supply this setti
   - media_player.sonos_hallway
   - media_player.sonos_bedroom
   - media_player.sonos_livingroom
+excludeItemsInEntitiesList: true # Will invert the selection in the `entities` list, so that all players that are not in the list will be used.
 
 # groups specific
 groupsTitle: ''

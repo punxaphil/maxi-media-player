@@ -22,6 +22,7 @@ export interface CardConfig extends LovelaceCardConfig {
   sections?: Section[];
   showVolumeUpAndDownButtons: boolean;
   entities?: string[];
+  excludeItemsInEntitiesList: boolean;
   predefinedGroups?: ConfigPredefinedGroup[];
   title?: string;
   labelWhenNoMediaIsSelected?: string;
