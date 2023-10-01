@@ -57,8 +57,9 @@ export default class MediaControlService {
     dispatchActivePlayerId(group.id);
     await this.joinPredefinedGroup(group, pg);
     for (const pgp of pg.entities) {
-      if (pgp.volume != null) {
-        await this.volumeSet(pgp.player, pgp.volume, false);
+      const volume = pgp.volume ?? pg.volume;
+      if (volume) {
+        await this.volumeSet(pgp.player, volume, false);
       }
     }
     if (pg.media) {

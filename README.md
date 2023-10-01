@@ -99,13 +99,14 @@ hideGroupCurrentTrack: true # default is false, which means song/track info for 
 groupingTitle: ''
 predefinedGroups: # defaults to empty
   - name: Inside
+    volume: 15 # If you want to set the volume of all speakers when grouping
     entities:
-      - media_player.matrum
+      - media_player.bedroom
       - media_player.hall
   - name: Kök&Hall
     media: Legendary # If you want to start playing a specific favorite when grouping 
     entities: # Use below format if you want to set the volume of the speakers when grouping
-      - player: media_player.kok
+      - player: media_player.kitchen
         volume: 10
       - player: media_player.hall
         volume: 5

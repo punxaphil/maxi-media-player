@@ -56,7 +56,7 @@ export default class Store {
     return result;
   }
 
-  private createPredefinedGroup(configItem: ConfigPredefinedGroup) {
+  private createPredefinedGroup(configItem: ConfigPredefinedGroup): PredefinedGroup | undefined {
     let result = undefined;
     const entities: PredefinedGroupPlayer[] = [];
     for (const item of configItem.entities) {
@@ -66,7 +66,10 @@ export default class Store {
       }
     }
     if (entities.length) {
-      result = { name: configItem.name, entities, media: configItem.media };
+      result = {
+        ...configItem,
+        entities,
+      };
     }
     return result;
   }
