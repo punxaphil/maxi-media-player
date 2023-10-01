@@ -59,7 +59,11 @@ export default class Store {
   private createPredefinedGroup(configItem: ConfigPredefinedGroup): PredefinedGroup | undefined {
     let result = undefined;
     const entities: PredefinedGroupPlayer[] = [];
-    for (const item of configItem.entities) {
+    let configEntities = configItem.entities;
+    if (configItem.excludeItemsInEntitiesList) {
+      configEntities = this.convertExclusionsInPredefinedGroupsToInclusions(configEntities);
+    }
+    for (const item of configEntities) {
       const predefinedGroupPlayer = this.createPredefinedGroupPlayer(item);
       if (predefinedGroupPlayer) {
         entities.push(predefinedGroupPlayer);
@@ -72,6 +76,17 @@ export default class Store {
       };
     }
     return result;
+  }
+
+  private convertExclusionsInPredefinedGroupsToInclusions(configEntities: (string | ConfigPredefinedGroupPlayer)[]) {
+    return this.allMediaPlayers
+      .filter(
+        (mp) =>
+          !configEntities.find((player) => {
+            return (typeof player === 'string' ? player : player.player) === mp.id;
+          }),
+      )
+      .map((mp) => mp.id);
   }
 
   private createPredefinedGroupPlayer(configItem: string | ConfigPredefinedGroupPlayer) {

@@ -104,13 +104,17 @@ predefinedGroups: # defaults to empty
     entities:
       - media_player.bedroom
       - media_player.hall
-  - name: Kök&Hall
+  - name: Kitchen&Hall
     media: Legendary # If you want to start playing a specific favorite when grouping 
     entities: # Use below format if you want to set the volume of the speakers when grouping
       - player: media_player.kitchen
         volume: 10
       - player: media_player.hall
         volume: 5
+  - name: All (except TV)
+    excludeItemsInEntitiesList: true # Invert entities selection, so that all players will be grouped except those in the entities list
+    entities: 
+      - media_player.tv
 
 # player specific
 showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume

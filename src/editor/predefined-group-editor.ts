@@ -11,6 +11,7 @@ class PredefinedGroupEditor extends BaseEditor {
   private schema = [
     { type: 'string', name: 'name', required: true },
     { type: 'string', name: 'media' },
+    { type: 'boolean', name: 'excludeItemsInEntitiesList' },
     {
       name: 'entities',
       selector: { entity: { multiple: true, filter: { integration: 'sonos', domain: 'media_player' } } },

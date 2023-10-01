@@ -84,6 +84,7 @@ export interface PredefinedGroup<T = PredefinedGroupPlayer> {
   media?: string;
   volume?: number;
   unmuteWhenGrouped?: boolean;
+  excludeItemsInEntitiesList?: boolean;
 }
 
 export interface PredefinedGroupPlayer<T = MediaPlayer> {
