@@ -81,7 +81,7 @@ sections: # see explanation further up
   - player
 widthPercentage: 75 # default is 100. Use this to change the width of the card.
 heightPercentage: 75 # default is 100. Use this to change the height of the card.
-entityId: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
+entityId: media_player.sonos_bedroom # Forces this player to be the selected one on loading the card (overrides url param etc). Also supports Jinja2 template.
 entityNameRegexToReplace: 'SONOS ' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
 entities: # Entities are automatically discovered if you don't supply this setting
