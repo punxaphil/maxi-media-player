@@ -8,7 +8,6 @@ import { HassEntity } from 'home-assistant-js-websocket';
 export default class HassService {
   private readonly hass: HomeAssistant;
   private readonly sectionOnCreate?: Section;
-  private templateCache: { [key: string]: unknown } = {};
 
   constructor(hass: HomeAssistant, section?: Section) {
     this.hass = hass;
@@ -46,34 +45,22 @@ export default class HassService {
   }
 
   async getRelatedSwitchEntities(player: MediaPlayer) {
-    return (await this.renderTemplate<string[]>("{{ device_entities(device_id('" + player.id + "')) }}"))
-      .filter((item: string) => item.indexOf('switch') > -1)
-      .map((item) => this.hass.states[item]);
-  }
-
-  async renderTemplate<T>(template: string) {
-    const cachedRender = this.templateCache[template] as T;
-    if (cachedRender) {
-      return cachedRender;
-    }
-    const result = await new Promise<T>(async (resolve, reject) => {
+    return new Promise<HassEntity[]>(async (resolve, reject) => {
+      const subscribeMessage = {
+        type: 'render_template',
+        template: "{{ device_entities(device_id('" + player.id + "')) }}",
+      };
       try {
-        const unsubscribe = await this.hass.connection.subscribeMessage<TemplateResult<T>>(
-          (response) => {
-            unsubscribe();
-            resolve(response.result);
-          },
-          {
-            type: 'render_template',
-            template,
-          },
-        );
+        const unsubscribe = await this.hass.connection.subscribeMessage<TemplateResult>((response) => {
+          unsubscribe();
+          resolve(
+            response.result.filter((item: string) => item.indexOf('switch') > -1).map((item) => this.hass.states[item]),
+          );
+        }, subscribeMessage);
       } catch (e) {
         reject(e);
       }
     });
-    this.templateCache[template] = result;
-    return result;
   }
 
   async toggle(entity: HassEntity) {

@@ -19,7 +19,6 @@ export enum Section {
 export type ConfigPredefinedGroupPlayer = PredefinedGroupPlayer<string>;
 export type ConfigPredefinedGroup = PredefinedGroup<string | ConfigPredefinedGroupPlayer>;
 export interface CardConfig extends LovelaceCardConfig {
-  entityId?: string;
   sections?: Section[];
   showVolumeUpAndDownButtons: boolean;
   entities?: string[];
@@ -92,6 +91,6 @@ export interface PredefinedGroupPlayer<T = MediaPlayer> {
   player: T;
   volume?: number;
 }
-export interface TemplateResult<T> {
-  result: T;
+export interface TemplateResult {
+  result: string[];
 }
