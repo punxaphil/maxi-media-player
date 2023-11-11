@@ -2,6 +2,7 @@ import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import Store from '../model/store';
 import { MediaPlayer } from '../model/media-player';
+import { styleMap } from 'lit-html/directives/style-map.js';
 
 class Progress extends LitElement {
   @property() store!: Store;
@@ -28,13 +29,17 @@ class Progress extends LitElement {
         <div class="progress">
           <span>${convertProgress(this.playingProgress)}</span>
           <div class="bar">
-            <paper-progress value="${this.playingProgress}" max="${mediaDuration}"></paper-progress>
+            <div class="progress-bar" style=${this.progressBarStyle(mediaDuration)}></div>
           </div>
           <span> -${convertProgress(mediaDuration - this.playingProgress)}</span>
         </div>
       `;
     }
     return html``;
+  }
+
+  private progressBarStyle(mediaDuration: number) {
+    return styleMap({ width: `${(this.playingProgress / mediaDuration) * 100}%` });
   }
 
   trackProgress() {
@@ -70,9 +75,9 @@ class Progress extends LitElement {
         padding: 5px;
       }
 
-      paper-progress {
-        flex-grow: 1;
-        --paper-progress-active-color: var(--accent-color);
+      .progress-bar {
+        background-color: var(--accent-color);
+        height: 50%;
       }
     `;
   }
