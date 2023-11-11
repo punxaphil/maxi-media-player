@@ -61,7 +61,7 @@ class Volumes extends LitElement {
         )}
       </div>
       <div class="switches">
-        ${when(!player.members.length && this.showSwitches[player.id], () => until(this.getAdditionalControls(player)))}
+        ${when(!updateMembers && this.showSwitches[player.id], () => until(this.getAdditionalControls(player)))}
       </div>
     </div>`;
   }
