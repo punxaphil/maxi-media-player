@@ -9,7 +9,7 @@ class Progress extends LitElement {
   private activePlayer!: MediaPlayer;
 
   @state() private playingProgress!: number;
-  private tracker?: NodeJS.Timer;
+  private tracker?: NodeJS.Timeout;
 
   disconnectedCallback() {
     if (this.tracker) {
