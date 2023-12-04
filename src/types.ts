@@ -93,7 +93,7 @@ export interface TemplateResult {
   result: string[];
 }
 
-export const enum MediaPlayerEntityFeature {
+export enum MediaPlayerEntityFeature {
   PAUSE = 1,
   SEEK = 2,
   VOLUME_SET = 4,
