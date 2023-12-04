@@ -124,4 +124,11 @@ export default class MediaControlService {
       media_content_type: item.media_content_type,
     });
   }
+
+  async seek(mediaPlayer: MediaPlayer, position: number) {
+    await this.hassService.callMediaService('media_seek', {
+      entity_id: mediaPlayer.id,
+      seek_position: position,
+    });
+  }
 }
