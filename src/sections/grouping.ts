@@ -4,9 +4,9 @@ import { when } from 'lit/directives/when.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { dispatchActivePlayerId } from '../utils/utils';
-import { getButton } from '../components/button';
 import { listStyle } from '../constants';
 import { MediaPlayer } from '../model/media-player';
+import '../components/grouping-button';
 
 export class Grouping extends LitElement {
   @property() store!: Store;
@@ -50,8 +50,12 @@ export class Grouping extends LitElement {
   private renderJoinAllButton() {
     const notJoinedPlayers = this.getNotJoinedPlayers();
     return when(notJoinedPlayers.length, () => {
-      const click = async () => await this.mediaControlService.join(this.activePlayer.id, notJoinedPlayers);
-      return getButton(click, 'mdi:checkbox-multiple-marked-outline');
+      return html`
+        <sonos-grouping-button
+          @click=${async () => await this.mediaControlService.join(this.activePlayer.id, notJoinedPlayers)}
+          .icon=${'mdi:checkbox-multiple-marked-outline'}
+        ></sonos-grouping-button>
+      `;
     });
   }
 
@@ -64,8 +68,12 @@ export class Grouping extends LitElement {
   private renderUnJoinAllButton() {
     const joinedPlayers = this.getJoinedPlayers();
     return when(joinedPlayers.length, () => {
-      const click = async () => await this.mediaControlService.unJoin(joinedPlayers);
-      return getButton(click, 'mdi:minus-box-multiple-outline');
+      return html`
+        <sonos-grouping-button
+          @click=${async () => await this.mediaControlService.unJoin(joinedPlayers)}
+          .icon=${'mdi:minus-box-multiple-outline'}
+        ></sonos-grouping-button>
+      `;
     });
   }
 
@@ -97,8 +105,13 @@ export class Grouping extends LitElement {
 
   private renderPredefinedGroups() {
     return this.store.predefinedGroups.map((predefinedGroup) => {
-      const click = async () => await this.mediaControlService.createGroup(predefinedGroup, this.allGroups);
-      return getButton(click, 'mdi:speaker-multiple', predefinedGroup.name);
+      return html`
+        <sonos-grouping-button
+          @click=${async () => await this.mediaControlService.createGroup(predefinedGroup, this.allGroups)}
+          .icon=${'mdi:speaker-multiple'}
+          .name=${predefinedGroup.name}
+        ></sonos-grouping-button>
+      `;
     });
   }
   static get styles() {
