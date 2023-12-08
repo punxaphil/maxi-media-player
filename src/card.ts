@@ -183,6 +183,10 @@ export class Card extends LitElement {
 
   static get styles() {
     return css`
+      :host {
+        --mdc-icon-button-size: 3rem;
+        --mdc-icon-size: 2rem;
+      }
       .loader {
         position: absolute;
         z-index: 1000;

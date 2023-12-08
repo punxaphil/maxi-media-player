@@ -1,12 +1,10 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
-import { iconButton, iconStyle } from './icon-button';
 import { MediaPlayer } from '../model/media-player';
-import { haPlayer } from './ha-player';
 import { when } from 'lit/directives/when.js';
 
 const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK } = MediaPlayerEntityFeature;
@@ -22,17 +20,18 @@ class PlayerControls extends LitElement {
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
 
+    const noUpDown = this.config.showVolumeUpAndDownButtons && nothing;
     return html`
       <div class="main" id="mediaControls">
         ${when(
           this.activePlayer.state !== 'idle',
           () => html`
             <div class="icons">
-              ${when(this.config.showVolumeUpAndDownButtons, () => iconButton(mdiVolumeMinus, this.volDown))}
-              ${haPlayer(this.store, [SHUFFLE_SET, PREVIOUS_TRACK], iconStyle())}
-              ${haPlayer(this.store, [PLAY, PAUSE], iconStyle(true))}
-              ${haPlayer(this.store, [NEXT_TRACK, REPEAT_SET], iconStyle())}
-              ${when(this.config.showVolumeUpAndDownButtons, () => iconButton(mdiVolumePlus, this.volUp))}
+              <ha-icon-button hidden=${noUpDown} @click="${this.volDown}" .path=${mdiVolumeMinus}></ha-icon-button>
+              <sonos-ha-player .store=${this.store} .features=${[SHUFFLE_SET, PREVIOUS_TRACK]}></sonos-ha-player>
+              <sonos-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></sonos-ha-player>
+              <sonos-ha-player .store=${this.store} .features=${[NEXT_TRACK, REPEAT_SET]}></sonos-ha-player>
+              <ha-icon-button hidden=${noUpDown} @click="${this.volUp}" .path=${mdiVolumePlus}></ha-icon-button>
             </div>
           `,
         )}
@@ -54,6 +53,13 @@ class PlayerControls extends LitElement {
         justify-content: center;
         display: flex;
         align-items: center;
+      }
+      .icons > *[hidden] {
+        display: none;
+      }
+      .big-icon {
+        --mdc-icon-button-size: 5rem;
+        --mdc-icon-size: 5rem;
       }
     `;
   }

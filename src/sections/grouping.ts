@@ -20,31 +20,28 @@ export class Grouping extends LitElement {
     this.allGroups = this.store.allGroups;
     this.mediaControlService = this.store.mediaControlService;
     this.mediaPlayerIds = this.store.allMediaPlayers.map((player) => player.id);
-
     return html`
       <div class="buttons">
         ${this.renderJoinAllButton()} ${this.renderUnJoinAllButton()}
         ${when(this.store.predefinedGroups, () => this.renderPredefinedGroups())}
       </div>
       <mwc-list multi class="list">
-        ${this.store.allMediaPlayers
-          .map((player) => this.getGroupingItem(player))
-          .map((groupingItem) => {
-            return html`
-              <mwc-list-item
-                ?activated="${groupingItem.isSelected}"
-                ?disabled="${groupingItem.isSelected && !groupingItem.isGrouped}"
-                @click="${async () => await this.itemClickAction(groupingItem)}"
-              >
-                <ha-icon
-                  .icon="${groupingItem.isSelected ? 'mdi:checkbox-marked-outline' : 'mdi:checkbox-blank-outline'}"
-                ></ha-icon>
-                <span class="item">${groupingItem.player.name}</span>
-              </mwc-list-item>
-            `;
-          })}
+        ${this.getGroupingItems().map(({ icon, click, isSelected, isDisabled, name }) => {
+          return html`
+            <mwc-list-item ?activated="${isSelected}" ?disabled="${isDisabled}" @click="${click}">
+              <ha-icon .icon="mdi:checkbox-${icon}-outline"></ha-icon>
+              <span class="item">${name}</span>
+            </mwc-list-item>
+          `;
+        })}
       </mwc-list>
     `;
+  }
+
+  private getGroupingItems() {
+    return this.store.allMediaPlayers.map(
+      (player) => new GroupingItem(player, this.activePlayer, this.mediaControlService),
+    );
   }
 
   private renderJoinAllButton() {
@@ -83,26 +80,6 @@ export class Grouping extends LitElement {
     );
   }
 
-  private getGroupingItem(player: MediaPlayer): GroupingItem {
-    const isMain = player.id === this.activePlayer.id;
-    return {
-      isMain,
-      isSelected: isMain || this.activePlayer.hasMember(player.id),
-      isGrouped: this.activePlayer.isGrouped(),
-      player: player,
-    };
-  }
-  private async itemClickAction({ isSelected, player, isMain }: GroupingItem) {
-    if (isSelected) {
-      if (isMain) {
-        dispatchActivePlayerId(this.activePlayer.id);
-      }
-      await this.mediaControlService.unJoin([player.id]);
-    } else {
-      await this.mediaControlService.join(this.activePlayer.id, [player.id]);
-    }
-  }
-
   private renderPredefinedGroups() {
     return this.store.predefinedGroups.map((predefinedGroup) => {
       return html`
@@ -117,6 +94,10 @@ export class Grouping extends LitElement {
   static get styles() {
     return [
       css`
+        :host {
+          --mdc-icon-size: 24px;
+        }
+
         .buttons {
           margin: 1rem;
           display: flex;
@@ -135,9 +116,36 @@ export class Grouping extends LitElement {
   }
 }
 
-interface GroupingItem {
-  isMain: boolean;
-  isSelected: boolean;
-  isGrouped: boolean;
-  player: MediaPlayer;
+class GroupingItem {
+  readonly isSelected: boolean;
+  readonly icon: string;
+  readonly isDisabled: boolean;
+  readonly name: string;
+
+  private readonly isMain: boolean;
+  private readonly player: MediaPlayer;
+  private readonly mediaControlService: MediaControlService;
+  private readonly activePlayer: MediaPlayer;
+
+  constructor(player: MediaPlayer, activePlayer: MediaPlayer, mediaControlService: MediaControlService) {
+    this.isMain = player.id === activePlayer.id;
+    this.activePlayer = activePlayer;
+    this.isSelected = this.isMain || activePlayer.hasMember(player.id);
+    this.mediaControlService = mediaControlService;
+    this.player = player;
+    this.icon = this.isSelected ? 'marked' : 'blank';
+    this.isDisabled = this.isSelected && !activePlayer.isGrouped();
+    this.name = player.name;
+  }
+
+  async click() {
+    if (this.isSelected) {
+      if (this.isMain) {
+        dispatchActivePlayerId(this.player.id);
+      }
+      await this.mediaControlService.unJoin([this.player.id]);
+    } else {
+      await this.mediaControlService.join(this.activePlayer.id, [this.player.id]);
+    }
+  }
 }

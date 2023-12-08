@@ -2,7 +2,6 @@ import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MediaPlayerEntityFeature } from '../types';
 import Store from '../model/store';
-import { haPlayer } from './ha-player';
 
 class MediaBrowserHeader extends LitElement {
   @property() store!: Store;
@@ -10,11 +9,11 @@ class MediaBrowserHeader extends LitElement {
   render() {
     return html`
       <div class="title">All Favorites</div>
-      ${haPlayer(this.store, [MediaPlayerEntityFeature.BROWSE_MEDIA], {
-        padding: '0.5rem',
-        flex: '1',
-        textAlign: 'right',
-      })}
+      <sonos-ha-player
+        .store=${this.store}
+        .features=${[MediaPlayerEntityFeature.BROWSE_MEDIA]}
+        class="browse"
+      ></sonos-ha-player>
     `;
   }
 
@@ -32,6 +31,9 @@ class MediaBrowserHeader extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+      .browse {
+        margin: 0.5rem;
       }
     `;
   }

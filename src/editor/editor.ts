@@ -1,7 +1,6 @@
-import { html, TemplateResult } from 'lit';
+import { css, html, nothing, TemplateResult } from 'lit';
 import { Section } from '../types';
 import { state } from 'lit/decorators.js';
-import { styleMap } from 'lit-html/directives/style-map.js';
 import { BaseEditor } from './base-editor';
 import { ConfigArea } from './config-area';
 import { choose } from 'lit/directives/choose.js';
@@ -30,7 +29,7 @@ class CardEditor extends BaseEditor {
         ${[GENERAL, ENTITIES, ARTWORK, ADVANCED].map(
           (configArea) => html`
             <ha-control-button
-              style=${this.configAreaStyle(configArea)}
+              selected=${this.configArea === configArea || nothing}
               @click="${() => (this.configArea = configArea)}"
             >
               ${configArea}
@@ -55,10 +54,12 @@ class CardEditor extends BaseEditor {
     ]);
   }
 
-  private configAreaStyle(configArea: ConfigArea) {
-    return this.configArea === configArea
-      ? styleMap({ '--control-button-background-color': 'var(--primary-color)' })
-      : '';
+  static get styles() {
+    return css`
+      ha-control-button[selected] {
+        --control-button-background-color: var(--primary-color);
+      }
+    `;
   }
 }
 

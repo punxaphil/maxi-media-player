@@ -1,9 +1,9 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
+
 import { property } from 'lit/decorators.js';
 import { CardConfig, Section } from '../types';
 import { dispatchShowSection } from '../utils/utils';
 import { mdiCastVariant, mdiHome, mdiSpeakerMultiple, mdiStarOutline, mdiTune } from '@mdi/js';
-import { iconButton } from './icon-button';
 
 const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES } = Section;
 
@@ -13,30 +13,61 @@ class Footer extends LitElement {
 
   render() {
     return html`
-      ${this.sectionButton(mdiHome, PLAYER)}${this.sectionButton(mdiStarOutline, MEDIA_BROWSER)}
-      ${this.sectionButton(mdiSpeakerMultiple, GROUPS)} ${this.sectionButton(mdiCastVariant, GROUPING)}
-      ${this.sectionButton(mdiTune, VOLUMES)}
+      <ha-icon-button
+        hidden=${this.hide(PLAYER)}
+        .path=${mdiHome}
+        @click="${() => dispatchShowSection(PLAYER)}"
+        selected="${this.selected(PLAYER)}"
+      ></ha-icon-button>
+      <ha-icon-button
+        hidden=${this.hide(MEDIA_BROWSER)}
+        .path=${mdiStarOutline}
+        @click="${() => dispatchShowSection(MEDIA_BROWSER)}"
+        selected="${this.selected(MEDIA_BROWSER)}"
+      ></ha-icon-button>
+      <ha-icon-button
+        hidden=${this.hide(GROUPS)}
+        .path=${mdiSpeakerMultiple}
+        @click="${() => dispatchShowSection(GROUPS)}"
+        selected="${this.selected(GROUPS)}"
+      ></ha-icon-button>
+      <ha-icon-button
+        hidden=${this.hide(GROUPING)}
+        .path=${mdiCastVariant}
+        @click="${() => dispatchShowSection(GROUPING)}"
+        selected="${this.selected(GROUPING)}"
+      ></ha-icon-button>
+      <ha-icon-button
+        hidden=${this.hide(VOLUMES)}
+        .path=${mdiTune}
+        @click="${() => dispatchShowSection(VOLUMES)}"
+        selected="${this.selected(VOLUMES)}"
+      ></ha-icon-button>
     `;
   }
 
-  sectionButton(icon: string, section: Section) {
-    if (!this.config.sections || this.config.sections?.includes(section)) {
-      return iconButton(icon, () => dispatchShowSection(section), {
-        additionalStyle: {
-          padding: '1rem',
-          ...(this.section === section && {
-            color: 'var(--accent-color)',
-          }),
-        },
-      });
-    }
-    return html``;
+  private selected(section: Section | typeof nothing) {
+    return this.section === section || nothing;
   }
+
+  private hide(searchElement: Section) {
+    return (this.config.sections && !this.config.sections?.includes(searchElement)) || nothing;
+  }
+
   static get styles() {
     return css`
       :host {
         display: flex;
         justify-content: space-between;
+      }
+      :host > * {
+        padding: 1rem;
+      }
+      :host > *[selected] {
+        color: var(--accent-color);
+      }
+      :host > *[hidden] {
+        display: none;
       }
     `;
   }

@@ -1,16 +1,16 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { until } from 'lit-html/directives/until.js';
 import { when } from 'lit/directives/when.js';
-import { iconButton } from '../components/icon-button';
 import { mdiCog, mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
 import MediaControlService from '../services/media-control-service';
 import { MediaPlayer } from '../model/media-player';
 import HassService from '../services/hass-service';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { haPlayer } from '../components/ha-player';
+
+const { SELECT_SOURCE } = MediaPlayerEntityFeature;
 
 class Volumes extends LitElement {
   @property() store!: Store;
@@ -41,39 +41,39 @@ class Volumes extends LitElement {
       : player.name;
     const volDown = async () => await this.mediaControlService.volumeDown(player, updateMembers);
     const volUp = async () => await this.mediaControlService.volumeUp(player, updateMembers);
+    const noUpDown = this.config.showVolumeUpAndDownButtons && nothing;
+    const hideSwitches = updateMembers || !this.showSwitches[player.id];
     return html` <div class="row">
       <div class="volume-name">
         <div class="volume-name-text">${name}</div>
       </div>
       <div class="slider-row">
-        ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumeMinus, volDown) : ''}
-
+        <ha-icon-button hidden=${noUpDown} @click="${volDown}" .path=${mdiVolumeMinus}></ha-icon-button>
         <sonos-volume .store=${this.store} .player=${player} .updateMembers=${updateMembers}></sonos-volume>
-        ${this.config.showVolumeUpAndDownButtons ? iconButton(mdiVolumePlus, volUp) : ''}
-        ${when(!updateMembers, () =>
-          iconButton(
-            mdiCog,
-            () => {
-              this.showSwitches[player.id] = !this.showSwitches[player.id];
-              this.requestUpdate();
-            },
-            { additionalStyle: this.showSwitches[player.id] ? { color: 'var(--accent-color)' } : {} },
-          ),
-        )}
+        <ha-icon-button hidden=${noUpDown} @click="${volUp}" .path=${mdiVolumePlus}></ha-icon-button>
+        <ha-icon-button
+          hidden=${updateMembers || nothing}
+          @click="${() => this.toggleShowSwitches(player)}"
+          .path=${mdiCog}
+          show-switches="${this.showSwitches[player.id] || nothing}"
+        ></ha-icon-button>
       </div>
       <div class="switches">
-        ${when(
-          !updateMembers && this.showSwitches[player.id],
-          () => html`
-            ${haPlayer(this.store, [MediaPlayerEntityFeature.SELECT_SOURCE])}
-            ${until(this.getAdditionalControls(player))}
-          `,
-        )}
+        <sonos-ha-player hidden=${hideSwitches || nothing} .store=${this.store} .features=${[SELECT_SOURCE]}>
+        </sonos-ha-player>
+        ${until(this.getAdditionalControls(hideSwitches, player))}
       </div>
     </div>`;
   }
+  private toggleShowSwitches(player: MediaPlayer) {
+    this.showSwitches[player.id] = !this.showSwitches[player.id];
+    this.requestUpdate();
+  }
 
-  private async getAdditionalControls(player: MediaPlayer) {
+  private async getAdditionalControls(hide: boolean, player: MediaPlayer) {
+    if (hide) {
+      return;
+    }
     const relatedEntities = await this.hassService.getRelatedEntities(player);
     return relatedEntities.map((relatedEntity: HassEntity) => {
       relatedEntity.attributes.friendly_name =
@@ -128,6 +128,14 @@ class Volumes extends LitElement {
 
       sonos-volume {
         flex: 4;
+      }
+
+      *[show-switches] {
+        color: var(--accent-color);
+      }
+
+      *[hidden] {
+        display: none;
       }
     `;
   }

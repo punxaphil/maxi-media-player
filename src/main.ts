@@ -4,6 +4,7 @@ import { Grouping } from './sections/grouping';
 import { Groups } from './sections/groups';
 import { MediaBrowser } from './sections/media-browser';
 import './sections/volumes';
+import './components/ha-player';
 
 const name = (type?: string) => `Sonos${type ? ` (${type})` : ''}`;
 const desc = (type?: string) => `Media player for your Sonos speakers${type ? ` (${type})` : ''}`;

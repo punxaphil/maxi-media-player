@@ -4,7 +4,6 @@ import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { CardConfig } from '../types';
 import { mdiVolumeHigh, mdiVolumeMute } from '@mdi/js';
-import { iconButton } from './icon-button';
 import { MediaPlayer } from '../model/media-player';
 
 class Volume extends LitElement {
@@ -20,21 +19,14 @@ class Volume extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
 
     const volume = 100 * this.player.attributes.volume_level;
-    let max = 100;
-    if (volume < 20) {
-      if (this.config.dynamicVolumeSlider) {
-        max = 30;
-      }
-    }
+    const max = volume < 20 && this.config.dynamicVolumeSlider ? 30 : 100;
 
+    const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
     return html`
       <div class="volume">
-        ${iconButton(
-          this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh,
-          async () => await this.mediaControlService.toggleMute(this.player, this.updateMembers),
-        )}
+        <ha-icon-button @click="${this.mute}" .path=${muteIcon}> </ha-icon-button>
         <div class="volume-slider">
-          <ha-control-slider .value="${volume}" max=${max} @value-changed=${this.volumeChanged}> </ha-control-slider>
+          <ha-control-slider .value="${volume}" max=${max} @value-changed=${this.volumeChanged}></ha-control-slider>
           <div class="volume-level">
             <div style="flex: ${volume}">0%</div>
             ${volume >= max / 10 && volume <= 100 - max / 10
@@ -54,6 +46,10 @@ class Volume extends LitElement {
 
   private async setVolume(volume: number) {
     return await this.mediaControlService.volumeSet(this.player, volume, this.updateMembers);
+  }
+
+  private async mute() {
+    return await this.mediaControlService.toggleMute(this.player, this.updateMembers);
   }
 
   static get styles() {

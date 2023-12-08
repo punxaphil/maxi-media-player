@@ -1,22 +1,23 @@
-import { html } from 'lit';
+import { html, LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
 import Store from '../model/store';
 import { MediaPlayerEntityFeature } from '../types';
-import { StyleInfo, styleMap } from 'lit-html/directives/style-map.js';
 
-export function haPlayer(store: Store, features: MediaPlayerEntityFeature[], additionalStyle: StyleInfo = {}) {
-  const state = store.hass.states[store.activePlayer.id];
-  let supportedFeatures = 0;
-  features.forEach((feature) => (supportedFeatures += feature));
+class HaPlayer extends LitElement {
+  @property({ attribute: false }) store!: Store;
+  @property({ attribute: false }) features!: MediaPlayerEntityFeature[];
 
-  const playerState = {
-    ...state,
-    attributes: { ...state.attributes, supported_features: supportedFeatures },
-  };
-  return html`
-    <more-info-content
-      .stateObj=${playerState}
-      .hass=${store.hass}
-      style="${styleMap(additionalStyle)}"
-    ></more-info-content>
-  `;
+  render() {
+    const state = this.store.hass.states[this.store.activePlayer.id];
+    let supportedFeatures = 0;
+    this.features.forEach((feature) => (supportedFeatures += feature));
+
+    const playerState = {
+      ...state,
+      attributes: { ...state.attributes, supported_features: supportedFeatures },
+    };
+    return html` <more-info-content .stateObj=${playerState} .hass=${this.store.hass}></more-info-content> `;
+  }
 }
+
+customElements.define('sonos-ha-player', HaPlayer);
