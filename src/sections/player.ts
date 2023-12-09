@@ -79,6 +79,7 @@ export class Player extends LitElement {
 
       .container {
         display: grid;
+        grid-template-columns: 100%;
         grid-template-rows: min-content auto min-content;
         grid-template-areas:
           'header'
