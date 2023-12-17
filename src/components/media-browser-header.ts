@@ -13,7 +13,6 @@ class MediaBrowserHeader extends LitElement {
         hide=${this.store.config.hideBrowseMediaButton || nothing}
         .store=${this.store}
         .features=${[MediaPlayerEntityFeature.BROWSE_MEDIA]}
-        class="browse"
       ></sonos-ha-player>
     `;
   }
@@ -23,6 +22,7 @@ class MediaBrowserHeader extends LitElement {
       :host {
         display: flex;
         justify-content: space-between;
+        padding: 0.5rem;
       }
       .title {
         flex: 1;
@@ -32,9 +32,7 @@ class MediaBrowserHeader extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-      .browse {
-        margin: 0.5rem;
+        padding: 0.5rem;
       }
       *[hide] {
         display: none;
