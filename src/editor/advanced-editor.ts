@@ -10,6 +10,10 @@ export const ADVANCED_SCHEMA = [
     name: 'dynamicVolumeSlider',
     selector: { boolean: {} },
   },
+  {
+    name: 'hideBrowseMediaButton',
+    selector: { boolean: {} },
+  },
 
   {
     type: 'string',

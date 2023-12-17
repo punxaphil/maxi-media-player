@@ -1,15 +1,16 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MediaPlayerEntityFeature } from '../types';
 import Store from '../model/store';
 
 class MediaBrowserHeader extends LitElement {
-  @property({attribute: false}) store!: Store;
+  @property({ attribute: false }) store!: Store;
 
   render() {
     return html`
       <div class="title">All Favorites</div>
       <sonos-ha-player
+        hide=${this.store.config.hideBrowseMediaButton || nothing}
         .store=${this.store}
         .features=${[MediaPlayerEntityFeature.BROWSE_MEDIA]}
         class="browse"
@@ -34,6 +35,9 @@ class MediaBrowserHeader extends LitElement {
       }
       .browse {
         margin: 0.5rem;
+      }
+      *[hide] {
+        display: none;
       }
     `;
   }

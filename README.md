@@ -155,6 +155,7 @@ topFavorites: # Show these favorites at the top of the list
   - Country Rocks
   - Kacey Musgraves Radio
 numberOfFavoritesToShow: 10 # Use this to limit the amount of favorites to show
+hideBrowseMediaButton: true # default is false. Hides the button to open the media browser.
 ```
 
 ## Using individual section cards
