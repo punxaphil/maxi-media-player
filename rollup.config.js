@@ -2,7 +2,6 @@ import typescript from 'rollup-plugin-typescript2';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
 
@@ -26,7 +25,6 @@ const plugins = [
     babelHelpers: 'bundled',
   }),
   process.env.ROLLUP_WATCH && serve(serveopts),
-  !process.env.ROLLUP_WATCH && !process.env.DEV && terser(),
 ];
 
 export default [
@@ -34,7 +32,7 @@ export default [
     input: 'src/main.ts',
     output: {
       format: 'es',
-      sourcemap: true,
+      sourcemap: 'inline',
       file: 'dist/custom-sonos-card.js',
     },
     onwarn(warning, warn) {
