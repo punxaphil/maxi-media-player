@@ -77,10 +77,9 @@ export class MediaBrowser extends LitElement {
       ...(this.config.customSources?.all?.map(MediaBrowser.createSource) || []),
       ...allFavorites,
     ];
-    allFavorites = this.config.numberOfFavoritesToShow
+    return this.config.numberOfFavoritesToShow
       ? allFavorites.slice(0, this.config.numberOfFavoritesToShow)
       : allFavorites;
-    return allFavorites;
   }
 
   private sortOnTopFavoritesThenAlphabetically(a: string, b: string) {

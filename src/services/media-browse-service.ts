@@ -28,12 +28,17 @@ export default class MediaBrowseService {
   }
 
   private async getFavoritesForPlayer(player: MediaPlayer) {
-    const favoritesRoot = await this.hassService.browseMedia(player, 'favorites', '');
-    const favoriteTypesPromise = favoritesRoot.children?.map((favoriteItem) =>
-      this.hassService.browseMedia(player, favoriteItem.media_content_type, favoriteItem.media_content_id),
-    );
-    const favoriteTypes = favoriteTypesPromise ? await Promise.all(favoriteTypesPromise) : [];
-    return favoriteTypes.flatMap((item) => item.children ?? []);
+    try {
+      const favoritesRoot = await this.hassService.browseMedia(player, 'favorites', '');
+      const favoriteTypesPromise = favoritesRoot.children?.map((favoriteItem) =>
+        this.hassService.browseMedia(player, favoriteItem.media_content_type, favoriteItem.media_content_id),
+      );
+      const favoriteTypes = favoriteTypesPromise ? await Promise.all(favoriteTypesPromise) : [];
+      return favoriteTypes.flatMap((item) => item.children ?? []);
+    } catch (e) {
+      console.log('Custom Sonos Card: error getting favorites for player ' + player.id + ': ' + JSON.stringify(e));
+      return [];
+    }
   }
 
   private getFavoritesFromStates(mediaPlayers: MediaPlayer[]) {
