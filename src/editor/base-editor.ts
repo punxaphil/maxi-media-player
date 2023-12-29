@@ -1,7 +1,7 @@
 import { css, LitElement } from 'lit';
-import { fireEvent, HomeAssistant } from 'custom-card-helpers';
+import { fireEvent } from 'custom-card-helpers';
 import { property } from 'lit/decorators.js';
-import { CardConfig } from '../types';
+import { CardConfig, HomeAssistant } from '../types';
 import Store from '../model/store';
 import { dispatch } from '../utils/utils';
 
