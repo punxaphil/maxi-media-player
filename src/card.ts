@@ -1,9 +1,8 @@
-import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import Store from './model/store';
-import { CardConfig, Section } from './types';
+import { CardConfig, HomeAssistant, Section } from './types';
 import './components/footer';
 import './editor/editor';
 import {
