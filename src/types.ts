@@ -1,4 +1,4 @@
-import { HomeAssistant as HomeAssistantBase, LovelaceCardConfig } from 'custom-card-helpers';
+import { LovelaceCardConfig } from 'custom-card-helpers';
 import { MediaPlayer } from './model/media-player';
 
 declare global {
@@ -116,13 +116,4 @@ export enum MediaPlayerEntityFeature {
   BROWSE_MEDIA = 131072,
   REPEAT_SET = 262144,
   GROUPING = 524288,
-}
-
-export interface HomeAssistant extends HomeAssistantBase {
-  entities: { [id: string]: EntityRegistryDisplayEntry };
-}
-
-export interface EntityRegistryDisplayEntry {
-  entity_id: string;
-  platform?: string;
 }

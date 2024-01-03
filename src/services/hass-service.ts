@@ -1,4 +1,5 @@
-import { HomeAssistant, MediaPlayerItem, Section, TemplateResult } from '../types';
+import { HomeAssistant } from 'custom-card-helpers';
+import { MediaPlayerItem, Section, TemplateResult } from '../types';
 import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
 import { CALL_MEDIA_DONE, CALL_MEDIA_STARTED } from '../constants';
 import { MediaPlayer } from '../model/media-player';

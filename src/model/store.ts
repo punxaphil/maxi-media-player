@@ -1,3 +1,4 @@
+import { HomeAssistant } from 'custom-card-helpers';
 import HassService from '../services/hass-service';
 import MediaBrowseService from '../services/media-browse-service';
 import MediaControlService from '../services/media-control-service';
@@ -5,7 +6,6 @@ import {
   CardConfig,
   ConfigPredefinedGroup,
   ConfigPredefinedGroupPlayer,
-  HomeAssistant,
   PredefinedGroup,
   PredefinedGroupPlayer,
   Section,
@@ -110,9 +110,7 @@ export default class Store {
 
   public getMediaPlayerHassEntities(hass: HomeAssistant) {
     const configEntities = [...new Set(this.config.entities)];
-    return Object.values(this.hass.entities)
-      .filter((e) => e.entity_id.includes('media_player.') && e.platform === 'sonos')
-      .map((e) => hass.states[e.entity_id])
+    return Object.values(hass.states)
       .filter(getGroupPlayerIds)
       .filter((hassEntity) => {
         const includesEntity = configEntities.includes(hassEntity.entity_id);
