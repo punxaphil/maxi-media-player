@@ -202,6 +202,7 @@ The following variables are being used and can be set in your theme to change th
 --primary-color
 --secondary-text-color
 --secondary-background-color
+--disabled-text-color
 ```
 
 Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
