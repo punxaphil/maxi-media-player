@@ -44,7 +44,7 @@ export class MediaBrowser extends LitElement {
       ${this.activePlayer &&
       until(
         this.getAllFavorites().then((items) => {
-          return this.config.mediaBrowserItemsPerRow > 1
+          return (this.config.mediaBrowserItemsPerRow ?? 0) > 1
             ? html`<sonos-media-browser-icons .items=${items} .store=${this.store}></sonos-media-browser-icons>`
             : html` <sonos-media-browser-list .items=${items} .store=${this.store}></sonos-media-browser-list>`;
         }),
