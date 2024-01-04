@@ -21,7 +21,7 @@ class PlayerControls extends LitElement {
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
 
-    const noUpDown = this.config.showVolumeUpAndDownButtons && nothing;
+    const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
     return html`
       <div class="main" id="mediaControls">
         ${when(

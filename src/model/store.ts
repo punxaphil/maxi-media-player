@@ -114,7 +114,7 @@ export default class Store {
       .filter(getGroupPlayerIds)
       .filter((hassEntity) => {
         const includesEntity = configEntities.includes(hassEntity.entity_id);
-        return !configEntities.length || this.config.excludeItemsInEntitiesList !== includesEntity;
+        return !configEntities.length || !!this.config.excludeItemsInEntitiesList !== includesEntity;
       })
       .sort((a, b) => a.entity_id.localeCompare(b.entity_id));
   }
