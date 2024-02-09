@@ -36,10 +36,7 @@ export class MediaPlayer {
   }
 
   isMuted(checkMembers: boolean): boolean {
-    return (
-      (this.attributes.is_volume_muted as boolean) ||
-      (checkMembers && this.members.some((member) => member.isMuted(true)))
-    );
+    return this.attributes.is_volume_muted && (!checkMembers || this.members.every((member) => member.isMuted(false)));
   }
   getCurrentTrack() {
     return `${this.attributes.media_artist || ''} - ${this.attributes.media_title || ''}`.replace(/^ - | - $/g, '');
