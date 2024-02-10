@@ -19,6 +19,7 @@ export class Player extends LitElement {
   render() {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
+    console.log('Player.render', this.activePlayer);
 
     return html`
       <div class="container">

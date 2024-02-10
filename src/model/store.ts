@@ -37,6 +37,7 @@ export default class Store {
     this.config = config;
     const mediaPlayerHassEntities = this.getMediaPlayerHassEntities(this.hass);
     this.allGroups = this.createPlayerGroups(mediaPlayerHassEntities);
+    console.log('allGroups', this.allGroups.map((g) => g.id + ': ' + g.members.map((m) => m.id).join(',')).join(', '));
     this.allMediaPlayers = this.allGroups
       .reduce(
         (previousValue: MediaPlayer[], currentValue) => [...previousValue, currentValue, ...currentValue.members],
@@ -118,14 +119,25 @@ export default class Store {
   public getMediaPlayerHassEntities(hass: HomeAssistant) {
     const hassWithEntities = hass as HomeAssistantWithEntities;
     const configEntities = [...new Set(this.config.entities)];
+    console.log('configEntities', configEntities);
     return Object.values(hass.states)
       .filter((hassEntity) => {
         if (hassEntity.entity_id.includes('media_player')) {
           const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
+          console.log('platform', platform, 'hassEntity.entity_id', hassEntity.entity_id);
           if (!platform || this.config.showNonSonosPlayers || platform === 'sonos') {
             if (configEntities.length) {
               const includesEntity = configEntities.includes(hassEntity.entity_id);
-              return !!this.config.excludeItemsInEntitiesList !== includesEntity;
+              const b1 = !!this.config.excludeItemsInEntitiesList !== includesEntity;
+              console.log(
+                'includesEntity',
+                includesEntity,
+                'b1',
+                b1,
+                'this.config.excludeItemsInEntitiesList',
+                this.config.excludeItemsInEntitiesList,
+              );
+              return b1;
             }
             return true;
           }
@@ -167,11 +179,20 @@ export default class Store {
 
   private determineActivePlayer(activePlayerId?: string): MediaPlayer {
     const playerId = activePlayerId || this.config.entityId || this.getActivePlayerFromUrl();
-    return (
-      this.allGroups.find((group) => group.getPlayer(playerId) !== undefined) ||
-      this.allGroups.find((group) => group.isPlaying()) ||
-      this.allGroups[0]
+    console.log(
+      'determineActivePlayer activePlayerId',
+      activePlayerId,
+      'config.entityId',
+      this.config.entityId,
+      'playerId',
+      playerId,
     );
+
+    const undef = this.allGroups.find((group) => group.getPlayer(playerId) !== undefined);
+    const playing = this.allGroups.find((group) => group.isPlaying());
+    const first = this.allGroups[0];
+    console.log('determineActivePlayer - undef:', undef, 'playing:', playing, 'first:', first);
+    return undef || playing || first;
   }
 
   private getActivePlayerFromUrl() {
