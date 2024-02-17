@@ -154,8 +154,8 @@ customThumbnailIfMissing:
   Ed Sheeran Radio: https://i.scdn.co/image/ab6761610000e5eb4d2f80ceffc6c70a432ccd7c
   Legendary: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
   fallback: https://cdn-icons-png.flaticon.com/512/651/651717.png # will use this if thumbnail is missing and none of the above matches. Defaults to black music notes with white background.  
-mediaBrowserTitlesToIgnore:
-  - Local Media
+favoritesToIgnore:
+  - My Favorite Album
   - My Bad Playlist
 topFavorites: # Show these favorites at the top of the list
   - Legendary

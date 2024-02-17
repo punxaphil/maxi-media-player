@@ -91,7 +91,7 @@ class AdvancedEditor extends BaseEditor {
           <li>customSources</li>
           <li>customThumbnail</li>
           <li>customThumbnailIfMissing</li>
-          <li>mediaBrowserTitlesToIgnore</li>
+          <li>favoritesToIgnore</li>
         </ul>
       </div>
     `;

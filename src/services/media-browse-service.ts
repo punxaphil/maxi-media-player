@@ -21,7 +21,7 @@ export default class MediaBrowseService {
     favorites = this.removeDuplicates(favorites);
     favorites = favorites.length ? favorites : this.getFavoritesFromStates(player);
     return favorites.filter(
-      (item) => indexOfWithoutSpecialChars(this.config.mediaBrowserTitlesToIgnore ?? [], item.title) === -1,
+      (item) => indexOfWithoutSpecialChars(this.config.favoritesToIgnore ?? [], item.title) === -1,
     );
   }
 
