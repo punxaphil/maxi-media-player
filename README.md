@@ -165,6 +165,9 @@ numberOfFavoritesToShow: 10 # Use this to limit the amount of favorites to show
 hideBrowseMediaButton: true # default is false. Hides the button to open the media browser.
 replaceHttpWithHttpsForThumbnails: true # default is false. Use this if you  want to replace http with https for thumbnails. 
 mediaBrowserTitle: My favorites # default is 'All favorites'. Use this to change the title for the media browser/favorites section.
+
+# volumes specific
+skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 ```
 
 ## Using individual section cards

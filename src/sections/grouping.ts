@@ -27,6 +27,10 @@ export class Grouping extends LitElement {
     this.notJoinedPlayers = this.getNotJoinedPlayers();
     this.joinedPlayers = this.getJoinedPlayers();
 
+    if (this.store.config.skipApplyButtonWhenGrouping && this.modifiedItems.length > 0) {
+      this.applyGrouping();
+    }
+
     return html`
       <div class="wrapper">
         <div class="predefined-groups">
@@ -57,7 +61,10 @@ export class Grouping extends LitElement {
             `;
           })}
         </div>
-        <ha-control-button-group class="buttons" hide=${this.modifiedItems.length === 0 || nothing}>
+        <ha-control-button-group
+          class="buttons"
+          hide=${this.modifiedItems.length === 0 || this.store.config.skipApplyButtonWhenGrouping || nothing}
+        >
           <ha-control-button class="apply" @click=${this.applyGrouping}> Apply </ha-control-button>
           <ha-control-button @click=${this.cancelGrouping}> Cancel </ha-control-button>
         </ha-control-button-group>
@@ -253,7 +260,7 @@ export class Grouping extends LitElement {
   }
 
   private selectPredefinedGroup(predefinedGroup: PredefinedGroup<PredefinedGroupPlayer>) {
-    this.groupingItems.forEach((item) => {
+    this.groupingItems.forEach(async (item) => {
       const inPG = predefinedGroup.entities.some((pgp) => pgp.player.id === item.player.id);
       if ((inPG && !item.isSelected) || (!inPG && item.isSelected)) {
         this.toggleItemWithoutDisabledCheck(item);

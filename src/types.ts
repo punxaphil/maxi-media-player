@@ -54,6 +54,7 @@ export interface CardConfig extends LovelaceCardConfig {
   volumeStepSize?: number;
   mediaBrowserTitle?: string;
   adjustVolumeRelativeToMainPlayer?: boolean;
+  skipApplyButtonWhenGrouping?: boolean;
 }
 
 export interface MediaArtworkOverride {
