@@ -101,8 +101,9 @@ class Volumes extends LitElement {
       .row {
         display: flex;
         flex-direction: column;
-        padding-top: 0.5rem;
+        padding-top: 0.3rem;
         padding-right: 1rem;
+        padding-bottom: 0.2rem;
       }
 
       .row:not(:first-child) {
