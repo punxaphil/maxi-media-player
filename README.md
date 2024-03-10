@@ -98,7 +98,7 @@ adjustVolumeRelativeToMainPlayer: true # default is false, which means all playe
 groupsTitle: ''
 hideGroupCurrentTrack: true # default is false, which means song/track info for groups will be shown
 
-# groupings specific
+# grouping specific
 groupingTitle: ''
 predefinedGroups: # defaults to empty
   - name: Inside
@@ -118,6 +118,7 @@ predefinedGroups: # defaults to empty
     excludeItemsInEntitiesList: true # Invert entities selection, so that all players will be grouped except those in the entities list
     entities: 
       - media_player.tv
+skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 
 # player specific
 showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume
@@ -167,7 +168,7 @@ replaceHttpWithHttpsForThumbnails: true # default is false. Use this if you  wan
 mediaBrowserTitle: My favorites # default is 'All favorites'. Use this to change the title for the media browser/favorites section.
 
 # volumes specific
-skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
+hideVolumeCogwheel: true # default is false. Will hide the cogwheel for the volumes section.
 ```
 
 ## Using individual section cards

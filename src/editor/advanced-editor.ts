@@ -57,6 +57,10 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
+    name: 'hideVolumeCogwheel',
+    selector: { boolean: {} },
+  },
+  {
     type: 'string',
     help: 'Override default fallback artwork image if artwork is missing for the currently selected media',
     name: 'fallbackArtwork',
