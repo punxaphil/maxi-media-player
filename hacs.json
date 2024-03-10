@@ -1,5 +1,5 @@
 {
-    "name": "Sonos Card",
+    "name": "Maxi Media Player",
     "render_readme": true,
-    "filename": "custom-sonos-card.js"
+    "filename": "maxi-media-player.js"
 }

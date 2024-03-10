@@ -20,8 +20,8 @@ export const ENTITIES_RENAME_SCHEMA = [
 
 export const ENTITIES_SCHEMA = [
   {
-    name: 'showNonSonosPlayers',
-    help: 'Show all media players, including those that are not on the Sonos platform',
+    name: 'entityPlatform',
+    help: 'Show all media players for the selected platform',
     selector: { boolean: {} },
   },
   {
@@ -31,7 +31,7 @@ export const ENTITIES_SCHEMA = [
   },
   {
     name: 'entities',
-    help: "Not needed, unless you don't want to include all of them",
+    help: "Required, unless you have specified entity platform",
     selector: { entity: { multiple: true, filter: { domain: 'media_player' } } },
   },
 ];
@@ -43,18 +43,18 @@ class EntitiesEditor extends BaseEditor {
     const predefinedGroups = this.config.predefinedGroups;
 
     return this.editGroup > -1
-      ? html`<sonos-card-predefined-group-editor
+      ? html`<mxmp-predefined-group-editor
           .index=${this.editGroup}
           .config=${this.config}
           .hass=${this.hass}
           @closed=${() => (this.editGroup = -1)}
-        ></sonos-card-predefined-group-editor>`
+        ></mxmp-predefined-group-editor>`
       : html`
-          <sonos-card-editor-form
+          <mxmp-editor-form
             .schema=${ENTITIES_SCHEMA}
             .config=${this.config}
             .hass=${this.hass}
-          ></sonos-card-editor-form>
+          ></mxmp-editor-form>
           <div>
             Predefined Groups
             <ha-control-button-group>
@@ -73,14 +73,14 @@ class EntitiesEditor extends BaseEditor {
 
           <div>
             Entity Renaming
-            <sonos-card-editor-form
+            <mxmp-editor-form
               .schema=${ENTITIES_RENAME_SCHEMA}
               .config=${this.config}
               .hass=${this.hass}
-            ></sonos-card-editor-form>
+            ></mxmp-editor-form>
           </div>
         `;
   }
 }
 
-customElements.define('sonos-card-entities-editor', EntitiesEditor);
+customElements.define('mxmp-entities-editor', EntitiesEditor);

@@ -78,4 +78,4 @@ class Footer extends LitElement {
   }
 }
 
-customElements.define('sonos-footer', Footer);
+customElements.define('mxmp-footer', Footer);

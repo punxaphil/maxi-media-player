@@ -6,18 +6,15 @@ import { MediaBrowser } from './sections/media-browser';
 import './sections/volumes';
 import './components/ha-player';
 
-const name = (type?: string) => `Sonos${type ? ` (${type})` : ''}`;
-const desc = (type?: string) => `Media player for your Sonos speakers${type ? ` (${type})` : ''}`;
-
 window.customCards.push({
-  type: 'sonos-card',
-  name: name(),
-  description: desc(),
+  type: 'maxi-media-player',
+  name: 'Maxi Media Player',
+  description: 'Media card for Home Assistant UI with a focus on managing multiple media players',
   preview: true,
 });
 
-customElements.define('sonos-card', Card);
-customElements.define('sonos-grouping', Grouping);
-customElements.define('sonos-groups', Groups);
-customElements.define('sonos-media-browser', MediaBrowser);
-customElements.define('sonos-player', Player);
+customElements.define('maxi-media-player', Card);
+customElements.define('mxmp-grouping', Grouping);
+customElements.define('mxmp-groups', Groups);
+customElements.define('mxmp-media-browser', MediaBrowser);
+customElements.define('mxmp-player', Player);

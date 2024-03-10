@@ -118,14 +118,12 @@ export default class Store {
     return Object.values(hass.states)
       .filter((hassEntity) => {
         if (hassEntity.entity_id.includes('media_player')) {
-          const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
-          const hasGrouping = !!hassEntity.attributes?.group_members;
-          if ((!platform && hasGrouping) || this.config.showNonSonosPlayers || platform === 'sonos') {
-            if (configEntities.length) {
-              const includesEntity = configEntities.includes(hassEntity.entity_id);
-              return !!this.config.excludeItemsInEntitiesList !== includesEntity;
-            }
-            return true;
+          if (this.config.entityPlatform) {
+            const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
+            return platform === this.config.entityPlatform;
+          } else if (configEntities.length) {
+            const includesEntity = configEntities.includes(hassEntity.entity_id);
+            return !!this.config.excludeItemsInEntitiesList !== includesEntity;
           }
         }
         return false;
@@ -164,7 +162,7 @@ export default class Store {
   }
 
   private determineActivePlayer(activePlayerId?: string): MediaPlayer {
-    const playerId = activePlayerId || this.config.entityId || this.getActivePlayerFromUrl();
+    const playerId = activePlayerId || this.config.selectedEntityId || this.getActivePlayerFromUrl();
     return (
       this.allGroups.find((group) => group.getMember(playerId) !== undefined) ||
       this.allGroups.find((group) => group.isPlaying()) ||

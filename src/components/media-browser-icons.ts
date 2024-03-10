@@ -78,4 +78,4 @@ export class MediaBrowserIcons extends LitElement {
   }
 }
 
-customElements.define('sonos-media-browser-icons', MediaBrowserIcons);
+customElements.define('mxmp-media-browser-icons', MediaBrowserIcons);

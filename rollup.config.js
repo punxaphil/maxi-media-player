@@ -35,7 +35,7 @@ export default [
     output: {
       format: 'es',
       sourcemap: true,
-      file: 'dist/custom-sonos-card.js',
+      file: 'dist/maxi-media-player.js',
     },
     onwarn(warning, warn) {
       if (warning.code === 'THIS_IS_UNDEFINED') return;

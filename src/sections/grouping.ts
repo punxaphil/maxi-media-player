@@ -49,13 +49,13 @@ export class Grouping extends LitElement {
                 ></ha-icon>
                 <div class="name-and-volume">
                   <span class="name">${item.name}</span>
-                  <sonos-volume
+                  <mxmp-volume
                     class="volume"
                     .store=${this.store}
                     .player=${item.player}
                     .updateMembers=${false}
                     .slim=${true}
-                  ></sonos-volume>
+                  ></mxmp-volume>
                 </div>
               </div>
             `;
@@ -226,7 +226,7 @@ export class Grouping extends LitElement {
   }
 
   private groupingButton(icon: string, click: () => void) {
-    return html` <sonos-grouping-button @click=${click} .icon=${icon}></sonos-grouping-button> `;
+    return html` <mxmp-grouping-button @click=${click} .icon=${icon}></mxmp-grouping-button> `;
   }
 
   private getNotJoinedPlayers() {
@@ -250,11 +250,11 @@ export class Grouping extends LitElement {
   private renderPredefinedGroups() {
     return this.store.predefinedGroups.map((predefinedGroup) => {
       return html`
-        <sonos-grouping-button
+        <mxmp-grouping-button
           @click=${async () => this.selectPredefinedGroup(predefinedGroup)}
           .icon=${'mdi:speaker-multiple'}
           .name=${predefinedGroup.name}
-        ></sonos-grouping-button>
+        ></mxmp-grouping-button>
       `;
     });
   }

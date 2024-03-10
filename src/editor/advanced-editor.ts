@@ -86,13 +86,13 @@ class AdvancedEditor extends BaseEditor {
     const topFavorites = this.config.topFavorites ?? [];
     const data = { ...this.config, topFavorites: topFavorites.join(', ') };
     return html`
-      <sonos-card-editor-form
+      <mxmp-editor-form
         .schema=${ADVANCED_SCHEMA}
         .config=${this.config}
         .hass=${this.hass}
         .data=${data}
         .changed=${this.changed}
-      ></sonos-card-editor-form>
+      ></mxmp-editor-form>
       <div>
         The following needs to be configured using code (YAML):
         <ul>
@@ -115,4 +115,4 @@ class AdvancedEditor extends BaseEditor {
   }
 }
 
-customElements.define('sonos-card-advanced-editor', AdvancedEditor);
+customElements.define('mxmp-advanced-editor', AdvancedEditor);

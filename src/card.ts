@@ -44,33 +44,33 @@ export class Card extends LitElement {
           ${
             this.activePlayerId
               ? choose(this.section, [
-                  [PLAYER, () => html` <sonos-player .store=${this.store}></sonos-player>`],
+                  [PLAYER, () => html` <mxmp-player .store=${this.store}></mxmp-player>`],
                   [
                     GROUPS,
                     () =>
-                      html` <sonos-groups
+                      html` <mxmp-groups
                         .store=${this.store}
                         @active-player=${this.activePlayerListener}
-                      ></sonos-groups>`,
+                      ></mxmp-groups>`,
                   ],
                   [
                     GROUPING,
                     () =>
-                      html`<sonos-grouping
+                      html`<mxmp-grouping
                         .store=${this.store}
                         @active-player=${this.activePlayerListener}
-                      ></sonos-grouping>`,
+                      ></mxmp-grouping>`,
                   ],
                   [
                     MEDIA_BROWSER,
                     () => html`
-                      <sonos-media-browser
+                      <mxmp-media-browser
                         .store=${this.store}
                         @item-selected=${this.onMediaItemSelected}
-                      ></sonos-media-browser>
+                      ></mxmp-media-browser>
                     `,
                   ],
-                  [VOLUMES, () => html` <sonos-volumes .store=${this.store}></sonos-volumes>`],
+                  [VOLUMES, () => html` <mxmp-volumes .store=${this.store}></mxmp-volumes>`],
                 ])
               : html`<div class="no-players">No supported players found</div>`
           }
@@ -78,13 +78,13 @@ export class Card extends LitElement {
         ${when(
           showFooter,
           () =>
-            html`<sonos-footer
+            html`<mxmp-footer
               style=${this.footerStyle()}
               .config=${this.config}
               .section=${this.section}
               @show-section=${this.showSectionListener}
             >
-            </sonos-footer>`,
+            </mxmp-footer>`,
         )}
       </ha-card>
     `;
@@ -102,7 +102,7 @@ export class Card extends LitElement {
   }
 
   static getConfigElement() {
-    return document.createElement('sonos-card-editor');
+    return document.createElement('mxmp-editor');
   }
 
   connectedCallback() {

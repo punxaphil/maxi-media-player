@@ -103,4 +103,4 @@ function numberFromEvent(e: Event) {
   return Number.parseInt((e?.target as HTMLInputElement)?.value);
 }
 
-customElements.define('sonos-volume', Volume);
+customElements.define('mxmp-volume', Volume);

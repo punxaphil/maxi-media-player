@@ -40,4 +40,4 @@ export class GroupingButton extends LitElement {
   }
 }
 
-customElements.define('sonos-grouping-button', GroupingButton);
+customElements.define('mxmp-grouping-button', GroupingButton);

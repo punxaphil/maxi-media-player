@@ -50,7 +50,7 @@ class Volumes extends LitElement {
           @click=${volDown}
           .path=${mdiVolumeMinus}
         ></ha-icon-button>
-        <sonos-volume .store=${this.store} .player=${player} .updateMembers=${updateMembers}></sonos-volume>
+        <mxmp-volume .store=${this.store} .player=${player} .updateMembers=${updateMembers}></mxmp-volume>
         <ha-icon-button
           .disabled=${player.ignoreVolume}
           hide=${noUpDown}
@@ -65,8 +65,8 @@ class Volumes extends LitElement {
         ></ha-icon-button>
       </div>
       <div class="switches">
-        <sonos-ha-player hide=${hideSwitches || nothing} .store=${this.store} .features=${[SELECT_SOURCE]}>
-        </sonos-ha-player>
+        <mxmp-ha-player hide=${hideSwitches || nothing} .store=${this.store} .features=${[SELECT_SOURCE]}>
+        </mxmp-ha-player>
         ${until(this.getAdditionalControls(hideSwitches, player))}
       </div>
     </div>`;
@@ -134,7 +134,7 @@ class Volumes extends LitElement {
         display: flex;
       }
 
-      sonos-volume {
+      mxmp-volume {
         flex: 4;
       }
 
@@ -149,4 +149,4 @@ class Volumes extends LitElement {
   }
 }
 
-customElements.define('sonos-volumes', Volumes);
+customElements.define('mxmp-volumes', Volumes);

@@ -18,7 +18,7 @@ export class Groups extends LitElement {
       <mwc-list activatable class="list">
         ${this.groups.map((group) => {
           const selected = this.activePlayer.id === group.id;
-          return html` <sonos-group .store=${this.store} .player=${group} .selected=${selected}></sonos-group> `;
+          return html` <mxmp-group .store=${this.store} .player=${group} .selected=${selected}></mxmp-group> `;
         })}
       </mwc-list>
     `;

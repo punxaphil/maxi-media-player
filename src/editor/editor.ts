@@ -44,23 +44,23 @@ class CardEditor extends BaseEditor {
     return choose(this.configArea, [
       [
         GENERAL,
-        () => html`<sonos-card-general-editor .config=${this.config} .hass=${this.hass}></sonos-card-general-editor>`,
+        () => html`<mxmp-general-editor .config=${this.config} .hass=${this.hass}></mxmp-general-editor>`,
       ],
       [
         ENTITIES,
-        () => html`<sonos-card-entities-editor .config=${this.config} .hass=${this.hass}></sonos-card-entities-editor>`,
+        () => html`<mxmp-entities-editor .config=${this.config} .hass=${this.hass}></mxmp-entities-editor>`,
       ],
       [
         ADVANCED,
-        () => html`<sonos-card-advanced-editor .config=${this.config} .hass=${this.hass}></sonos-card-advanced-editor>`,
+        () => html`<mxmp-advanced-editor .config=${this.config} .hass=${this.hass}></mxmp-advanced-editor>`,
       ],
       [
         ARTWORK,
         () =>
-          html`<sonos-card-artwork-overrides-editor
+          html`<mxmp-artwork-overrides-editor
             .config=${this.config}
             .hass=${this.hass}
-          ></sonos-card-artwork-overrides-editor>`,
+          ></mxmp-artwork-overrides-editor>`,
       ],
     ]);
   }
@@ -74,4 +74,4 @@ class CardEditor extends BaseEditor {
   }
 }
 
-customElements.define('sonos-card-editor', CardEditor);
+customElements.define('mxmp-editor', CardEditor);

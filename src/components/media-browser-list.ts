@@ -64,4 +64,4 @@ export class MediaBrowserList extends LitElement {
   }
 }
 
-customElements.define('sonos-media-browser-list', MediaBrowserList);
+customElements.define('mxmp-media-browser-list', MediaBrowserList);

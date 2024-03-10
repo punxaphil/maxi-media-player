@@ -46,13 +46,13 @@ export const GENERAL_SCHEMA = [
 class GeneralEditor extends BaseEditor {
   protected render(): TemplateResult {
     return html`
-      <sonos-card-editor-form
+      <mxmp-editor-form
         .schema=${GENERAL_SCHEMA}
         .config=${this.config}
         .hass=${this.hass}
-      ></sonos-card-editor-form>
+      ></mxmp-editor-form>
     `;
   }
 }
 
-customElements.define('sonos-card-general-editor', GeneralEditor);
+customElements.define('mxmp-general-editor', GeneralEditor);

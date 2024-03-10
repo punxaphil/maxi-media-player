@@ -35,7 +35,7 @@ jobs:
       # Build
       - name: Build the file
         run: |
-          cd /home/runner/work/custom-sonos-card/custom-sonos-card
+          cd /home/runner/work/maxi-media-player/maxi-media-player
           npm install
           npm run build
 
@@ -44,7 +44,7 @@ jobs:
 
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/custom-sonos-card/custom-sonos-card/dist/custom-sonos-card.js
-          asset_name: custom-sonos-card.js
+          file: /home/runner/work/maxi-media-player/maxi-media-player/dist/maxi-media-player.js
+          asset_name: maxi-media-player.js
           tag: ${{ github.ref }}
           overwrite: true

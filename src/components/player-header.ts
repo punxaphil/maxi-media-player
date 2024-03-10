@@ -21,7 +21,7 @@ class PlayerHeader extends LitElement {
       <div class="entity">${speakerList}</div>
       <div class="song">${song}</div>
       <div class="artist-album">${this.activePlayer.attributes.media_album_name}</div>
-      <sonos-progress .store=${this.store}></sonos-progress>
+      <mxmp-progress .store=${this.store}></mxmp-progress>
     </div>`;
   }
 
@@ -61,4 +61,4 @@ class PlayerHeader extends LitElement {
   }
 }
 
-customElements.define('sonos-player-header', PlayerHeader);
+customElements.define('mxmp-player-header', PlayerHeader);

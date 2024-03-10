@@ -20,4 +20,4 @@ class HaPlayer extends LitElement {
   }
 }
 
-customElements.define('sonos-ha-player', HaPlayer);
+customElements.define('mxmp-ha-player', HaPlayer);

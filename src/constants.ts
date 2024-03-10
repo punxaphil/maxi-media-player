@@ -1,6 +1,6 @@
 import { css } from 'lit';
 
-const dispatchPrefix = 'sonos-card-dispatch-event-';
+const dispatchPrefix = 'mxmp-dispatch-event-';
 export const ACTIVE_PLAYER_EVENT_INTERNAL = 'active-player';
 export const ACTIVE_PLAYER_EVENT = dispatchPrefix + ACTIVE_PLAYER_EVENT_INTERNAL;
 export const SHOW_SECTION = 'show-section';

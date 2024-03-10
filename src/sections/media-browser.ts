@@ -27,7 +27,7 @@ export class MediaBrowser extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
 
     return html`
-      <sonos-media-browser-header .store=${this.store}></sonos-media-browser-header>
+      <mxmp-media-browser-header .store=${this.store}></mxmp-media-browser-header>
 
       ${this.activePlayer &&
       until(
@@ -35,18 +35,18 @@ export class MediaBrowser extends LitElement {
           if (items?.length) {
             return (this.config.mediaBrowserItemsPerRow ?? 4) > 1
               ? html`
-                  <sonos-media-browser-icons
+                  <mxmp-media-browser-icons
                     .items=${items}
                     .store=${this.store}
                     @item-selected=${this.onMediaItemSelected}
-                  ></sonos-media-browser-icons>
+                  ></mxmp-media-browser-icons>
                 `
               : html`
-                  <sonos-media-browser-list
+                  <mxmp-media-browser-list
                     .items=${items}
                     .store=${this.store}
                     @item-selected=${this.onMediaItemSelected}
-                  ></sonos-media-browser-list>
+                  ></mxmp-media-browser-list>
                 `;
           } else {
             return html`<div class="no-items">No favorites found</div>`;

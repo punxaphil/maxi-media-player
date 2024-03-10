@@ -9,11 +9,11 @@ class MediaBrowserHeader extends LitElement {
   render() {
     return html`
       <div class="title">${this.store.config.mediaBrowserTitle ?? 'All Favorites'}</div>
-      <sonos-ha-player
+      <mxmp-ha-player
         hide=${this.store.config.hideBrowseMediaButton || nothing}
         .store=${this.store}
         .features=${[MediaPlayerEntityFeature.BROWSE_MEDIA]}
-      ></sonos-ha-player>
+      ></mxmp-ha-player>
     `;
   }
 
@@ -41,4 +41,4 @@ class MediaBrowserHeader extends LitElement {
   }
 }
 
-customElements.define('sonos-media-browser-header', MediaBrowserHeader);
+customElements.define('mxmp-media-browser-header', MediaBrowserHeader);

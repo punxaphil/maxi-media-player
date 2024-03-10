@@ -24,13 +24,13 @@ class PredefinedGroupEditor extends BaseEditor {
     }
     return html`
       <h2>Add/Edit Predefined Group</h2>
-      <sonos-card-editor-form
+      <mxmp-editor-form
         .data=${this.getPredefinedGroupWithoutVolumes()}
         .schema=${this.schema}
         .config=${this.config}
         .hass=${this.hass}
         .changed=${(ev: CustomEvent) => this.groupChanged(ev)}
-      ></sonos-card-editor-form>
+      ></mxmp-editor-form>
       <div>
         <h3>Volumes - will be set when players are grouped</h3>
         ${this.predefinedGroup.entities.map(({ player, volume }) => {
@@ -44,13 +44,13 @@ class PredefinedGroupEditor extends BaseEditor {
             },
           ];
           return html`
-            <sonos-card-editor-form
+            <mxmp-editor-form
               .data=${{ volume }}
               .schema=${schema}
               .config=${this.config}
               .hass=${this.hass}
               .changed=${(ev: CustomEvent) => this.volumeChanged(ev, player)}
-            ></sonos-card-editor-form>
+            ></mxmp-editor-form>
           `;
         })}
       </div>
@@ -129,4 +129,4 @@ class PredefinedGroupEditor extends BaseEditor {
   }
 }
 
-customElements.define('sonos-card-predefined-group-editor', PredefinedGroupEditor);
+customElements.define('mxmp-predefined-group-editor', PredefinedGroupEditor);

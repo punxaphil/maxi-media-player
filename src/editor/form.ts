@@ -36,4 +36,4 @@ export function computeLabel({ help, label, name }: { name: string; help: string
   return unCamelCased + (help ? ` (${help})` : '');
 }
 
-customElements.define('sonos-card-editor-form', Form);
+customElements.define('mxmp-editor-form', Form);

@@ -146,4 +146,4 @@ class Group extends LitElement {
   }
 }
 
-customElements.define('sonos-group', Group);
+customElements.define('mxmp-group', Group);

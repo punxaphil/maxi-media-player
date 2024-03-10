@@ -30,15 +30,15 @@ class PlayerControls extends LitElement {
             <div class="icons">
               <div class="flex-1"></div>
               <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
-              <sonos-ha-player .store=${this.store} .features=${[SHUFFLE_SET, PREVIOUS_TRACK]}></sonos-ha-player>
-              <sonos-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></sonos-ha-player>
-              <sonos-ha-player .store=${this.store} .features=${[NEXT_TRACK, REPEAT_SET]}></sonos-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${[SHUFFLE_SET, PREVIOUS_TRACK]}></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${[NEXT_TRACK, REPEAT_SET]}></mxmp-ha-player>
               <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
               <div class="audio-input-format">
                 ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
               </div>
             </div>
-            <sonos-volume .store=${this.store} .player=${this.activePlayer}></sonos-volume>
+            <mxmp-volume .store=${this.store} .player=${this.activePlayer}></mxmp-volume>
           `,
         )}
       </div>
@@ -101,4 +101,4 @@ class PlayerControls extends LitElement {
   }
 }
 
-customElements.define('sonos-player-controls', PlayerControls);
+customElements.define('mxmp-player-controls', PlayerControls);
