@@ -3,6 +3,16 @@ import { BaseEditor } from './base-editor';
 
 export const ADVANCED_SCHEMA = [
   {
+    name: 'entityPlatform',
+    help: 'Show all media players for the selected platform',
+    type: 'string',
+  },
+  {
+    name: 'entityId',
+    help: 'Not needed, but forces this player to be the selected one on loading the card (overrides url param etc)',
+    selector: { entity: { multiple: false, filter: { domain: 'media_player' } } },
+  },
+  {
     name: 'hideGroupCurrentTrack',
     selector: { boolean: {} },
   },
@@ -38,7 +48,6 @@ export const ADVANCED_SCHEMA = [
     name: 'hideBrowseMediaButton',
     selector: { boolean: {} },
   },
-
   {
     type: 'string',
     name: 'labelWhenNoMediaIsSelected',

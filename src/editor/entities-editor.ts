@@ -20,16 +20,6 @@ export const ENTITIES_RENAME_SCHEMA = [
 
 export const ENTITIES_SCHEMA = [
   {
-    name: 'entityPlatform',
-    help: 'Show all media players for the selected platform',
-    selector: { boolean: {} },
-  },
-  {
-    name: 'entityId',
-    help: 'Not needed, but forces this player to be the selected one on loading the card (overrides url param etc)',
-    selector: { entity: { multiple: false, filter: { domain: 'media_player' } } },
-  },
-  {
     name: 'entities',
     help: "Required, unless you have specified entity platform",
     selector: { entity: { multiple: true, filter: { domain: 'media_player' } } },
