@@ -106,6 +106,10 @@ class Volumes extends LitElement {
         border-top: solid var(--secondary-background-color);
       }
 
+      .row:first-child {
+        padding-top: 1rem;
+      }
+
       .switches {
         display: flex;
         justify-content: center;
