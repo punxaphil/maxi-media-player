@@ -20,7 +20,7 @@ class Volume extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
 
     const volume = this.player.getVolume();
-    const max = volume < 20 && this.config.dynamicVolumeSlider ? 30 : 100;
+    const max = this.getMax(volume);
 
     const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
@@ -42,6 +42,12 @@ class Volume extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  private getMax(volume: number) {
+    const dynamicThreshold = Math.max(0, Math.min(this.config.dynamicVolumeSliderThreshold ?? 20, 100));
+    const dynamicMax = Math.max(0, Math.min(this.config.dynamicVolumeSliderMax ?? 30, 100));
+    return volume < dynamicThreshold && this.config.dynamicVolumeSlider ? dynamicMax : 100;
   }
 
   private async volumeChanged(e: Event) {

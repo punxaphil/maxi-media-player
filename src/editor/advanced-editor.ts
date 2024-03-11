@@ -11,6 +11,22 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
+    type: 'integer',
+    name: 'dynamicVolumeSliderThreshold',
+    default: 20,
+    required: true,
+    valueMin: 1,
+    valueMax: 100,
+  },
+  {
+    type: 'integer',
+    name: 'dynamicVolumeSliderMax',
+    default: 30,
+    required: true,
+    valueMin: 1,
+    valueMax: 100,
+  },
+  {
     name: 'hideBrowseMediaButton',
     selector: { boolean: {} },
   },

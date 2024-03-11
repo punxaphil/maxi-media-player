@@ -56,6 +56,8 @@ export interface CardConfig extends LovelaceCardConfig {
   adjustVolumeRelativeToMainPlayer?: boolean;
   skipApplyButtonWhenGrouping?: boolean;
   hideVolumeCogwheel?: boolean;
+  dynamicVolumeSliderThreshold?: number;
+  dynamicVolumeSliderMax?: number;
 }
 
 export interface MediaArtworkOverride {

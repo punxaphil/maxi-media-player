@@ -141,6 +141,8 @@ customSources: # Main use case is probably to set tv media player to play TV sou
     - title: TV
       thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
 dynamicVolumeSlider: true # default is false. See more in section further down.
+dynamicVolumeSliderThreshold: 30 # default is 20. Use this to change the threshold for the dynamic volume slider.
+dynamicVolumeSliderMax: 40 # default is 30. Use this to change the max value for the dynamic volume slider.
 artworkHostname: http://192.168.0.59:8123 #default is ''. Usually not needed, but depending on your setup your device might not be able to access the artwork on the default host. One example where it could be needed is if you cast the dashboard with Google Cast.
 showAudioInputFormat: true # default is false. Will show the audio input format (e.g. Dolby Digital) in the player section if available. By default, it will only show if the input format in the volumes section.
 fallbackArtwork: https://cdn-icons-png.flaticon.com/512/651/651717.png # Override default fallback artwork image if artwork is missing for the currently selected media.
