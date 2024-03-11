@@ -58,6 +58,7 @@ export interface CardConfig extends LovelaceCardConfig {
   hideVolumeCogwheel?: boolean;
   dynamicVolumeSliderThreshold?: number;
   dynamicVolumeSliderMax?: number;
+  artworkMinHeight?: number;
 }
 
 export interface MediaArtworkOverride {

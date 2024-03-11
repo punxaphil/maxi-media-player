@@ -27,6 +27,14 @@ export const ADVANCED_SCHEMA = [
     valueMax: 100,
   },
   {
+    type: 'integer',
+    name: 'artworkMinHeight',
+    help: 'Minimum height of the artwork in rem',
+    default: 5,
+    required: true,
+    valueMin: 0,
+  },
+  {
     name: 'hideBrowseMediaButton',
     selector: { boolean: {} },
   },

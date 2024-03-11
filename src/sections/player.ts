@@ -23,10 +23,15 @@ export class Player extends LitElement {
     return html`
       <div class="container">
         <mxmp-player-header class="header" .store=${this.store}></mxmp-player-header>
-        <div class="artwork" style=${this.getBackgroundImage()}></div>
+        <div class="artwork" style=${this.artworkStyle()}></div>
         <mxmp-player-controls class="controls" .store=${this.store}></mxmp-player-controls>
       </div>
     `;
+  }
+
+  private artworkStyle() {
+    const minHeight = this.config.artworkMinHeight ?? 5;
+    return `${this.getBackgroundImage()}; min-height: ${minHeight}rem`;
   }
 
   private getBackgroundImage() {
@@ -105,7 +110,7 @@ export class Player extends LitElement {
         flex-shrink: 0;
         width: 100%;
         height: 100%;
-        min-height: 20rem;
+        min-height: 5rem;
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
