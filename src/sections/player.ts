@@ -1,4 +1,4 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import '../components/player-controls';
 import '../components/player-header';
@@ -20,11 +20,20 @@ export class Player extends LitElement {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
 
+    const artworkAsBackground = this.config.artworkAsBackground;
     return html`
-      <div class="container">
-        <mxmp-player-header class="header" .store=${this.store}></mxmp-player-header>
-        <div class="artwork" style=${this.artworkStyle()}></div>
-        <mxmp-player-controls class="controls" .store=${this.store}></mxmp-player-controls>
+      <div class="container" style=${artworkAsBackground && this.getBackgroundImage()}>
+        <mxmp-player-header
+          class="header"
+          background=${artworkAsBackground || nothing}
+          .store=${this.store}
+        ></mxmp-player-header>
+        <div class="artwork" hide=${artworkAsBackground || nothing} style=${this.artworkStyle()}></div>
+        <mxmp-player-controls
+          class="controls"
+          background=${artworkAsBackground || nothing}
+          .store=${this.store}
+        ></mxmp-player-controls>
       </div>
     `;
   }
@@ -93,15 +102,22 @@ export class Player extends LitElement {
           'artwork'
           'controls';
         min-height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
 
       .header {
         grid-area: header;
+        margin: 0.75rem 3.25rem;
+        padding: 0.5rem;
       }
 
       .controls {
         grid-area: controls;
         overflow-y: auto;
+        margin: 0.25rem;
+        padding: 0.5rem;
       }
 
       .artwork {
@@ -115,6 +131,15 @@ export class Player extends LitElement {
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
+      }
+
+      *[hide] {
+        display: none;
+      }
+
+      *[background] {
+        background-color: rgba(var(--rgb-card-background-color), 0.9);
+        border-radius: 10px;
       }
     `;
   }

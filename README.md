@@ -157,6 +157,7 @@ fallbackArtwork: https://cdn-icons-png.flaticon.com/512/651/651717.png # Overrid
 entitiesToIgnoreVolumeLevelFor: # default is empty. Use this if you want to ignore volume level for certain players in the player section. Useful if you have a main device with fixed volume.
   - media_player.my_sonos_port_device
 artworkMinHeight: 10 # default is 5. Use this to change the minimum height of the artwork in the player section. Unit is in rem.
+artworkAsBackground: true # default is false. Will show the artwork as background for the player section.
 
 # media browser specific
 mediaBrowserItemsPerRow: 1 # default is 4. Use this to show items as list.
