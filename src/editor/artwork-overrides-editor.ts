@@ -22,7 +22,11 @@ class ArtworkOverridesEditor extends BaseEditor {
             <ha-control-button-group>
               ${items?.map((pg, index) => {
                 const itemName =
-                  pg.mediaTitleEquals || pg.mediaContentIdEquals || (pg.ifMissing && 'if missing') || index;
+                  pg.mediaTitleEquals ||
+                  pg.mediaContentIdEquals ||
+                  pg.mediaChannelEquals ||
+                  (pg.ifMissing && 'if missing') ||
+                  index;
                 return html`
                   <ha-control-button @click=${() => (this.editItem = index)}>
                     ${itemName}<ha-svg-icon .path=${mdiPen} label="Edit"></ha-svg-icon>

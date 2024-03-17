@@ -19,6 +19,10 @@ class ArtworkOverrideEditor extends BaseEditor {
         type: 'string',
       },
       {
+        name: 'mediaChannelEquals',
+        type: 'string',
+      },
+      {
         name: 'imageUrl',
         type: 'string',
       },
