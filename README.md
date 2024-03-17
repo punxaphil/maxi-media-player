@@ -2,10 +2,12 @@
 
 Media card for Home Assistant UI with a focus on managing multiple media players!
 
+*(If this looks familiar to you, it's probably because it's almost identical to my [Sonos Card](https://github.com/punxaphil/custom-sonos-card), except this one is focused on supporting all players, not just Sonos.)*
 ## Features:
 
 * Group/Ungroup speakers
-* Control multiple speaker
+  * If the individual speakers support it
+* Control multiple speakers
 * Play favorites from list
 * Media browser button
 * Control individual volumes in a group
@@ -19,11 +21,7 @@ Media card for Home Assistant UI with a focus on managing multiple media players
 
 and more!
 
-![player.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/player.png)
-![media_browser.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_browser.png)
-![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png)
-![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png)
-![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
+![player.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/player.png) ![media_browser.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_browser.png) ![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png) ![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png) ![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
 
 ## Support the project
 
@@ -31,23 +29,31 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 
 [![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/punxaphil)
 
-## Installation
+# Installation
+## With HACS (recommended)
+1. Download HACS following the instructions on https://hacs.xyz/docs/setup/download
+1. Proceed to the initial configuration following the instructions on https://hacs.xyz/docs/configuration/basic
+1. On your sidebar go to HACS > Frontend
+1. click on the icon at the right top corner then on Custom repositories
+1. For the repository add this: https://github.com/punxaphil/maxi-media-player
+1. For the category select Lovelace then click Add
+1. Now click on Maxi Media Player then on the Dowload button
+1. Go back on your dashboard and click on the icon at the right top corner then on Edit dashboard
+1. You can now click on Add card in the bottom right corner and search for Maxi Media Player
 
-### HACS
+Coming soon in the HACS default repo (still waiting for validation).
 
-Recommended way of installing this card is with HACS (Home Assistant Community Store).
-
-### Manual
-
-Download the resources, as you would do with all other modules.
-
-Add the custom card as a module, like this:
-
-```yaml
-resources:
-  - url: /local/maxi-media-player.js?v=1.0
-    type: module
-```
+## Without HACS
+1. Download this file: maxi-media-player.js
+1. Add this file into your <config>/www folder
+1. On your dashboard click on the icon at the right top corner then on Edit dashboard
+1. Click again on that icon and then on Manage resources
+1. Click on Add resource
+1. Copy and paste this: /local/maxi-media-player.js?v=1
+1. Click on JavaScript Module then Create
+1. Go back and refresh your page
+1. You can now click on Add card in the bottom right corner and search for Maxi Media Player
+1. After any update of the file you will have to edit /local/maxi-media-player.js?v=1 and change the version to any higher number
 
 ## Usage
 
