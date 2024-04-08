@@ -2,9 +2,11 @@ import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
-import { CardConfig } from '../types';
+import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { mdiVolumeHigh, mdiVolumeMute } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
+
+const { TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 
 class Volume extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -24,6 +26,9 @@ class Volume extends LitElement {
 
     const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
+    const supportsTurnOn = (this.player.attributes.supported_features || 0) & TURN_ON;
+    const showPowerButton = supportsTurnOn && nothing;
+
     return html`
       <div class="volume" slim=${this.slim || nothing}>
         <ha-icon-button .disabled=${disabled} @click=${this.mute} .path=${muteIcon}> </ha-icon-button>
@@ -40,6 +45,11 @@ class Volume extends LitElement {
             <div style="flex: ${max - volume};text-align: right">${max}%</div>
           </div>
         </div>
+        <sonos-ha-player
+          hide=${showPowerButton}
+          .store=${this.store}
+          .features=${[TURN_ON, TURN_OFF]}
+        ></sonos-ha-player>
       </div>
     `;
   }
@@ -101,6 +111,9 @@ class Volume extends LitElement {
         flex: 2;
         font-weight: bold;
         font-size: 12px;
+      }
+      *[hide] {
+        display: none;
       }
     `;
   }
