@@ -185,7 +185,7 @@ export class Grouping extends LitElement {
     }
     await this.handlePredefinedGroupConfig(isSelected);
     if (unJoin.includes(this.activePlayer.id)) {
-      main = isSelected[0].player.id;
+      main = !!this.store.config.dontSwitchPlayerWhenGrouping ? this.activePlayer.id : isSelected[0].player.id;
       dispatchActivePlayerId(main, this.store.config, this);
     }
     this.modifiedItems = [];
