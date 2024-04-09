@@ -17,6 +17,9 @@ export function getSpeakerList(mainPlayer: MediaPlayer, predefinedGroups: Predef
       return found.name;
     }
   }
+  else {
+    return mainPlayer.name
+  }
   return mainPlayer.members.map((member) => member.name).join(' + ');
 }
 

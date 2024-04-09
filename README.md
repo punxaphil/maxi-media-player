@@ -128,6 +128,11 @@ predefinedGroups: # defaults to empty
 skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 
 # player specific
+hidePlayerControlNextTrackButton: false # default is false, hides player control next track button.
+hidePlayerControlPrevTrackButton: false # default is false, hides player control previous track button.
+hidePlayerControlRepeatButton: false # default is false, hides player control track repeat mode button.
+hidePlayerControlShuffleButton: false # default is false, hides player control track shuffle mode button.
+showPlayerControlPowerButton: false # default is false, shows player control power button.
 showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume
 labelWhenNoMediaIsSelected: 'No media selected'
 labelForTheAllVolumesSlider: 'All volumes'

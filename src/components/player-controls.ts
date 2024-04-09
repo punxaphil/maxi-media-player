@@ -8,7 +8,7 @@ import { MediaPlayer } from '../model/media-player';
 import { when } from 'lit/directives/when.js';
 import { until } from 'lit-html/directives/until.js';
 
-const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK } = MediaPlayerEntityFeature;
+const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, TURN_ON, TURN_OFF } = MediaPlayerEntityFeature;
 
 class PlayerControls extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -22,6 +22,14 @@ class PlayerControls extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
 
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
+    const hideNextTrack = this.config.hidePlayerControlNextTrackButton || nothing;
+    const hidePrevTrack = this.config.hidePlayerControlPrevTrackButton || nothing;
+    const hideRepeat = this.config.hidePlayerControlRepeatButton || nothing;
+    const hideShuffle = this.config.hidePlayerControlShuffleButton || nothing;
+
+    const supportsTurnOn = (this.activePlayer.attributes.supported_features || 0) & TURN_ON;
+    const showPowerButton = supportsTurnOn && this.config.showPlayerControlPowerButton && nothing;
+
     return html`
       <div class="main" id="mediaControls">
         ${when(
@@ -30,9 +38,11 @@ class PlayerControls extends LitElement {
             <div class="icons">
               <div class="flex-1"></div>
               <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
-              <mxmp-ha-player .store=${this.store} .features=${[SHUFFLE_SET, PREVIOUS_TRACK]}></mxmp-ha-player>
+              <mxmp-ha-player hide=${hideShuffle} .store=${this.store} .features=${[SHUFFLE_SET]}></mxmp-ha-player>
+              <mxmp-ha-player hide=${hidePrevTrack} .store=${this.store} .features=${[PREVIOUS_TRACK]}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></mxmp-ha-player>
-              <mxmp-ha-player .store=${this.store} .features=${[NEXT_TRACK, REPEAT_SET]}></mxmp-ha-player>
+              <mxmp-ha-player hide=${hideNextTrack} .store=${this.store} .features=${[NEXT_TRACK]}></mxmp-ha-player>
+              <mxmp-ha-player hide=${hideRepeat} .store=${this.store} .features=${[REPEAT_SET]}></mxmp-ha-player>
               <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
               <div class="audio-input-format">
                 ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
@@ -45,11 +55,20 @@ class PlayerControls extends LitElement {
             ></mxmp-volume>
           `,
         )}
+        ${when(
+          ['off'].includes(this.activePlayer.state),
+          () => html`
+            <mxmp-ha-player hide=${showPowerButton} .store=${this.store} .features=${[TURN_ON, TURN_OFF]} ></mxmp-ha-player>
+          `,
+          )
+        }
       </div>
     `;
   }
+
   private volDown = async () =>
     await this.mediaControlService.volumeDown(this.activePlayer, !this.config.playerVolumeOnlyAffectsMainPlayer);
+
   private volUp = async () =>
     await this.mediaControlService.volumeUp(this.activePlayer, !this.config.playerVolumeOnlyAffectsMainPlayer);
 
@@ -100,6 +119,9 @@ class PlayerControls extends LitElement {
       }
       .flex-1 {
         flex: 1;
+      }
+      *[hide] {
+        display: none;
       }
     `;
   }

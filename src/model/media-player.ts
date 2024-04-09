@@ -35,6 +35,10 @@ export class MediaPlayer {
     return this.state === 'playing';
   }
 
+  isPowerOff(checkMembers: boolean): boolean {
+    return this.state === 'off' && (!checkMembers || this.members.every((member) => member.isPowerOff(false)));
+  }
+
   isMuted(checkMembers: boolean): boolean {
     return this.attributes.is_volume_muted && (!checkMembers || this.members.every((member) => member.isMuted(false)));
   }

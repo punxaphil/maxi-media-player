@@ -83,22 +83,32 @@ export default class MediaControlService {
   }
 
   private async volumeDefaultStep(mainPlayer: MediaPlayer, updateMembers: boolean, stepDirection: string) {
-    for (const member of mainPlayer.members) {
-      if (mainPlayer.id === member.id || updateMembers) {
-        if (!member.ignoreVolume) {
-          await this.hassService.callMediaService(stepDirection, { entity_id: member.id });
+    // do we only have 1 player?
+    if (mainPlayer.members.length == 0) {
+      await this.hassService.callMediaService(stepDirection, { 
+        entity_id: mainPlayer.id 
+      });
+    } else {
+      for (const member of mainPlayer.members) {
+        if (mainPlayer.id === member.id || updateMembers) {
+          if (!member.ignoreVolume) {
+            await this.hassService.callMediaService(stepDirection, { 
+              entity_id: member.id 
+            });
+          }
         }
       }
     }
   }
 
   async volumeSet(player: MediaPlayer, volume: number, updateMembers: boolean) {
-    if (updateMembers) {
+    if ((updateMembers) && (player.members.length > 0)) {
       return await this.volumeSetGroup(player, volume);
     } else {
       return await this.volumeSetSinglePlayer(player, volume);
     }
   }
+
   private async volumeSetGroup(player: MediaPlayer, volumePercent: number) {
     let relativeVolumeChange: number | undefined;
     if (this.config.adjustVolumeRelativeToMainPlayer) {
@@ -122,7 +132,10 @@ export default class MediaControlService {
   async volumeSetSinglePlayer(player: MediaPlayer, volumePercent: number) {
     if (!player.ignoreVolume) {
       const volume = volumePercent / 100;
-      await this.hassService.callMediaService('volume_set', { entity_id: player.id, volume_level: volume });
+      await this.hassService.callMediaService('volume_set', { 
+        entity_id: player.id, 
+        volume_level: volume 
+      });
     }
   }
 
@@ -132,15 +145,29 @@ export default class MediaControlService {
   }
 
   async setVolumeMute(mediaPlayer: MediaPlayer, muteVolume: boolean, updateMembers = true) {
-    for (const member of mediaPlayer.members) {
-      if (mediaPlayer.id === member.id || updateMembers) {
-        await this.hassService.callMediaService('volume_mute', { entity_id: member.id, is_volume_muted: muteVolume });
+    // do we only have 1 player?
+    if (mediaPlayer.members.length == 0) {
+      await this.hassService.callMediaService('volume_mute', { 
+        entity_id: mediaPlayer.id, 
+        is_volume_muted: muteVolume 
+      });
+    } else {
+      for (const member of mediaPlayer.members) {
+        if (mediaPlayer.id === member.id || updateMembers) {
+          await this.hassService.callMediaService('volume_mute', { 
+            entity_id: member.id, 
+            is_volume_muted: muteVolume 
+          });
+        }
       }
     }
   }
 
   async setSource(mediaPlayer: MediaPlayer, source: string) {
-    await this.hassService.callMediaService('select_source', { source: source, entity_id: mediaPlayer.id });
+    await this.hassService.callMediaService('select_source', { 
+      source: source, 
+      entity_id: mediaPlayer.id 
+    });
   }
 
   async playMedia(mediaPlayer: MediaPlayer, item: MediaPlayerItem) {
