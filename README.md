@@ -126,6 +126,7 @@ predefinedGroups: # defaults to empty
     entities: 
       - media_player.tv
 skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
+dontSwitchPlayerWhenGrouping: true # default is false. Will not switch to another player if main player is ungrouped.
 
 # player specific
 hidePlayerControlNextTrackButton: false # default is false, hides player control next track button.
