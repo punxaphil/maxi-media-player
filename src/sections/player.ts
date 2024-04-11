@@ -60,7 +60,7 @@ export class Player extends LitElement {
 
   private getArtworkImage() {
     const prefix = this.config.artworkHostname || '';
-    const { media_title, media_content_id, media_channel, entity_picture } = this.activePlayer.attributes;
+    const { media_title, media_artist, media_album_name, media_content_id, media_channel, entity_picture } = this.activePlayer.attributes;
     let entityImage = entity_picture ? prefix + entity_picture : entity_picture;
     let sizePercentage = undefined;
     const overrides = this.config.mediaArtworkOverrides;
@@ -68,6 +68,8 @@ export class Player extends LitElement {
       let override = overrides.find(
         (value) =>
           (media_title && media_title === value.mediaTitleEquals) ||
+          (media_artist && media_artist === value.mediaArtistEquals) ||
+          (media_album_name && media_album_name === value.mediaAlbumNameEquals) ||
           (media_channel && media_channel === value.mediaChannelEquals) ||
           (media_content_id && media_content_id === value.mediaContentIdEquals),
       );
