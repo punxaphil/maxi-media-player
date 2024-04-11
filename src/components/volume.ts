@@ -45,11 +45,7 @@ class Volume extends LitElement {
             <div style="flex: ${max - volume};text-align: right">${max}%</div>
           </div>
         </div>
-        <sonos-ha-player
-          hide=${showPowerButton}
-          .store=${this.store}
-          .features=${[TURN_ON, TURN_OFF]}
-        ></sonos-ha-player>
+        <mxmp-ha-player hide=${showPowerButton} .store=${this.store} .features=${[TURN_ON, TURN_OFF]}></mxmp-ha-player>
       </div>
     `;
   }
