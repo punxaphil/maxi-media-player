@@ -31,6 +31,10 @@ export class MediaPlayer {
     return this.getMember(playerId) !== undefined;
   }
 
+  isPowerOff(checkMembers: boolean): boolean {
+    return this.state === 'off' && (!checkMembers || this.members.every((member) => member.isPowerOff(false)));
+  }
+
   isPlaying() {
     return this.state === 'playing';
   }

@@ -27,7 +27,7 @@ class Volume extends LitElement {
     const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
     const supportsTurnOn = (this.player.attributes.supported_features || 0) & TURN_ON;
-    const showPowerButton = supportsTurnOn && nothing;
+    const showPowerButton = supportsTurnOn && this.config.showPlayerControlPowerButton && nothing;
 
     return html`
       <div class="volume" slim=${this.slim || nothing}>
