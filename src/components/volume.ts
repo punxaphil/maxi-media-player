@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
+import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { mdiVolumeHigh, mdiVolumeMute } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
 
