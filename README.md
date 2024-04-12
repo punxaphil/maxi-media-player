@@ -146,6 +146,12 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
   - mediaTitleEquals: p4malmo-aac-192
     imageUrl: >-
       https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
+  - mediaArtistEquals: Metallica
+    imageUrl: >-
+      https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
+  - mediaAlbumNameEquals: "Master of Puppets"
+    imageUrl: >-
+      https://mytuner.global.ssl.fastly.net/media/tvos_radios/2BDTPrpMbn_cTdteqo.jpg
   - mediaChannelEquals: "Sky Radio Smooth Hits"
     imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108794.png
   - ifMissing: true # ifMissing will only be used if none of the "Equals" overrides above resulted in a match 
@@ -164,7 +170,7 @@ entitiesToIgnoreVolumeLevelFor: # default is empty. Use this if you want to igno
   - media_player.my_sonos_port_device
 artworkMinHeight: 10 # default is 5. Use this to change the minimum height of the artwork in the player section. Unit is in rem.
 artworkAsBackground: true # default is false. Will show the artwork as background for the player section.
-playerVolumeOnlyAffectsMainPlayer: true # default is false. Will only affect the main player when changing volume in the player section.
+playerVolumeEntityId: media_player.bedroom # default is empty. Use this to control the volume of another player in the player section. Entity ID must the selected player or part of the selected player's group, otherwise it will not be controlled.
 
 # media browser specific
 mediaBrowserItemsPerRow: 1 # default is 4. Use this to show items as list.

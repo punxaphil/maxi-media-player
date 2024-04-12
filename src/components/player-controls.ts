@@ -15,6 +15,7 @@ class PlayerControls extends LitElement {
   private config!: CardConfig;
   private activePlayer!: MediaPlayer;
   private mediaControlService!: MediaControlService;
+  private volumePlayer!: MediaPlayer;
 
   render() {
     this.config = this.store.config;
@@ -24,6 +25,7 @@ class PlayerControls extends LitElement {
     const supportsTurnOn = (((this.activePlayer.attributes.supported_features || 0) & TURN_ON) == TURN_ON);
 
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
+    this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
     const hideNextTrack = this.config.hidePlayerControlNextTrackButton || nothing;
     const hidePrevTrack = this.config.hidePlayerControlPrevTrackButton || nothing;
     const hideRepeat = this.config.hidePlayerControlRepeatButton || nothing;
@@ -50,8 +52,8 @@ class PlayerControls extends LitElement {
             </div>
             <mxmp-volume
               .store=${this.store}
-              .player=${this.activePlayer}
-              .updateMembers=${!this.config.playerVolumeOnlyAffectsMainPlayer}
+              .player=${this.volumePlayer}
+              .updateMembers=${!this.config.playerVolumeEntityId}
             ></mxmp-volume>
           `,
         )}
@@ -68,9 +70,9 @@ class PlayerControls extends LitElement {
     `;
   }
   private volDown = async () =>
-    await this.mediaControlService.volumeDown(this.activePlayer, !this.config.playerVolumeOnlyAffectsMainPlayer);
+    await this.mediaControlService.volumeDown(this.volumePlayer, !this.config.playerVolumeEntityId);
   private volUp = async () =>
-    await this.mediaControlService.volumeUp(this.activePlayer, !this.config.playerVolumeOnlyAffectsMainPlayer);
+    await this.mediaControlService.volumeUp(this.volumePlayer, !this.config.playerVolumeEntityId);
 
   private async getAudioInputFormat() {
     const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, 'sensor');

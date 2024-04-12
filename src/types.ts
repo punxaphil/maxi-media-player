@@ -65,13 +65,15 @@ export interface CardConfig extends LovelaceCardConfig {
   dynamicVolumeSliderMax?: number;
   artworkMinHeight?: number;
   artworkAsBackground?: boolean;
-  playerVolumeOnlyAffectsMainPlayer?: boolean;
+  playerVolumeEntityId?: string;
   dontSwitchPlayerWhenGrouping?: boolean;
 }
 
 export interface MediaArtworkOverride {
   ifMissing?: boolean;
   mediaTitleEquals?: string;
+  mediaArtistEquals?: string;
+  mediaAlbumNameEquals?: string;
   mediaContentIdEquals?: string;
   mediaChannelEquals?: string;
   imageUrl?: string;
