@@ -22,10 +22,10 @@ class PlayerControls extends LitElement {
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
 
-    const supportsTurnOn = (((this.activePlayer.attributes.supported_features || 0) & TURN_ON) == TURN_ON);
-
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
     this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
+
+    const supportsTurnOn = (((this.activePlayer.attributes.supported_features || 0) & TURN_ON) == TURN_ON);
     const hideNextTrack = this.config.hidePlayerControlNextTrackButton || nothing;
     const hidePrevTrack = this.config.hidePlayerControlPrevTrackButton || nothing;
     const hideRepeat = this.config.hidePlayerControlRepeatButton || nothing;
