@@ -26,7 +26,7 @@ export interface CardConfig extends LovelaceCardConfig {
   hidePlayerControlShuffleButton?: boolean;
   hidePlayerControlNextTrackButton?: boolean;
   hidePlayerControlPrevTrackButton?: boolean;
-  showPlayerControlPowerButton?: boolean;
+  hidePlayerControlPowerButton?: boolean;
   showVolumeUpAndDownButtons?: boolean;
   entities?: string[];
   excludeItemsInEntitiesList?: boolean;

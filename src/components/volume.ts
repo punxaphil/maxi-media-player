@@ -1,5 +1,6 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import { when } from 'lit/directives/when.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
@@ -26,8 +27,9 @@ class Volume extends LitElement {
 
     const muteIcon = this.player.isMuted(this.updateMembers) ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
-    const supportsTurnOn = (this.player.attributes.supported_features || 0) & TURN_ON;
-    const showPowerButton = supportsTurnOn && this.config.showPlayerControlPowerButton && nothing;
+
+    const supportsTurnOn = (((this.player.attributes.supported_features || 0) & TURN_ON) == TURN_ON);
+    const hidePower = this.config.hidePlayerControlPowerButton || nothing;
 
     return html`
       <div class="volume" slim=${this.slim || nothing}>
@@ -45,7 +47,12 @@ class Volume extends LitElement {
             <div style="flex: ${max - volume};text-align: right">${max}%</div>
           </div>
         </div>
-        <mxmp-ha-player hide=${showPowerButton} .store=${this.store} .features=${[TURN_ON, TURN_OFF]}></mxmp-ha-player>
+        ${when(
+          supportsTurnOn,
+          () => html`
+            <mxmp-ha-player hide=${hidePower} .store=${this.store} .features=${[TURN_ON, TURN_OFF]}></mxmp-ha-player>
+          `,
+        )}
       </div>
     `;
   }

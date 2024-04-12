@@ -21,14 +21,14 @@ class PlayerControls extends LitElement {
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
 
+    const supportsTurnOn = (((this.activePlayer.attributes.supported_features || 0) & TURN_ON) == TURN_ON);
+
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
     const hideNextTrack = this.config.hidePlayerControlNextTrackButton || nothing;
     const hidePrevTrack = this.config.hidePlayerControlPrevTrackButton || nothing;
     const hideRepeat = this.config.hidePlayerControlRepeatButton || nothing;
     const hideShuffle = this.config.hidePlayerControlShuffleButton || nothing;
-
-    const supportsTurnOn = (this.activePlayer.attributes.supported_features || 0) & TURN_ON;
-    const showPowerButton = supportsTurnOn && this.config.showPlayerControlPowerButton && nothing;
+    const hidePower = this.config.hidePlayerControlPowerButton || nothing;
 
     return html`
       <div class="main" id="mediaControls">
@@ -56,10 +56,12 @@ class PlayerControls extends LitElement {
           `,
         )}
         ${when(
-          ['off'].includes(this.activePlayer.state),
+          ['off'].includes(this.activePlayer.state) && supportsTurnOn,
           () => html`
-            <mxmp-ha-player hide=${showPowerButton} .store=${this.store} .features=${[TURN_ON, TURN_OFF]} ></mxmp-ha-player>
-          `,
+            <div class="icons">
+              <mxmp-ha-player hide=${hidePower} .store=${this.store} .features=${[TURN_ON, TURN_OFF]} ></mxmp-ha-player>
+            </div">
+            `,
           )
         }
       </div>
@@ -117,9 +119,6 @@ class PlayerControls extends LitElement {
       }
       .flex-1 {
         flex: 1;
-      }
-      *[hide] {
-        display: none;
       }
     `;
   }

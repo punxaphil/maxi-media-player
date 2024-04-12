@@ -30,7 +30,7 @@ export const GENERAL_SCHEMA = [
     selector: { boolean: {} },
   },
   {
-    name: 'showPlayerControlPowerButton',
+    name: 'hidePlayerControlPowerButton',
     selector: { boolean: {} },
   },
   {
