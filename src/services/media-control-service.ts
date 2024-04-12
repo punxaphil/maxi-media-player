@@ -83,17 +83,22 @@ export default class MediaControlService {
   }
 
   private async volumeDefaultStep(mainPlayer: MediaPlayer, updateMembers: boolean, stepDirection: string) {
-    for (const member of mainPlayer.members) {
-      if (mainPlayer.id === member.id || updateMembers) {
-        if (!member.ignoreVolume) {
-          await this.hassService.callMediaService(stepDirection, { entity_id: member.id });
+    if (mainPlayer.members.length == 0) {
+      await this.hassService.callMediaService(stepDirection, { entity_id: mainPlayer.id });
+    } else {
+      for (const member of mainPlayer.members) {
+        if (mainPlayer.id === member.id || updateMembers) {
+          if (!member.ignoreVolume) {
+            await this.hassService.callMediaService(stepDirection, { entity_id: member.id });
+          }
         }
       }
     }
   }
 
+
   async volumeSet(player: MediaPlayer, volume: number, updateMembers: boolean) {
-    if (updateMembers) {
+    if ((updateMembers) && (player.members.length > 0)) {
       return await this.volumeSetGroup(player, volume);
     } else {
       return await this.volumeSetSinglePlayer(player, volume);
@@ -132,9 +137,13 @@ export default class MediaControlService {
   }
 
   async setVolumeMute(mediaPlayer: MediaPlayer, muteVolume: boolean, updateMembers = true) {
-    for (const member of mediaPlayer.members) {
-      if (mediaPlayer.id === member.id || updateMembers) {
-        await this.hassService.callMediaService('volume_mute', { entity_id: member.id, is_volume_muted: muteVolume });
+    if (mediaPlayer.members.length == 0) {
+      await this.hassService.callMediaService('volume_mute', { entity_id: mediaPlayer.id, is_volume_muted: muteVolume });
+    } else {
+      for (const member of mediaPlayer.members) {
+        if (mediaPlayer.id === member.id || updateMembers) {
+          await this.hassService.callMediaService('volume_mute', { entity_id: member.id, is_volume_muted: muteVolume });
+        }
       }
     }
   }
