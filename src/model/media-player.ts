@@ -59,7 +59,7 @@ export class MediaPlayer {
         }
       }
     }
-    return players ?? [this];
+    return players?.length ? players : [this];
   }
 
   private determineVolumePlayer() {
