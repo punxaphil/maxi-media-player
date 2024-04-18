@@ -129,6 +129,11 @@ skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button
 dontSwitchPlayerWhenGrouping: true # default is false. Will not switch to another player if main player is ungrouped.
 
 # player specific
+hidePlayerControlNextTrackButton: true # default is false, hides player control next track button.
+hidePlayerControlPrevTrackButton: true # default is false, hides player control previous track button.
+hidePlayerControlRepeatButton: true # default is false, hides player control track repeat mode button.
+hidePlayerControlShuffleButton: true # default is false, hides player control track shuffle mode button.
+hidePlayerControlPowerButton: true # default is false, hides player control power button if media player TURN_ON feature is enabled.  This setting does nothing if media player TURN_ON feature is not supported.
 showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume
 labelWhenNoMediaIsSelected: 'No media selected'
 labelForTheAllVolumesSlider: 'All volumes'
