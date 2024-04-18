@@ -11,6 +11,7 @@ export class MediaPlayer {
   private readonly config: CardConfig;
   volumePlayer: MediaPlayer;
   ignoreVolume: boolean;
+  supportsGrouping: boolean;
 
   constructor(hassEntity: HassEntity, config: CardConfig, mediaPlayerHassEntities?: HassEntity[]) {
     this.id = hassEntity.entity_id;
@@ -19,6 +20,7 @@ export class MediaPlayer {
     this.state = hassEntity.state;
     this.attributes = hassEntity.attributes;
     this.members = mediaPlayerHassEntities ? this.createGroupMembers(hassEntity, mediaPlayerHassEntities) : [this];
+    this.supportsGrouping = !!hassEntity.attributes.group_members;
     this.volumePlayer = this.determineVolumePlayer();
     this.ignoreVolume = !!this.config.entitiesToIgnoreVolumeLevelFor?.includes(this.volumePlayer.id);
   }
@@ -42,8 +44,9 @@ export class MediaPlayer {
   getCurrentTrack() {
     return `${this.attributes.media_artist || ''} - ${this.attributes.media_title || ''}`.replace(/^ - | - $/g, '');
   }
+
   private getEntityName(hassEntity: HassEntity, config: CardConfig) {
-    const name = hassEntity.attributes.friendly_name || '';
+    const name = hassEntity.attributes.friendly_name || hassEntity.entity_id.replaceAll('media_player.', '');
     if (config.entityNameRegexToReplace) {
       return name.replace(new RegExp(config.entityNameRegexToReplace, 'g'), config.entityNameReplacement || '');
     }

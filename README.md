@@ -127,6 +127,8 @@ predefinedGroups: # defaults to empty
       - media_player.tv
 skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 dontSwitchPlayerWhenGrouping: true # default is false. Will not switch to another player if main player is ungrouped.
+labelForGroupingUnsupported: 'Does not support grouping'
+hideGroupingUnsupportedText: true # default is false. Will hide the text for players not supporting grouping.
 
 # player specific
 showVolumeUpAndDownButtons: true # default is false, shows buttons for increasing and decreasing volume

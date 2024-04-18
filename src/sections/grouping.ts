@@ -24,6 +24,7 @@ export class Grouping extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
     this.mediaPlayerIds = this.store.allMediaPlayers.map((player) => player.id);
     this.groupingItems = this.getGroupingItems();
+    const nonGroupingItems = this.store.allMediaPlayers.filter((player) => !player.supportsGrouping);
     this.notJoinedPlayers = this.getNotJoinedPlayers();
     this.joinedPlayers = this.getJoinedPlayers();
 
@@ -61,6 +62,12 @@ export class Grouping extends LitElement {
             `;
           })}
         </div>
+        ${when(nonGroupingItems.length && !this.store.config.hideGroupingUnsupportedText, () => {
+          return html`<div style="font-style: italic">
+            ${this.store.config.labelForGroupingUnsupported ?? 'Does not support grouping'}:
+            ${nonGroupingItems.map((item) => item.name).join(', ')}
+          </div>`;
+        })}
         <ha-control-button-group
           class="buttons"
           hide=${this.modifiedItems.length === 0 || this.store.config.skipApplyButtonWhenGrouping || nothing}
@@ -208,9 +215,9 @@ export class Grouping extends LitElement {
   }
 
   private getGroupingItems() {
-    const groupingItems = this.store.allMediaPlayers.map(
-      (player) => new GroupingItem(player, this.activePlayer, this.modifiedItems.includes(player.id)),
-    );
+    const groupingItems = this.store.allMediaPlayers
+      .filter((player) => player.supportsGrouping)
+      .map((player) => new GroupingItem(player, this.activePlayer, this.modifiedItems.includes(player.id)));
     const selectedItems = groupingItems.filter((item) => item.isSelected);
     if (selectedItems.length === 1) {
       selectedItems[0].isDisabled = true;

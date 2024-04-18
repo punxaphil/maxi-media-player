@@ -58,6 +58,14 @@ export const ADVANCED_SCHEMA = [
   },
   {
     type: 'string',
+    name: 'labelForGroupingUnsupported',
+  },
+  {
+    name: 'hideGroupingUnsupportedText',
+    selector: { boolean: {} },
+  },
+  {
+    type: 'string',
     name: 'mediaBrowserTitle',
   },
   {
