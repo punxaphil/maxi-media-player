@@ -5,7 +5,6 @@ import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
-import { when } from 'lit/directives/when.js';
 import { until } from 'lit-html/directives/until.js';
 
 const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK } = MediaPlayerEntityFeature;
@@ -21,34 +20,31 @@ class PlayerControls extends LitElement {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
-
-    const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
     this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
+    const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
+    const stopped = ['paused', 'playing'].includes(this.activePlayer.state) && nothing;
     return html`
       <div class="main" id="mediaControls">
-        ${when(
-          ['paused', 'playing'].includes(this.activePlayer.state),
-          () => html`
-            <div class="icons">
+          <div class="icons" hide=${stopped}>
               <div class="flex-1"></div>
               <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
-              <mxmp-ha-player .store=${this.store} .features=${[SHUFFLE_SET, PREVIOUS_TRACK]}></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${this.showShuffle()}></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${this.showPrev()}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></mxmp-ha-player>
-              <mxmp-ha-player .store=${this.store} .features=${[NEXT_TRACK, REPEAT_SET]}></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${this.showNext()}></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${this.showRepeat()}></mxmp-ha-player>
               <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
               <div class="audio-input-format">
-                ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
+                  ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
               </div>
-            </div>
-            <mxmp-volume
-              .store=${this.store}
-              .player=${this.volumePlayer}
-              .updateMembers=${!this.config.playerVolumeEntityId}
-            ></mxmp-volume>
-          `,
-        )}
+          </div>
+          <mxmp-volume hide=${stopped} .store=${this.store} .player=${this.volumePlayer}
+                       .updateMembers=${!this.config.playerVolumeEntityId}></mxmp-volume>
+          <div class="icons">
+              <mxmp-ha-player .store=${this.store} .features=${this.store.showPower(true)}></mxmp-ha-player>
+          </div">
       </div>
-    `;
+  `;
   }
   private volDown = async () =>
     await this.mediaControlService.volumeDown(this.volumePlayer, !this.config.playerVolumeEntityId);
@@ -62,6 +58,23 @@ class PlayerControls extends LitElement {
       ? html`<div>${audioInputFormat.state}</div>`
       : '';
   }
+
+  private showShuffle() {
+    return this.config.hidePlayerControlShuffleButton ? [] : [SHUFFLE_SET];
+  }
+
+  private showPrev() {
+    return this.config.hidePlayerControlPrevTrackButton ? [] : [PREVIOUS_TRACK];
+  }
+
+  private showNext() {
+    return this.config.hidePlayerControlNextTrackButton ? [] : [NEXT_TRACK];
+  }
+
+  private showRepeat() {
+    return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET];
+  }
+
   static get styles() {
     return css`
       .main {
@@ -72,7 +85,7 @@ class PlayerControls extends LitElement {
         display: flex;
         align-items: center;
       }
-      .icons > *[hide] {
+      *[hide] {
         display: none;
       }
       .big-icon {
