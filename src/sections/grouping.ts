@@ -7,7 +7,7 @@ import { dispatchActivePlayerId } from '../utils/utils';
 import { listStyle } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import '../components/grouping-button';
-import { PredefinedGroup, PredefinedGroupPlayer } from '../types';
+import { CardConfig, PredefinedGroup, PredefinedGroupPlayer } from '../types';
 
 export class Grouping extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -18,8 +18,10 @@ export class Grouping extends LitElement {
   private notJoinedPlayers!: string[];
   private joinedPlayers!: string[];
   @state() modifiedItems: string[] = [];
+  private config!: CardConfig;
 
   render() {
+    this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
     this.mediaPlayerIds = this.store.allMediaPlayers.map((player) => player.id);
@@ -188,6 +190,10 @@ export class Grouping extends LitElement {
       main = !!this.store.config.dontSwitchPlayerWhenGrouping ? this.activePlayer.id : isSelected[0].player.id;
       dispatchActivePlayerId(main, this.store.config, this);
     }
+    if (this.config.entityId && unJoin.includes(this.config.entityId) && this.config.dontSwitchPlayerWhenGrouping) {
+      dispatchActivePlayerId(this.config.entityId, this.config, this);
+    }
+
     this.modifiedItems = [];
   }
 

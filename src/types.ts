@@ -67,6 +67,7 @@ export interface CardConfig extends LovelaceCardConfig {
   artworkAsBackground?: boolean;
   playerVolumeEntityId?: string;
   dontSwitchPlayerWhenGrouping?: boolean;
+  showSourceInPlayer?: boolean;
 }
 
 export interface MediaArtworkOverride {

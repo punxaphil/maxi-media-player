@@ -17,6 +17,9 @@ class PlayerHeader extends LitElement {
     const speakerList = getSpeakerList(this.activePlayer, this.store.predefinedGroups);
     let song = this.activePlayer.getCurrentTrack();
     song = song || this.config.labelWhenNoMediaIsSelected || 'No media selected';
+    if (this.config.showSourceInPlayer && this.activePlayer.attributes.source) {
+      song = `${song} (${this.activePlayer.attributes.source})`;
+    }
     return html` <div class="info">
       <div class="entity">${speakerList}</div>
       <div class="song">${song}</div>
