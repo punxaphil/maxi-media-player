@@ -3,6 +3,9 @@ name: "Dependabot Auto Merge"
 on:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   worker:
     runs-on: ubuntu-latest
