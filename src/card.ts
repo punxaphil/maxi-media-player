@@ -214,6 +214,10 @@ export class Card extends LitElement {
       this.section = PLAYER;
     }
     newConfig.mediaBrowserItemsPerRow = newConfig.mediaBrowserItemsPerRow || 4;
+    // support custom:auto-entities
+    if (newConfig.entities?.length && newConfig.entities[0].entity) {
+      newConfig.entities = newConfig.entities.map((entity: { entity: string }) => entity.entity);
+    }
     this.config = newConfig;
   }
 
