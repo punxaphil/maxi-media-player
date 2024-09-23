@@ -22,10 +22,9 @@ class PlayerControls extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
     this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
-    const stopped = ['paused', 'playing'].includes(this.activePlayer.state) && nothing;
     return html`
       <div class="main" id="mediaControls">
-          <div class="icons" hide=${stopped}>
+          <div class="icons">
               <div class="flex-1"></div>
               <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
               <mxmp-ha-player .store=${this.store} .features=${this.showShuffle()}></mxmp-ha-player>
@@ -38,7 +37,7 @@ class PlayerControls extends LitElement {
                   ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
               </div>
           </div>
-          <mxmp-volume hide=${stopped} .store=${this.store} .player=${this.volumePlayer}
+          <mxmp-volume .store=${this.store} .player=${this.volumePlayer}
                        .updateMembers=${!this.config.playerVolumeEntityId}></mxmp-volume>
           <div class="icons">
               <mxmp-ha-player .store=${this.store} .features=${this.store.showPower(true)}></mxmp-ha-player>
