@@ -2,6 +2,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { CardConfig, MediaPlayerEntityFeature, PredefinedGroup, Section } from '../types';
 import { ACTIVE_PLAYER_EVENT, ACTIVE_PLAYER_EVENT_INTERNAL } from '../constants';
 import { MediaPlayer } from '../model/media-player';
+import { GroupingItem } from '../model/grouping-item';
 
 const { TURN_ON } = MediaPlayerEntityFeature;
 
@@ -70,4 +71,21 @@ export function getGroupPlayerIds(hassEntity: HassEntity): string[] {
 
 export function supportsTurnOn(player: MediaPlayer) {
   return ((player.attributes.supported_features || 0) & TURN_ON) == TURN_ON;
+}
+
+export function getGroupingChanges(groupingItems: GroupingItem[], joinedPlayers: string[], activePlayerId: string) {
+  const isSelected = groupingItems.filter((item) => item.isSelected);
+  const unJoin = groupingItems
+    .filter((item) => !item.isSelected && joinedPlayers.includes(item.player.id))
+    .map((item) => item.player.id);
+  const join = groupingItems
+    .filter((item) => item.isSelected && !joinedPlayers.includes(item.player.id))
+    .map((item) => item.player.id);
+
+  let newMainPlayer = activePlayerId;
+
+  if (unJoin.includes(activePlayerId)) {
+    newMainPlayer = isSelected[0].player.id;
+  }
+  return { unJoin, join, newMainPlayer };
 }
