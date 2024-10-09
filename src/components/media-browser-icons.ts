@@ -4,11 +4,8 @@ import Store from '../model/store';
 import { CardConfig, MediaPlayerItem } from '../types';
 import { customEvent } from '../utils/utils';
 import { MEDIA_ITEM_SELECTED, mediaBrowserTitleStyle } from '../constants';
-import {
-  itemsWithFallbacks,
-  mediaItemBackgroundImageStyle,
-  renderMediaBrowserItem,
-} from '../utils/media-browser-utils';
+import { itemsWithFallbacks, renderMediaBrowserItem } from '../utils/media-browser-utils';
+import { styleMap } from 'lit-html/directives/style-map.js';
 
 export class MediaBrowserIcons extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -19,17 +16,11 @@ export class MediaBrowserIcons extends LitElement {
     this.config = this.store.config;
 
     return html`
-      <style>
-        :host {
-          --items-per-row: ${this.config.mediaBrowserItemsPerRow};
-        }
-      </style>
       <div class="icons">
         ${itemsWithFallbacks(this.items, this.config).map(
-          (item, index) => html`
-            ${mediaItemBackgroundImageStyle(item.thumbnail, index)}
+          (item) => html`
             <ha-control-button
-              class="button"
+              style=${this.buttonStyle(this.config.mediaBrowserItemsPerRow || 4)}
               @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
             >
               ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.mediaBrowserHideTitleForThumbnailIcons)}
@@ -39,6 +30,17 @@ export class MediaBrowserIcons extends LitElement {
       </div>
     `;
   }
+
+  private buttonStyle(mediaBrowserItemsPerRow: number) {
+    const margin = '1%';
+    const size = `calc(100% / ${mediaBrowserItemsPerRow} - ${margin} * 2)`;
+    return styleMap({
+      width: size,
+      height: size,
+      margin: margin,
+    });
+  }
+
   static get styles() {
     return [
       mediaBrowserTitleStyle,
@@ -46,14 +48,6 @@ export class MediaBrowserIcons extends LitElement {
         .icons {
           display: flex;
           flex-wrap: wrap;
-        }
-
-        .button {
-          --margin: 1%;
-          --width: calc(100% / var(--items-per-row) - var(--margin) * 2);
-          width: var(--width);
-          height: var(--width);
-          margin: var(--margin);
         }
 
         .thumbnail {

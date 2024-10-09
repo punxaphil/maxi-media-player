@@ -4,11 +4,7 @@ import Store from '../model/store';
 import { CardConfig, MediaPlayerItem } from '../types';
 import { customEvent } from '../utils/utils';
 import { listStyle, MEDIA_ITEM_SELECTED, mediaBrowserTitleStyle } from '../constants';
-import {
-  itemsWithFallbacks,
-  mediaItemBackgroundImageStyle,
-  renderMediaBrowserItem,
-} from '../utils/media-browser-utils';
+import { itemsWithFallbacks, renderMediaBrowserItem } from '../utils/media-browser-utils';
 
 export class MediaBrowserList extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -20,9 +16,8 @@ export class MediaBrowserList extends LitElement {
 
     return html`
       <mwc-list multi class="list">
-        ${itemsWithFallbacks(this.items, this.config).map((item, index) => {
+        ${itemsWithFallbacks(this.items, this.config).map((item) => {
           return html`
-            ${mediaItemBackgroundImageStyle(item.thumbnail, index)}
             <mwc-list-item class="button" @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}>
               <div class="row">${renderMediaBrowserItem(item)}</div>
             </mwc-list-item>
