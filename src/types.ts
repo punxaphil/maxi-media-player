@@ -28,6 +28,7 @@ export interface CardConfig extends LovelaceCardConfig {
   hidePlayerControlPrevTrackButton?: boolean;
   hidePlayerControlPowerButton?: boolean;
   showVolumeUpAndDownButtons?: boolean;
+  entityId?: string;
   entities?: string[];
   excludeItemsInEntitiesList?: boolean;
   predefinedGroups?: ConfigPredefinedGroup[];
@@ -53,6 +54,7 @@ export interface CardConfig extends LovelaceCardConfig {
   hideBrowseMediaButton?: boolean;
   showAudioInputFormat?: boolean;
   entityPlatform?: string;
+  showNonSonosPlayers?: boolean;
   fallbackArtwork?: string;
   entitiesToIgnoreVolumeLevelFor?: string[];
   replaceHttpWithHttpsForThumbnails?: boolean;

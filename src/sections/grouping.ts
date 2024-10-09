@@ -3,11 +3,12 @@ import { property, state } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
-import { dispatchActivePlayerId } from '../utils/utils';
+import { dispatchActivePlayerId, getGroupingChanges } from '../utils/utils';
 import { listStyle } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import '../components/grouping-button';
 import { CardConfig, PredefinedGroup, PredefinedGroupPlayer } from '../types';
+import { GroupingItem } from '../model/grouping-item';
 
 export class Grouping extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -18,6 +19,7 @@ export class Grouping extends LitElement {
   private notJoinedPlayers!: string[];
   private joinedPlayers!: string[];
   @state() modifiedItems: string[] = [];
+  @state() selectedPredefinedGroup?: PredefinedGroup;
   private config!: CardConfig;
 
   render() {
@@ -29,7 +31,7 @@ export class Grouping extends LitElement {
     this.notJoinedPlayers = this.getNotJoinedPlayers();
     this.joinedPlayers = this.getJoinedPlayers();
 
-    if (this.store.config.skipApplyButtonWhenGrouping && this.modifiedItems.length > 0) {
+    if (this.config.skipApplyButtonWhenGrouping && (this.modifiedItems.length > 0 || this.selectedPredefinedGroup)) {
       this.applyGrouping();
     }
 
@@ -65,10 +67,12 @@ export class Grouping extends LitElement {
         </div>
         <ha-control-button-group
           class="buttons"
-          hide=${this.modifiedItems.length === 0 || this.store.config.skipApplyButtonWhenGrouping || nothing}
+          hide=${(this.modifiedItems.length === 0 && !this.selectedPredefinedGroup) ||
+          this.config.skipApplyButtonWhenGrouping ||
+          nothing}
         >
-          <ha-control-button class="apply" @click=${this.applyGrouping}> Apply </ha-control-button>
-          <ha-control-button @click=${this.cancelGrouping}> Cancel </ha-control-button>
+          <ha-control-button class="apply" @click=${this.applyGrouping}> Apply</ha-control-button>
+          <ha-control-button @click=${this.cancelGrouping}> Cancel</ha-control-button>
         </ha-control-button-group>
       </div>
     `;
@@ -166,47 +170,35 @@ export class Grouping extends LitElement {
     } else {
       this.modifiedItems = [...this.modifiedItems, item.player.id];
     }
+    this.selectedPredefinedGroup = undefined;
   }
 
   async applyGrouping() {
-    const isSelected = this.groupingItems.filter((item) => item.isSelected);
-    const unJoin = this.groupingItems
-      .filter((item) => !item.isSelected && this.joinedPlayers.includes(item.player.id))
-      .map((item) => item.player.id);
-    const join = this.groupingItems
-      .filter((item) => item.isSelected && !this.joinedPlayers.includes(item.player.id))
-      .map((item) => item.player.id);
-
-    let main = this.activePlayer.id;
+    const groupingItems = this.groupingItems;
+    const joinedPlayers = this.joinedPlayers;
+    const activePlayerId = this.activePlayer.id;
+    const { unJoin, join, newMainPlayer } = getGroupingChanges(groupingItems, joinedPlayers, activePlayerId);
 
     if (join.length > 0) {
-      await this.mediaControlService.join(main, join);
+      await this.mediaControlService.join(newMainPlayer, join);
     }
     if (unJoin.length > 0) {
       await this.mediaControlService.unJoin(unJoin);
     }
-    await this.handlePredefinedGroupConfig(isSelected);
-    if (unJoin.includes(this.activePlayer.id)) {
-      main = !!this.store.config.dontSwitchPlayerWhenGrouping ? this.activePlayer.id : isSelected[0].player.id;
-      dispatchActivePlayerId(main, this.store.config, this);
+    if (this.selectedPredefinedGroup) {
+      console.log('Setting volume and media for predefined group', this.selectedPredefinedGroup.volume);
+      await this.mediaControlService.setVolumeAndMediaForPredefinedGroup(this.selectedPredefinedGroup);
+    }
+
+    if (newMainPlayer !== activePlayerId && !this.config.dontSwitchPlayerWhenGrouping) {
+      dispatchActivePlayerId(newMainPlayer, this.config, this);
     }
     if (this.config.entityId && unJoin.includes(this.config.entityId) && this.config.dontSwitchPlayerWhenGrouping) {
       dispatchActivePlayerId(this.config.entityId, this.config, this);
     }
 
     this.modifiedItems = [];
-  }
-
-  private async handlePredefinedGroupConfig(isSelected: GroupingItem[]) {
-    const predefinedGroup = this.store.predefinedGroups.find((pg) => {
-      return (
-        pg.entities.length === isSelected.length &&
-        pg.entities.every((pgp) => isSelected.some((s) => s.player.id === pgp.player.id))
-      );
-    });
-    if (predefinedGroup) {
-      await this.mediaControlService.setVolumeAndMediaForPredefinedGroup(predefinedGroup);
-    }
+    this.selectedPredefinedGroup = undefined;
   }
 
   private cancelGrouping() {
@@ -221,6 +213,12 @@ export class Grouping extends LitElement {
     if (selectedItems.length === 1) {
       selectedItems[0].isDisabled = true;
     }
+    groupingItems.sort((a, b) => {
+      if ((a.isMain && !b.isMain) || (a.isSelected && !b.isSelected)) {
+        return -1;
+      }
+      return a.name.localeCompare(b.name);
+    });
 
     return groupingItems;
   }
@@ -260,6 +258,7 @@ export class Grouping extends LitElement {
           @click=${async () => this.selectPredefinedGroup(predefinedGroup)}
           .icon=${'mdi:speaker-multiple'}
           .name=${predefinedGroup.name}
+          .selected=${this.selectedPredefinedGroup?.name === predefinedGroup.name}
         ></mxmp-grouping-button>
       `;
     });
@@ -272,6 +271,7 @@ export class Grouping extends LitElement {
         this.toggleItemWithoutDisabledCheck(item);
       }
     });
+    this.selectedPredefinedGroup = predefinedGroup;
   }
 
   private selectAll() {
@@ -288,25 +288,5 @@ export class Grouping extends LitElement {
         this.toggleItem(item);
       }
     });
-  }
-}
-
-class GroupingItem {
-  isSelected: boolean;
-  icon!: string;
-  isDisabled = false;
-  isModified: boolean;
-  readonly name: string;
-  readonly isMain: boolean;
-  readonly player: MediaPlayer;
-
-  constructor(player: MediaPlayer, activePlayer: MediaPlayer, isModified: boolean) {
-    this.isMain = player.id === activePlayer.id;
-    this.isModified = isModified;
-    const currentlyJoined = this.isMain || activePlayer.hasMember(player.id);
-    this.isSelected = isModified ? !currentlyJoined : currentlyJoined;
-    this.player = player;
-    this.name = player.name;
-    this.icon = this.isSelected ? 'check-circle' : 'checkbox-blank-circle-outline';
   }
 }

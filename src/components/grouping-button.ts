@@ -4,11 +4,12 @@ import { property } from 'lit/decorators.js';
 export class GroupingButton extends LitElement {
   @property() icon!: string;
   @property() name!: string;
+  @property() selected!: boolean;
 
   render() {
     const iconAndName = (!!this.icon && !!this.name) || nothing;
     return html`
-      <ha-control-button>
+      <ha-control-button selected=${this.selected || nothing}>
         ${this.icon ? html` <ha-icon icon-and-name=${iconAndName} .icon=${this.icon}></ha-icon>` : ''}
         ${this.name ? html`<span>${this.name}</span>` : ''}
       </ha-control-button>
@@ -21,6 +22,9 @@ export class GroupingButton extends LitElement {
         width: fit-content;
         --control-button-background-color: var(--accent-color);
         --control-button-icon-color: var(--secondary-text-color);
+      }
+      ha-control-button[selected] {
+        --control-button-icon-color: var(--accent-color);
       }
 
       ha-icon {

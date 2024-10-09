@@ -8,11 +8,6 @@ export const ADVANCED_SCHEMA = [
     type: 'string',
   },
   {
-    name: 'entityId',
-    help: 'Not needed, but forces this player to be the selected one on loading the card (overrides url param etc)',
-    selector: { entity: { multiple: false, filter: { domain: 'media_player' } } },
-  },
-  {
     name: 'hideGroupCurrentTrack',
     selector: { boolean: {} },
   },
@@ -21,24 +16,24 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
-    type: 'integer',
     name: 'dynamicVolumeSliderThreshold',
+    type: 'integer',
     default: 20,
     required: true,
     valueMin: 1,
     valueMax: 100,
   },
   {
-    type: 'integer',
     name: 'dynamicVolumeSliderMax',
+    type: 'integer',
     default: 30,
     required: true,
     valueMin: 1,
     valueMax: 100,
   },
   {
-    type: 'integer',
     name: 'artworkMinHeight',
+    type: 'integer',
     help: 'Minimum height of the artwork in rem',
     default: 5,
     required: true,
@@ -48,33 +43,34 @@ export const ADVANCED_SCHEMA = [
     name: 'hideBrowseMediaButton',
     selector: { boolean: {} },
   },
+
   {
-    type: 'string',
     name: 'labelWhenNoMediaIsSelected',
+    type: 'string',
   },
   {
-    type: 'string',
     name: 'labelForTheAllVolumesSlider',
+    type: 'string',
   },
   {
-    type: 'string',
     name: 'mediaBrowserTitle',
+    type: 'string',
   },
   {
-    type: 'string',
     name: 'artworkHostname',
+    type: 'string',
   },
   {
     name: 'mediaBrowserHideTitleForThumbnailIcons',
     selector: { boolean: {} },
   },
   {
-    type: 'string',
     name: 'topFavorites',
+    type: 'string',
   },
   {
-    type: 'integer',
     name: 'numberOfFavoritesToShow',
+    type: 'integer',
     valueMin: 1,
   },
   {
@@ -110,9 +106,9 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
+    name: 'fallbackArtwork',
     type: 'string',
     help: 'Override default fallback artwork image if artwork is missing for the currently selected media',
-    name: 'fallbackArtwork',
   },
   {
     name: 'entitiesToIgnoreVolumeLevelFor',
@@ -124,8 +120,8 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
-    type: 'integer',
     name: 'volumeStepSize',
+    type: 'integer',
     valueMin: 1,
   },
 ];

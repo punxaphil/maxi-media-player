@@ -4,8 +4,8 @@ const dispatchPrefix = 'mxmp-dispatch-event-';
 export const ACTIVE_PLAYER_EVENT_INTERNAL = 'active-player';
 export const ACTIVE_PLAYER_EVENT = dispatchPrefix + ACTIVE_PLAYER_EVENT_INTERNAL;
 export const SHOW_SECTION = 'show-section';
-export const CALL_MEDIA_STARTED = dispatchPrefix + 'call-media-started';
-export const CALL_MEDIA_DONE = dispatchPrefix + 'call-media-done';
+export const CALL_MEDIA_STARTED = `${dispatchPrefix}call-media-started`;
+export const CALL_MEDIA_DONE = `${dispatchPrefix}call-media-done`;
 export const MEDIA_ITEM_SELECTED = 'item-selected';
 
 export const TV_BASE64_IMAGE =

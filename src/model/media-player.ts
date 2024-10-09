@@ -51,15 +51,10 @@ export class MediaPlayer {
   }
 
   private createGroupMembers(mainHassEntity: HassEntity, mediaPlayerHassEntities: HassEntity[]): MediaPlayer[] {
-    const players: MediaPlayer[] = [];
-    for (const groupPlayerId of getGroupPlayerIds(mainHassEntity)) {
-      for (const mediaPlayerHassEntity of mediaPlayerHassEntities) {
-        if (mediaPlayerHassEntity.entity_id === groupPlayerId) {
-          players.push(new MediaPlayer(mediaPlayerHassEntity, this.config));
-        }
-      }
-    }
-    return players?.length ? players : [this];
+    return getGroupPlayerIds(mainHassEntity).reduce((players: MediaPlayer[], id) => {
+      const hassEntity = mediaPlayerHassEntities.find((hassEntity) => hassEntity.entity_id === id);
+      return hassEntity ? [...players, new MediaPlayer(hassEntity, this.config)] : players;
+    }, []);
   }
 
   private determineVolumePlayer() {
@@ -73,15 +68,13 @@ export class MediaPlayer {
   }
 
   getVolume() {
+    let volume: number;
     if (this.members.length > 1 && this.config.adjustVolumeRelativeToMainPlayer) {
-      return this.getAverageVolume();
+      volume = this.getAverageVolume();
     } else {
-      if (this.volumePlayer.attributes.volume_level) {
-        return 100 * this.volumePlayer.attributes.volume_level;
-      } else {
-        return 0
-      }
+      volume = 100 * this.volumePlayer.attributes.volume_level;
     }
+    return Math.round(volume);
   }
 
   private getAverageVolume() {

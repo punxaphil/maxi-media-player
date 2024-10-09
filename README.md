@@ -1,12 +1,10 @@
 # Maxi Media Player
 
-Media card for Home Assistant UI with a focus on managing multiple media players!
+Maxi Media Player for Home Assistant UI with a focus on managing multiple media players!
 
-*(If this looks familiar to you, it's probably because it's almost identical to my [Sonos Card](https://github.com/punxaphil/custom-sonos-card), except this one is focused on supporting all players, not just Sonos.)*
 ## Features:
 
 * Group/Ungroup speakers
-  * If the individual speakers support it
 * Control multiple speakers
 * Play favorites from list
 * Media browser button
@@ -21,7 +19,11 @@ Media card for Home Assistant UI with a focus on managing multiple media players
 
 and more!
 
-![player.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/player.png) ![media_browser.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_browser.png) ![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png) ![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png) ![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
+![player.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/player.png)
+![media_browser.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_browser.png)
+![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png)
+![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png)
+![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
 
 ## Support the project
 
@@ -64,8 +66,7 @@ By default, all sections of the card is available, and you can jump between them
 However, you can also select individual sections to enable. Use this if you want to show the different sections next to
 each other (by adding multiple instances of the card with different sections enabled).
 
-By using the section configuration you can utilise the full power of Home Assistant's layout capabilities and also drag
-in other cards in your Dashboard view.
+By using the section configuration you can utilise the full power of Home Assistant's layout capabilities and also drag in other cards in your Dashboard view.
 
 ### Configuration
 
@@ -82,9 +83,10 @@ entities: # Required unless you specify entityPlatform
   - media_player.livingroom_player
 excludeItemsInEntitiesList: true # Will invert the selection in the `entities` list, so that all players that are not in the list will be used.
 entityPlatform: sonos # will select all entities for this platform. Will override the `entities` list if set.
+```
 
-# All settings below are optional
-
+All settings below are optional
+```yaml
 # common for all sections
 title: ''
 sections: # see explanation further up
@@ -95,7 +97,7 @@ sections: # see explanation further up
   - player
 widthPercentage: 75 # default is 100. Use this to change the width of the card.
 heightPercentage: 75 # default is 100. Use this to change the height of the card. Set to 'auto' to make the card height adjust to the content.
-selectedEntityId: media_player.bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
+entityId: media_player.bedroom # Forces this player to be the selected one on loading the card (overrides url param etc)
 entityNameRegexToReplace: ' PLAYER' # Regex pattern to replace parts of the entity names
 entityNameReplacement: ''
 volumeStepSize: 1 # Use this to change the step size when using volume up/down. Default is to use the step size of Home Assistant's media player integration. 
@@ -234,6 +236,22 @@ The following variables are being used and can be set in your theme to change th
 
 Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
 
+## Dynamic volume level slider
+
+The volume level slider is dynamically adjusting its scale. If volume is below 20% it will show a scale up to 30%. Above
+20% it will show a scale up to 100%. The color will also change from green to red clearly indicating which scale is
+being used.
+
+![dynamic_volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/dynamic_volumes.png)
+
+Enable it in config with `dynamicVolumeSlider: true`
+
+## Linking to specific player
+
+Append `#media_player.my_sonos_player` to page URL to have that player selected.
+
+If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.
+
 ## CSS Styling
 
 The recommend way to change look and feel is to use the built-in theming capabilities in Home Assistant. If that is not enough this card supports being styled with [card_mod](https://github.com/thomasloven/lovelace-card-mod).
@@ -258,18 +276,3 @@ The above YAML renders the following:
 
 ![styling.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/styling.png)
 
-## Dynamic volume level slider
-
-The volume level slider is dynamically adjusting its scale. If volume is below 20% it will show a scale up to 30%. Above
-20% it will show a scale up to 100%. The color will also change from green to red clearly indicating which scale is
-being used.
-
-![dynamic_volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/dynamic_volumes.png)
-
-Enable it in config with `dynamicVolumeSlider: true`
-
-## Linking to specific player
-
-Append `#media_player.my_player` to page URL to have that player selected.
-
-If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.
