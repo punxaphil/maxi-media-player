@@ -7,7 +7,7 @@ import { mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
 import { until } from 'lit-html/directives/until.js';
 
-const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK } = MediaPlayerEntityFeature;
+const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
 
 class PlayerControls extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -20,8 +20,8 @@ class PlayerControls extends LitElement {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
-    this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
+    this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
     return html`
       <div class="main" id="mediaControls">
           <div class="icons">
@@ -34,8 +34,9 @@ class PlayerControls extends LitElement {
               <mxmp-ha-player .store=${this.store} .features=${this.showRepeat()}></mxmp-ha-player>
               <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
               <div class="audio-input-format">
-                  ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
+                ${this.config.showAudioInputFormat && until(this.getAudioInputFormat())}
               </div>
+              <mxmp-ha-player .store=${this.store} .features=${this.showBrowseMedia()}></mxmp-ha-player>
           </div>
           <mxmp-volume .store=${this.store} .player=${this.volumePlayer}
                        .updateMembers=${!this.config.playerVolumeEntityId}></mxmp-volume>
@@ -72,6 +73,10 @@ class PlayerControls extends LitElement {
 
   private showRepeat() {
     return this.config.hidePlayerControlRepeatButton ? [] : [REPEAT_SET];
+  }
+
+  private showBrowseMedia() {
+    return this.config.showBrowseMediaInPlayerSection ? [BROWSE_MEDIA] : [];
   }
 
   static get styles() {

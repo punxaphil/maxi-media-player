@@ -174,6 +174,9 @@ artworkMinHeight: 10 # default is 5. Use this to change the minimum height of th
 artworkAsBackground: true # default is false. Will show the artwork as background for the player section.
 playerVolumeEntityId: media_player.bedroom # default is empty. Use this to control the volume of another player in the player section. Entity ID must the selected player or part of the selected player's group, otherwise it will not be controlled.
 showSourceInPlayer: true # default is false. Will show the source (if available) in the player section.
+showBrowseMediaInPlayerSection: true # default is false. Will show the browse media button in the player section.
+showChannelInPlayer: true # default is false. Will show the channel (if available) in the player section. This can for instance be the radio station name.
+hidePlaylistInPlayer: true # default is false. Will hide the playlist name in the player section.
 
 # media browser specific
 mediaBrowserItemsPerRow: 1 # default is 4. Use this to show items as list.

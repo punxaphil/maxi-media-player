@@ -106,6 +106,14 @@ export const ADVANCED_SCHEMA = [
     selector: { boolean: {} },
   },
   {
+    name: 'showChannelInPlayer',
+    selector: { boolean: {} },
+  },
+  {
+    name: 'hidePlaylistInPlayer',
+    selector: { boolean: {} },
+  },
+  {
     name: 'fallbackArtwork',
     type: 'string',
     help: 'Override default fallback artwork image if artwork is missing for the currently selected media',
@@ -123,6 +131,10 @@ export const ADVANCED_SCHEMA = [
     name: 'volumeStepSize',
     type: 'integer',
     valueMin: 1,
+  },
+  {
+    name: 'showBrowseMediaInPlayerSection',
+    selector: { boolean: {} },
   },
 ];
 
