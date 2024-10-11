@@ -30,6 +30,16 @@ export const GENERAL_SCHEMA = [
     selector: { boolean: {} },
   },
   {
+    name: 'showFastForwardAndRewindButtons',
+    selector: { boolean: {} },
+  },
+  {
+    name: 'fastForwardAndRewindStepSizeSeconds',
+    type: 'integer',
+    default: 15,
+    required: true,
+  },
+  {
     name: 'hidePlayerControlPowerButton',
     selector: { boolean: {} },
   },

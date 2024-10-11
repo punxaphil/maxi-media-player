@@ -73,6 +73,8 @@ export interface CardConfig extends LovelaceCardConfig {
   showBrowseMediaInPlayerSection?: boolean;
   showChannelInPlayer?: boolean;
   hidePlaylistInPlayer?: boolean;
+  showFastForwardAndRewindButtons?: boolean;
+  fastForwardAndRewindStepSizeSeconds?: number;
 }
 
 export interface MediaArtworkOverride {

@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js';
 import MediaControlService from '../services/media-control-service';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerEntityFeature } from '../types';
-import { mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
+import { mdiFastForward, mdiRewind, mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
 import { until } from 'lit-html/directives/until.js';
 
@@ -21,6 +21,7 @@ class PlayerControls extends LitElement {
     this.activePlayer = this.store.activePlayer;
     this.mediaControlService = this.store.mediaControlService;
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
+    const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && nothing;
     this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
     return html`
       <div class="main" id="mediaControls">
@@ -29,7 +30,9 @@ class PlayerControls extends LitElement {
               <ha-icon-button hide=${noUpDown} @click=${this.volDown} .path=${mdiVolumeMinus}></ha-icon-button>
               <mxmp-ha-player .store=${this.store} .features=${this.showShuffle()}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${this.showPrev()}></mxmp-ha-player>
+              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.rewind} .path=${mdiRewind}></ha-icon-button>
               <mxmp-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></mxmp-ha-player>
+              <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.fastForward} .path=${mdiFastForward}></ha-icon-button>
               <mxmp-ha-player .store=${this.store} .features=${this.showNext()}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${this.showRepeat()}></mxmp-ha-player>
               <ha-icon-button hide=${noUpDown} @click=${this.volUp} .path=${mdiVolumePlus}></ha-icon-button>
@@ -50,6 +53,16 @@ class PlayerControls extends LitElement {
     await this.mediaControlService.volumeDown(this.volumePlayer, !this.config.playerVolumeEntityId);
   private volUp = async () =>
     await this.mediaControlService.volumeUp(this.volumePlayer, !this.config.playerVolumeEntityId);
+  private rewind = async () =>
+    await this.mediaControlService.seek(
+      this.volumePlayer,
+      this.volumePlayer.attributes.media_position - (this.config.fastForwardAndRewindStepSizeSeconds || 15),
+    );
+  private fastForward = async () =>
+    await this.mediaControlService.seek(
+      this.volumePlayer,
+      this.volumePlayer.attributes.media_position + (this.config.fastForwardAndRewindStepSizeSeconds || 15),
+    );
 
   private async getAudioInputFormat() {
     const sensors = await this.store.hassService.getRelatedEntities(this.activePlayer, 'sensor');
