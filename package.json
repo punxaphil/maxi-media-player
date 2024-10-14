@@ -29,7 +29,7 @@
     "jsdom": "^25.0.1",
     "prettier": "^3.3.3",
     "rollup": "^2.79.2",
-    "rollup-plugin-serve": "^2.0.2",
+    "rollup-plugin-serve": "^2.0.3",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.6.2",
