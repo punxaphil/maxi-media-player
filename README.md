@@ -160,10 +160,15 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
     imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108794.png
   - ifMissing: true # ifMissing will only be used if none of the "Equals" overrides above resulted in a match 
     imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-customSources: # Main use case is probably to set tv media player to play TV sound
+customSources: # Read more in 'Custom Favorites / Sources' section below
   media_player.tv: # set this to 'all' to show the custom source for all players
-    - title: TV
+    - title: TV # Must match the name of the source (unless you specify media_content_id/type as shown below)
       thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
+  all:
+    - title: BBC
+      media_content_id: media-source://radio_browser/98adecf7-2683-4408-9be7-02d3f9098eb8
+      media_content_type: music
+      thumbnail: http://cdn-profiles.tunein.com/s24948/images/logoq.jpg?t=1
 dynamicVolumeSlider: true # default is false. See more in section further down.
 dynamicVolumeSliderThreshold: 30 # default is 20. Use this to change the threshold for the dynamic volume slider.
 dynamicVolumeSliderMax: 40 # default is 30. Use this to change the max value for the dynamic volume slider.
@@ -240,6 +245,32 @@ The following variables are being used and can be set in your theme to change th
 ```
 
 Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
+
+## Custom Favorites / Sources
+
+You can add your own buttons to the Favorites section. This can be useful if you want to quickly start a specific radio station or playlist.
+
+To determine what to configure for a button do the following:
+1. Start playing the radio station or playlist you want to add. This can for instance be done in this card's media browser or in the built-in Home Assistant Media page.
+2. Open the Developer Tools in Home Assistant.
+3. Go to the States tab.
+4. Find the media player entity that is playing the radio station or playlist.
+5. Look for the `media_content_id` and `media_content_type` attributes.
+6. For the thumbnail, you can inspect the HTML to see what image the media browser is using, or you can also use a local URL if you have the image stored locally.
+7. Use these values to configure the custom source.
+
+Example:
+![custom_sources.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/custom_sources.png)
+    
+```yaml
+type: custom:maxi-media-player
+customSources: 
+  all: # 'all' means it will show for all players, otherwise specify the entity_id of the player.
+    - title: BBC
+      media_content_id: x-rincon-mp3radio://http://stream.live.vc.bbcmedia.co.uk/bbc_world_service
+      media_content_type: music
+      thumbnail: http://cdn-profiles.tunein.com/s24948/images/logoq.jpg?t=1
+```
 
 ## Dynamic volume level slider
 
