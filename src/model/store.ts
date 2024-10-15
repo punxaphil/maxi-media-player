@@ -12,7 +12,7 @@ import {
   PredefinedGroupPlayer,
   Section,
 } from '../types';
-import { getGroupPlayerIds, supportsTurnOn } from '../utils/utils';
+import { entityMatchMxmp, entityMatchSonos, getGroupPlayerIds, isSonosCard, supportsTurnOn } from '../utils/utils';
 import { MediaPlayer } from './media-player';
 import { HassEntity } from 'home-assistant-js-websocket';
 
@@ -119,16 +119,13 @@ export default class Store {
 
   public getMediaPlayerHassEntities(hass: HomeAssistant) {
     const hassWithEntities = hass as HomeAssistantWithEntities;
-    const configEntities = [...new Set(this.config.entities)];
     return Object.values(hass.states)
       .filter((hassEntity) => {
         if (hassEntity.entity_id.includes('media_player')) {
-          if (configEntities.length) {
-            const includesEntity = configEntities.includes(hassEntity.entity_id);
-            return !!this.config.excludeItemsInEntitiesList !== includesEntity;
-          } else if (this.config.entityPlatform) {
-            const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
-            return platform === this.config.entityPlatform;
+          if (isSonosCard(this.config)) {
+            return entityMatchSonos(this.config, hassEntity, hassWithEntities);
+          } else {
+            return entityMatchMxmp(this.config, hassEntity, hassWithEntities);
           }
         }
         return false;

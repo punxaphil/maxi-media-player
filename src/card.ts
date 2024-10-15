@@ -9,7 +9,7 @@ import './editor/editor';
 import { ACTIVE_PLAYER_EVENT, CALL_MEDIA_DONE, CALL_MEDIA_STARTED } from './constants';
 import { when } from 'lit/directives/when.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
-import { cardDoesNotContainAllSections, getHeight, getWidth } from './utils/utils';
+import { cardDoesNotContainAllSections, getHeight, getWidth, isSonosCard } from './utils/utils';
 
 const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES } = Section;
 const TITLE_HEIGHT = 2;
@@ -217,6 +217,12 @@ export class Card extends LitElement {
     // support custom:auto-entities
     if (newConfig.entities?.length && newConfig.entities[0].entity) {
       newConfig.entities = newConfig.entities.map((entity: { entity: string }) => entity.entity);
+    }
+    if (isSonosCard(newConfig)) {
+      newConfig.entityPlatform = 'sonos';
+      if (newConfig.showNonSonosPlayers) {
+        newConfig.entityPlatform = undefined;
+      }
     }
     this.config = newConfig;
   }

@@ -26,16 +26,34 @@ export const ENTITIES_SCHEMA = [
   },
   {
     name: 'entities',
-    help: 'Required, unless you have specified entity platform', //#ONLY_MXMP_CARD
+    help: 'Required, unless you have specified entity platform',
+    cardType: 'maxi',
     selector: { entity: { multiple: true, filter: { domain: 'media_player' } } },
+  },
+  {
+    name: 'entities',
+    help: "Not needed, unless you don't want to include all of them",
+    cardType: 'sonos',
+    selector: { entity: { multiple: true, filter: { domain: 'media_player' } } },
+  },
+  {
+    name: 'showNonSonosPlayers',
+    help: 'Show all media players, including those that are not on the Sonos platform',
+    cardType: 'sonos',
+    selector: { boolean: {} },
   },
 ];
 
 class EntitiesEditor extends BaseEditor {
   @state() editGroup!: number;
   private entitiesSchema = ENTITIES_SCHEMA;
+
   protected render(): TemplateResult {
     const predefinedGroups = this.config.predefinedGroups;
+
+    this.entitiesSchema = ENTITIES_SCHEMA.filter(
+      (schema) => schema.cardType === undefined || this.config.type.indexOf(schema.cardType) > -1,
+    );
     return this.editGroup > -1
       ? html`<mxmp-predefined-group-editor
           .index=${this.editGroup}

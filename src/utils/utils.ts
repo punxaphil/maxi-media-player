@@ -1,5 +1,5 @@
 import { HassEntity } from 'home-assistant-js-websocket';
-import { CardConfig, MediaPlayerEntityFeature, PredefinedGroup, Section } from '../types';
+import { CardConfig, HomeAssistantWithEntities, MediaPlayerEntityFeature, PredefinedGroup, Section } from '../types';
 import { ACTIVE_PLAYER_EVENT, ACTIVE_PLAYER_EVENT_INTERNAL } from '../constants';
 import { MediaPlayer } from '../model/media-player';
 import { GroupingItem } from '../model/grouping-item';
@@ -88,4 +88,44 @@ export function getGroupingChanges(groupingItems: GroupingItem[], joinedPlayers:
     newMainPlayer = isSelected[0].player.id;
   }
   return { unJoin, join, newMainPlayer };
+}
+
+export function entityMatchSonos(
+  config: CardConfig,
+  hassEntity: HassEntity,
+  hassWithEntities: HomeAssistantWithEntities,
+) {
+  const configEntities = [...new Set(config.entities)];
+  let includeEntity = true;
+  if (configEntities.length) {
+    const includesEntity = configEntities.includes(hassEntity.entity_id);
+    includeEntity = !!config.excludeItemsInEntitiesList !== includesEntity;
+  }
+  let matchesPlatform = true;
+  if (config.entityPlatform) {
+    const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
+    matchesPlatform = platform === config.entityPlatform;
+  }
+  return includeEntity && matchesPlatform;
+}
+
+export function entityMatchMxmp(
+  config: CardConfig,
+  hassEntity: HassEntity,
+  hassWithEntities: HomeAssistantWithEntities,
+) {
+  const configEntities = [...new Set(config.entities)];
+  if (config.entityPlatform) {
+    const platform = hassWithEntities.entities?.[hassEntity.entity_id]?.platform;
+    return platform === config.entityPlatform;
+  }
+  if (configEntities.length) {
+    const includesEntity = configEntities.includes(hassEntity.entity_id);
+    return !!config.excludeItemsInEntitiesList !== includesEntity;
+  }
+  return false;
+}
+
+export function isSonosCard(config: CardConfig) {
+  return config.type.indexOf('sonos') > -1;
 }
