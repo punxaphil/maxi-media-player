@@ -35,11 +35,11 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 ## With HACS (recommended)
 1. Download HACS following the instructions on https://hacs.xyz/docs/setup/download
 1. Proceed to the initial configuration following the instructions on https://hacs.xyz/docs/configuration/basic
-1. On your sidebar go to HACS > Frontend
+1. On your sidebar go to HACS
 1. click on the icon at the right top corner then on Custom repositories
 1. For the repository add this: https://github.com/punxaphil/maxi-media-player
-1. For the category select Lovelace then click Add
-1. Now click on Maxi Media Player then on the Dowload button
+1. For the category select Dashboard then click Add
+1. Now click on Maxi Media Player then on the Download button
 1. Go back on your dashboard and click on the icon at the right top corner then on Edit dashboard
 1. You can now click on Add card in the bottom right corner and search for Maxi Media Player
 
