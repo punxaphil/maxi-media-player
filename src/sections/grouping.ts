@@ -224,9 +224,8 @@ export class Grouping extends LitElement {
   }
 
   private renderJoinAllButton() {
-    return when(this.notJoinedPlayers.length, () =>
-      this.groupingButton('mdi:checkbox-multiple-marked-outline', this.selectAll),
-    );
+    const icon = this.config.groupingButtonIcons?.joinAll ?? 'mdi:checkbox-multiple-marked-outline';
+    return when(this.notJoinedPlayers.length, () => this.groupingButton(icon, this.selectAll));
   }
 
   private groupingButton(icon: string, click: () => void) {
@@ -240,9 +239,8 @@ export class Grouping extends LitElement {
   }
 
   private renderUnJoinAllButton() {
-    return when(this.joinedPlayers.length, () =>
-      this.groupingButton('mdi:minus-box-multiple-outline', this.deSelectAll),
-    );
+    const icon = this.config.groupingButtonIcons?.unJoinAll ?? 'mdi:minus-box-multiple-outline';
+    return when(this.joinedPlayers.length, () => this.groupingButton(icon, this.deSelectAll));
   }
 
   private getJoinedPlayers() {
@@ -256,7 +254,7 @@ export class Grouping extends LitElement {
       return html`
         <mxmp-grouping-button
           @click=${async () => this.selectPredefinedGroup(predefinedGroup)}
-          .icon=${'mdi:speaker-multiple'}
+          .icon=${this.config.groupingButtonIcons?.predefinedGroup ?? 'mdi:speaker-multiple'}
           .name=${predefinedGroup.name}
           .selected=${this.selectedPredefinedGroup?.name === predefinedGroup.name}
         ></mxmp-grouping-button>

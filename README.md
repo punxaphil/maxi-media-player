@@ -33,6 +33,7 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 
 # Installation
 ## With HACS (recommended)
+
 1. Download HACS following the instructions on https://hacs.xyz/docs/setup/download
 1. Proceed to the initial configuration following the instructions on https://hacs.xyz/docs/configuration/basic
 1. On your sidebar go to HACS
@@ -44,6 +45,8 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 1. You can now click on Add card in the bottom right corner and search for Maxi Media Player
 
 Coming soon in the HACS default repo (still waiting for validation).
+
+
 
 ## Without HACS
 1. Download this file: maxi-media-player.js
@@ -74,6 +77,7 @@ Use the Visual Editor in Home Assistant to configure the card. Most options are 
 
 ### Configuration in YAML
 
+
 ```yaml
 type: custom:maxi-media-player
 entities: # Required unless you specify entityPlatform
@@ -84,6 +88,7 @@ entities: # Required unless you specify entityPlatform
 excludeItemsInEntitiesList: true # Will invert the selection in the `entities` list, so that all players that are not in the list will be used.
 entityPlatform: sonos # will select all entities for this platform. Will override the `entities` list if set.
 ```
+
 
 All settings below are optional
 ```yaml
@@ -129,6 +134,10 @@ predefinedGroups: # defaults to empty
       - media_player.tv
 skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 dontSwitchPlayerWhenGrouping: true # default is false. Will not switch to another player if main player is ungrouped.
+groupingButtonIcons: # Use this to set custom icons for the grouping buttons.
+  predefinedGroup: mdi:account-group # default is mdi:speaker-multiple
+  joinAll: mdi:account-multiple # default is mdi:checkbox-multiple-marked-outline
+  unJoinAll: mdi:account-remove # default is mdi:minus-box-multiple-outline
 
 # player specific
 hidePlayerControlNextTrackButton: true # default is false, hides player control next track button.

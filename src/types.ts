@@ -20,6 +20,12 @@ export type ConfigPredefinedGroupPlayer = PredefinedGroupPlayer<string>;
 export type ConfigPredefinedGroup = PredefinedGroup<string | ConfigPredefinedGroupPlayer>;
 export type CalculateVolume = (member: MediaPlayer, volumeStepSize: number) => number;
 
+export interface GroupingButtonIcons {
+  predefinedGroup?: string;
+  unJoinAll?: string;
+  joinAll?: string;
+}
+
 export interface CardConfig extends LovelaceCardConfig {
   sections?: Section[];
   hidePlayerControlRepeatButton?: boolean;
@@ -75,6 +81,7 @@ export interface CardConfig extends LovelaceCardConfig {
   hidePlaylistInPlayer?: boolean;
   showFastForwardAndRewindButtons?: boolean;
   fastForwardAndRewindStepSizeSeconds?: number;
+  groupingButtonIcons?: GroupingButtonIcons;
 }
 
 export interface MediaArtworkOverride {

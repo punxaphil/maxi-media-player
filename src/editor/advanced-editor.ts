@@ -157,6 +157,7 @@ class AdvancedEditor extends BaseEditor {
           <li>customThumbnail</li>
           <li>customThumbnailIfMissing</li>
           <li>favoritesToIgnore</li>
+          <li>groupingButtonIcons</li>
         </ul>
       </div>
     `;
