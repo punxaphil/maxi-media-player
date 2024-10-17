@@ -20,7 +20,7 @@ class Group extends LitElement {
   render() {
     const currentTrack = this.store.config.hideGroupCurrentTrack ? '' : this.player.getCurrentTrack();
     const speakerList = getSpeakerList(this.player, this.store.predefinedGroups);
-    const icon = this.player.attributes.icon;
+    const icons = this.player.members.map((member) => member.attributes.icon).filter((icon) => icon);
     return html`
       <mwc-list-item
         hasMeta
@@ -29,7 +29,7 @@ class Group extends LitElement {
         @click=${() => this.handleGroupClicked()}
       >
         <div class="row">
-          <ha-icon .icon=${icon} ?hidden=${!icon}></ha-icon>
+          ${this.renderIcons(icons)}
           <div class="text">
             <span class="speakers">${speakerList}</span>
             <span class="song-title">${currentTrack}</span>
@@ -48,6 +48,23 @@ class Group extends LitElement {
         )}
       </mwc-list-item>
     `;
+  }
+
+  private renderIcons(icons: (string | undefined)[]) {
+    const length = icons.length;
+    if (length === 1) {
+      return html`<ha-icon .icon=${icons[0]}></ha-icon>`;
+    }
+    const iconsToShow = icons.slice(0, 4);
+    return html` <div class="icons">
+      ${iconsToShow.map((icon, index) => {
+        if (index < 3 || length === 4) {
+          return html` <ha-icon class="small" .icon=${icon}></ha-icon>`;
+        } else {
+          return html`<span>+${length - 3}</span>`;
+        }
+      })}
+    </div>`;
   }
 
   connectedCallback() {
@@ -82,11 +99,13 @@ class Group extends LitElement {
         margin: 1rem;
         border-radius: 1rem;
         background: var(--secondary-background-color);
+        padding-left: 0;
       }
 
       .row {
         display: flex;
         margin: 1rem 0;
+        align-items: center;
       }
 
       .text {
@@ -107,9 +126,21 @@ class Group extends LitElement {
         font-weight: bold;
       }
 
+      .icons {
+        text-wrap: wrap;
+        text-align: center;
+        margin: 0;
+        min-width: 5rem;
+      }
+
       ha-icon {
         --mdc-icon-size: 3rem;
-        margin-right: 1rem;
+        margin: 1rem;
+      }
+
+      ha-icon.small {
+        --mdc-icon-size: 2rem;
+        margin: 0;
       }
 
       .bars {
