@@ -3,7 +3,7 @@ import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { CardConfig, Section } from '../types';
 import { customEvent } from '../utils/utils';
-import { mdiCastVariant, mdiHome, mdiSpeakerMultiple, mdiStarOutline, mdiTune } from '@mdi/js';
+import { mdiCheckboxMultipleMarkedCircleOutline, mdiHome, mdiSpeakerMultiple, mdiStarOutline, mdiTune } from '@mdi/js';
 import { SHOW_SECTION } from '../constants';
 
 const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES } = Section;
@@ -34,7 +34,7 @@ class Footer extends LitElement {
       ></ha-icon-button>
       <ha-icon-button
         hide=${this.hide(GROUPING)}
-        .path=${mdiCastVariant}
+        .path=${mdiCheckboxMultipleMarkedCircleOutline}
         @click=${() => this.dispatchSection(GROUPING)}
         selected=${this.selected(GROUPING)}
       ></ha-icon-button>
