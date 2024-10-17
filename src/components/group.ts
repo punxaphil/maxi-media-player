@@ -131,6 +131,7 @@ class Group extends LitElement {
         text-align: center;
         margin: 0;
         min-width: 5rem;
+        max-width: 5rem;
       }
 
       ha-icon {
