@@ -56,7 +56,7 @@ class Group extends LitElement {
       return html`<ha-icon .icon=${icons[0]}></ha-icon>`;
     }
     const iconsToShow = icons.slice(0, 4);
-    return html` <div class="icons">
+    return html` <div class="icons" ?empty=${length === 0}>
       ${iconsToShow.map((icon, index) => {
         if (index < 3 || length === 4) {
           return html` <ha-icon class="small" .icon=${icon}></ha-icon>`;
@@ -132,6 +132,11 @@ class Group extends LitElement {
         margin: 0;
         min-width: 5rem;
         max-width: 5rem;
+      }
+
+      .icons[empty] {
+        min-width: 1rem;
+        max-width: 1rem;
       }
 
       ha-icon {
