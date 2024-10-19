@@ -10,8 +10,8 @@ class Footer extends LitElement {
   @property() section!: Section;
 
   render() {
-    const icons = this.config.sectionIcons;
-    let sections = [
+    const icons = this.config.sectionButtonIcons;
+    let sections: [Section, string][] = [
       [PLAYER, icons?.player ?? 'mdi:home'],
       [MEDIA_BROWSER, icons?.mediaBrowser ?? 'mdi:star-outline'],
       [GROUPS, icons?.groups ?? 'mdi:speaker-multiple'],

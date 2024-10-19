@@ -107,7 +107,7 @@ entityNameRegexToReplace: ' PLAYER' # Regex pattern to replace parts of the enti
 entityNameReplacement: ''
 volumeStepSize: 1 # Use this to change the step size when using volume up/down. Default is to use the step size of Home Assistant's media player integration. 
 adjustVolumeRelativeToMainPlayer: true # default is false, which means all players will be set to the same volume as the main player. If set to true, volume will be adjusted relative to the main player in the group.
-sectionIcons: # customize icons for the section buttons
+sectionButtonIcons: # customize icons for the section buttons
   player: mdi:ab-testing
   mediaBrowser: mdi:star-box-multiple
   groups: mdi:multicast
