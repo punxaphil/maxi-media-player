@@ -26,6 +26,14 @@ export interface GroupingButtonIcons {
   joinAll?: string;
 }
 
+interface SectionButtonIcons {
+  player?: string;
+  mediaBrowser?: string;
+  groups?: string;
+  grouping?: string;
+  volumes?: string;
+}
+
 export interface CardConfig extends LovelaceCardConfig {
   sections?: Section[];
   hidePlayerControlRepeatButton?: boolean;
@@ -82,6 +90,7 @@ export interface CardConfig extends LovelaceCardConfig {
   showFastForwardAndRewindButtons?: boolean;
   fastForwardAndRewindStepSizeSeconds?: number;
   groupingButtonIcons?: GroupingButtonIcons;
+  sectionButtonIcons?: SectionButtonIcons;
 }
 
 export interface MediaArtworkOverride {
