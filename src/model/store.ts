@@ -12,7 +12,14 @@ import {
   PredefinedGroupPlayer,
   Section,
 } from '../types';
-import { entityMatchMxmp, entityMatchSonos, getGroupPlayerIds, isSonosCard, supportsTurnOn } from '../utils/utils';
+import {
+  entityMatchMxmp,
+  entityMatchSonos,
+  getGroupPlayerIds,
+  isSonosCard,
+  sortEntities,
+  supportsTurnOn,
+} from '../utils/utils';
 import { MediaPlayer } from './media-player';
 import { HassEntity } from 'home-assistant-js-websocket';
 
@@ -119,18 +126,17 @@ export default class Store {
 
   public getMediaPlayerHassEntities(hass: HomeAssistant) {
     const hassWithEntities = hass as HomeAssistantWithEntities;
-    return Object.values(hass.states)
-      .filter((hassEntity) => {
-        if (hassEntity.entity_id.includes('media_player')) {
-          if (isSonosCard(this.config)) {
-            return entityMatchSonos(this.config, hassEntity, hassWithEntities);
-          } else {
-            return entityMatchMxmp(this.config, hassEntity, hassWithEntities);
-          }
+    const filtered = Object.values(hass.states).filter((hassEntity) => {
+      if (hassEntity.entity_id.includes('media_player')) {
+        if (isSonosCard(this.config)) {
+          return entityMatchSonos(this.config, hassEntity, hassWithEntities);
+        } else {
+          return entityMatchMxmp(this.config, hassEntity, hassWithEntities);
         }
-        return false;
-      })
-      .sort((a, b) => a.entity_id.localeCompare(b.entity_id));
+      }
+      return false;
+    });
+    return sortEntities(this.config, filtered);
   }
 
   private createPlayerGroups(mediaPlayerHassEntities: HassEntity[]) {

@@ -129,3 +129,15 @@ export function entityMatchMxmp(
 export function isSonosCard(config: CardConfig) {
   return config.type.indexOf('sonos') > -1;
 }
+
+export function sortEntities(config: CardConfig, filtered: HassEntity[]) {
+  if (config.entities) {
+    return filtered.sort((a, b) => {
+      const aIndex = config.entities?.indexOf(a.entity_id) ?? -1;
+      const bIndex = config.entities?.indexOf(b.entity_id) ?? -1;
+      return aIndex - bIndex;
+    });
+  } else {
+    return filtered.sort((a, b) => a.entity_id.localeCompare(b.entity_id));
+  }
+}

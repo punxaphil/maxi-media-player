@@ -303,6 +303,22 @@ Append `#media_player.my_sonos_player` to page URL to have that player selected.
 
 If `entityId` is configured for the card, the url param will be ignored. See more in the Usage section above.
 
+## Sort order of entities
+
+If you want to have a custom sorting for your entities in the groups section you can use the `entities` configuration. 
+Default is otherwise to sort by entity name.
+
+Example:
+```yaml
+type: custom:maxi-media-player
+entities:
+  - media_player.sonos_kitchen
+  - media_player.sonos_hallway
+  - media_player.sonos_bedroom
+  - media_player.sonos_livingroom
+```
+
+
 ## CSS Styling
 
 The recommend way to change look and feel is to use the built-in theming capabilities in Home Assistant. If that is not enough this card supports being styled with [card_mod](https://github.com/thomasloven/lovelace-card-mod).
