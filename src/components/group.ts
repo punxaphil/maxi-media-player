@@ -52,19 +52,16 @@ class Group extends LitElement {
 
   private renderIcons(icons: (string | undefined)[]) {
     const length = icons.length;
-    if (length === 1) {
-      return html`<ha-icon .icon=${icons[0]}></ha-icon>`;
-    }
     const iconsToShow = icons.slice(0, 4);
-    return html` <div class="icons" ?empty=${length === 0}>
-      ${iconsToShow.map((icon, index) => {
-        if (index < 3 || length === 4) {
-          return html` <ha-icon class="small" .icon=${icon}></ha-icon>`;
-        } else {
-          return html`<span>+${length - 3}</span>`;
-        }
-      })}
-    </div>`;
+    const iconClass = length > 1 ? 'small' : '';
+    const iconsHtml = iconsToShow.map((icon) => html` <ha-icon class=${iconClass} .icon=${icon}></ha-icon>`);
+    if (length > 4) {
+      iconsHtml.splice(3, 1, html`<span>+${length - 3}</span>`);
+    }
+    if (length > 2) {
+      iconsHtml.splice(2, 0, html`<br />`);
+    }
+    return html` <div class="icons" ?empty=${length === 0}>${iconsHtml}</div>`;
   }
 
   connectedCallback() {
@@ -127,7 +124,6 @@ class Group extends LitElement {
       }
 
       .icons {
-        text-wrap: wrap;
         text-align: center;
         margin: 0;
         min-width: 5rem;
