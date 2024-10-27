@@ -40,8 +40,14 @@ export class MediaPlayer {
   }
 
   getCurrentTrack() {
-    return `${this.attributes.media_artist || ''} - ${this.attributes.media_title || ''}`.replace(/^ - | - $/g, '');
+    let track = `${this.attributes.media_artist || ''} - ${this.attributes.media_title || ''}`;
+    track = track.replace(/^ - | - $/g, '');
+    if (!track) {
+      track = this.attributes.media_content_id?.replace(/.*:\/\//g, '') ?? '';
+    }
+    return track;
   }
+
   private getEntityName(hassEntity: HassEntity, config: CardConfig) {
     const name = hassEntity.attributes.friendly_name || '';
     if (config.entityNameRegexToReplace) {
