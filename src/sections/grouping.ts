@@ -186,7 +186,6 @@ export class Grouping extends LitElement {
       await this.mediaControlService.unJoin(unJoin);
     }
     if (this.selectedPredefinedGroup) {
-      console.log('Setting volume and media for predefined group', this.selectedPredefinedGroup.volume);
       await this.mediaControlService.setVolumeAndMediaForPredefinedGroup(this.selectedPredefinedGroup);
     }
 
