@@ -30,7 +30,8 @@ export class Card extends LitElement {
     let height = getHeight(this.config);
     const sections = this.config.sections;
     const showFooter = !sections || sections.length > 1;
-    const contentHeight = showFooter ? height - FOOTER_HEIGHT : height;
+    const footerHeight = this.config.footerHeight || FOOTER_HEIGHT;
+    const contentHeight = showFooter ? height - footerHeight : height;
     const title = this.config.title;
     height = title ? height + TITLE_HEIGHT : height;
     return html`
@@ -84,7 +85,7 @@ export class Card extends LitElement {
           showFooter,
           () =>
             html`<mxmp-footer
-              style=${this.footerStyle()}
+              style=${this.footerStyle(footerHeight)}
               .config=${this.config}
               .section=${this.section}
               @show-section=${this.showSectionListener}
@@ -183,10 +184,10 @@ export class Card extends LitElement {
     });
   }
 
-  footerStyle() {
+  footerStyle(height: number) {
     return styleMap({
-      height: `${FOOTER_HEIGHT}rem`,
-      paddingBottom: '1rem',
+      height: `${height}rem`,
+      padding: '0 1rem',
     });
   }
 

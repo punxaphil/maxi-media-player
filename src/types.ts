@@ -96,6 +96,7 @@ export interface CardConfig extends LovelaceCardConfig {
   fastForwardAndRewindStepSizeSeconds?: number;
   groupingButtonIcons?: GroupingButtonIcons;
   sectionButtonIcons?: SectionButtonIcons;
+  footerHeight?: number;
 }
 
 export interface MediaArtworkOverride {

@@ -45,7 +45,7 @@ class Footer extends LitElement {
         justify-content: space-between;
       }
       :host > * {
-        padding: 1rem;
+        align-content: center;
       }
     `;
   }
