@@ -35,3 +35,5 @@ export abstract class BaseEditor extends LitElement {
     return this.dispatchEvent(new CustomEvent('closed'));
   }
 }
+
+export type Schema = { cardType: string; [name: string]: unknown };

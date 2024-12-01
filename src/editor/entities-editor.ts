@@ -62,11 +62,7 @@ class EntitiesEditor extends BaseEditor {
           @closed=${() => (this.editGroup = -1)}
         ></mxmp-predefined-group-editor>`
       : html`
-          <mxmp-editor-form
-            .schema=${this.entitiesSchema}
-            .config=${this.config}
-            .hass=${this.hass}
-          ></mxmp-editor-form>
+          <mxmp-editor-form .schema=${this.entitiesSchema} .config=${this.config} .hass=${this.hass}></mxmp-editor-form>
           <div>
             Predefined Groups
             <ha-control-button-group>

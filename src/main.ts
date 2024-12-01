@@ -5,6 +5,8 @@ import { Groups } from './sections/groups';
 import { MediaBrowser } from './sections/media-browser';
 import './sections/volumes';
 import './components/ha-player';
+import { Queue } from './sections/queue';
+import { Volumes } from './sections/volumes';
 
 window.customCards.push({
   type: 'maxi-media-player',
@@ -18,3 +20,5 @@ customElements.define('mxmp-grouping', Grouping);
 customElements.define('mxmp-groups', Groups);
 customElements.define('mxmp-media-browser', MediaBrowser);
 customElements.define('mxmp-player', Player);
+customElements.define('mxmp-volumes', Volumes);
+customElements.define('mxmp-queue', Queue);

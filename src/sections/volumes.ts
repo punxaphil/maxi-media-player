@@ -152,5 +152,3 @@ class Volumes extends LitElement {
     `;
   }
 }
-
-customElements.define('mxmp-volumes', Volumes);

@@ -11,7 +11,7 @@ import { when } from 'lit/directives/when.js';
 import { styleMap } from 'lit-html/directives/style-map.js';
 import { cardDoesNotContainAllSections, getHeight, getWidth, isSonosCard } from './utils/utils';
 
-const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES } = Section;
+const { GROUPING, GROUPS, MEDIA_BROWSER, PLAYER, VOLUMES, QUEUE } = Section;
 const TITLE_HEIGHT = 2;
 const FOOTER_HEIGHT = 5;
 
@@ -71,6 +71,11 @@ export class Card extends LitElement {
                     `,
                   ],
                   [VOLUMES, () => html` <mxmp-volumes .store=${this.store}></mxmp-volumes>`],
+                  [
+                    QUEUE,
+                    () =>
+                      html`<mxmp-queue .store=${this.store} @item-selected=${this.onMediaItemSelected}></mxmp-queue>`,
+                  ],
                 ])
               : html`<div class="no-players">No supported players found</div>`
           }
@@ -199,8 +204,11 @@ export class Card extends LitElement {
         delete newConfig[key];
       }
     }
-    const sections = newConfig.sections;
-    if (sections) {
+    const sections =
+      newConfig.sections || Object.values(Section).filter((section) => isSonosCard(newConfig) || section !== QUEUE);
+    if (newConfig.startSection && sections.includes(newConfig.startSection)) {
+      this.section = newConfig.startSection;
+    } else if (sections) {
       this.section = sections.includes(PLAYER)
         ? PLAYER
         : sections.includes(MEDIA_BROWSER)
@@ -209,7 +217,9 @@ export class Card extends LitElement {
             ? GROUPS
             : sections.includes(GROUPING)
               ? GROUPING
-              : VOLUMES;
+              : sections.includes(QUEUE) && isSonosCard(newConfig)
+                ? QUEUE
+                : VOLUMES;
     } else {
       this.section = PLAYER;
     }

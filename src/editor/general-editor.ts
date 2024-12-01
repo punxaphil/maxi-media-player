@@ -1,17 +1,24 @@
 import { html, TemplateResult } from 'lit';
 import { BaseEditor } from './base-editor';
 
+const options = {
+  player: 'Player',
+  'media browser': 'Media Browser',
+  groups: 'Groups',
+  grouping: 'Grouping',
+  volumes: 'Volumes',
+  queue: 'Queue',
+};
 export const GENERAL_SCHEMA = [
   {
     type: 'multi_select',
-    options: {
-      player: 'Player',
-      'media browser': 'Media Browser',
-      groups: 'Groups',
-      grouping: 'Grouping',
-      volumes: 'Volumes',
-    },
+    options: options,
     name: 'sections',
+  },
+  {
+    type: 'select',
+    options: Object.entries(options).map((entry) => entry),
+    name: 'startSection',
   },
   {
     type: 'integer',
@@ -76,11 +83,7 @@ export const GENERAL_SCHEMA = [
 class GeneralEditor extends BaseEditor {
   protected render(): TemplateResult {
     return html`
-      <mxmp-editor-form
-        .schema=${GENERAL_SCHEMA}
-        .config=${this.config}
-        .hass=${this.hass}
-      ></mxmp-editor-form>
+      <mxmp-editor-form .schema=${GENERAL_SCHEMA} .config=${this.config} .hass=${this.hass}></mxmp-editor-form>
     `;
   }
 }

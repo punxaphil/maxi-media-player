@@ -1,7 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { dispatchActivePlayerId, getGroupingChanges, getHeight, getSpeakerList, getWidth } from '../../src/utils/utils';
+import {
+  dispatchActivePlayerId,
+  entityMatchMxmp,
+  entityMatchSonos,
+  getGroupingChanges,
+  getGroupPlayerIds,
+  getHeight,
+  getSpeakerList,
+  getWidth,
+} from '../../src/utils/utils';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { CardConfig, PredefinedGroup, Section } from '../../src/types';
+import { CardConfig, HomeAssistantWithEntities, PredefinedGroup, Section } from '../../src/types';
 import { ACTIVE_PLAYER_EVENT, ACTIVE_PLAYER_EVENT_INTERNAL } from '../../src/constants';
 import { GroupingItem } from '../../src/model/grouping-item';
 import { MediaPlayer } from '../../src/model/media-player';
@@ -26,10 +35,25 @@ const element = {
   dispatchEvent: elemDispatchEvent,
 } as unknown as Element;
 
+export function newConfig(config: Partial<CardConfig>) {
+  return { type: 'custom:maxi-media-player', sections: [], ...config };
+}
+
+function hassEntity(entity: string) {
+  return {
+    entity_id: entity,
+    attributes: {},
+    context: { id: '', user_id: null, parent_id: null },
+    state: 'on',
+    last_changed: '',
+    last_updated: '',
+  };
+}
+
 describe('Utils', () => {
   beforeEach(() => {
     entityOne.attributes.group_members = [];
-    config = { sections: [] } as unknown as CardConfig;
+    config = newConfig({ entities: ['entity1'] });
   });
   describe('getSpeakerList', () => {
     beforeEach(() => {
@@ -149,27 +173,134 @@ describe('Utils', () => {
         });
       },
     );
+  });
 
-    // it('should correctly calculate unJoin, join, and newMainPlayer when activePlayerId is in unJoin', () => {
-    //   // Arrange
-    //   const activePlayerId = '1';
-    //   const joinedPlayers = ['1', '2'];
-    //   const mainPlayer: MediaPlayer = new MediaPlayer(entityOne, config, entities);
-    //   const secondaryPlayer: MediaPlayer = new MediaPlayer(entityTwo, config, entities);
-    //   const groupingItems = [
-    //     new GroupingItem(mainPlayer, mainPlayer, false),
-    //     new GroupingItem(secondaryPlayer, mainPlayer, false),
-    //   ];
-    //
-    //   // Act
-    //   const result = getGroupingChanges(groupingItems, joinedPlayers, activePlayerId);
-    //
-    //   // Assert
-    //   expect(result).toEqual({
-    //     unJoin: ['1', '2'],
-    //     join: ['3'],
-    //     newMainPlayer: '3',
-    //   });
-    // });
+  describe('getGroupPlayerIds', () => {
+    it('should return group members if they exist', () => {
+      const entity = {
+        entity_id: 'entity1',
+        attributes: {
+          group_members: ['entity2', 'entity3'],
+        },
+      } as unknown as HassEntity;
+
+      const result = getGroupPlayerIds(entity);
+      expect(result).toEqual(['entity2', 'entity3']);
+    });
+
+    it('should filter out null and undefined group members', () => {
+      const entity = {
+        entity_id: 'entity1',
+        attributes: {
+          group_members: ['entity2', null, 'entity3', undefined],
+        },
+      } as unknown as HassEntity;
+
+      const result = getGroupPlayerIds(entity);
+      expect(result).toEqual(['entity2', 'entity3']);
+    });
+
+    it('should return entity_id if group members are empty', () => {
+      const entity = {
+        entity_id: 'entity1',
+        attributes: {
+          group_members: [],
+        },
+      } as unknown as HassEntity;
+
+      const result = getGroupPlayerIds(entity);
+      expect(result).toEqual(['entity1']);
+    });
+
+    it('should return entity_id if group members is a list of null', () => {
+      const entity = {
+        entity_id: 'entity1',
+        attributes: {
+          group_members: [null],
+        },
+      } as unknown as HassEntity;
+
+      const result = getGroupPlayerIds(entity);
+      expect(result).toEqual(['entity1']);
+    });
+
+    it('should return entity_id if group members are not defined', () => {
+      const entity = {
+        entity_id: 'entity1',
+        attributes: {},
+      } as unknown as HassEntity;
+
+      const result = getGroupPlayerIds(entity);
+      expect(result).toEqual(['entity1']);
+    });
+  });
+
+  describe('entityMatch', () => {
+    function createEntities() {
+      return {
+        entities: {
+          entity1: { platform: 'sonos' },
+          entity2: { platform: 'chromecast' },
+          entity3: { platform: 'sonos' },
+          entity4: {},
+          entity5: { platform: 'bose' },
+        },
+      } as unknown as HomeAssistantWithEntities;
+    }
+    let hassWithEntities = createEntities();
+
+    beforeEach(() => {
+      hassWithEntities = createEntities();
+    });
+    describe('entityMatchSonos', () => {
+      it.each([
+        ['entity1', { entities: ['entity1'] }, true],
+        ['entity1', { entities: ['entity2'] }, false],
+        ['entity1', { entities: ['entity1'], excludeItemsInEntitiesList: true }, false],
+        ['entity1', { entities: ['entity2'], excludeItemsInEntitiesList: true }, true],
+        ['entity1', { entityPlatform: 'sonos' }, true],
+        ['entity1', { entityPlatform: 'sonos', entities: ['entity1'] }, true],
+        ['entity1', { entityPlatform: 'sonos', entities: ['entity2'] }, false],
+        ['entity1', { entityPlatform: 'bose' }, false],
+        ['entity5', { entityPlatform: 'bose' }, true],
+        ['entity1', {}, true],
+        ['entity4', {}, true],
+        ['entity4', { entityPlatform: 'sonos' }, false],
+      ])('when entity is %j, config is %j: should return %j', (entity_id, config, expected) => {
+        // Act
+
+        const result = entityMatchSonos(newConfig(config), hassEntity(entity_id), hassWithEntities);
+
+        // Assert
+        expect(result).toBe(expected);
+      });
+    });
+
+    describe('entityMatchMxmp', () => {
+      it.each([
+        ['entity1', { entities: ['entity1'] }, true],
+        ['entity1', { entities: ['entity2'] }, false],
+        ['entity1', { entities: ['entity1'], excludeItemsInEntitiesList: true }, false],
+        ['entity1', { entities: ['entity2'], excludeItemsInEntitiesList: true }, true],
+        ['entity1', { entityPlatform: 'sonos' }, true],
+        ['entity1', { entityPlatform: 'sonos', entities: ['entity1'] }, true],
+        ['entity1', { entityPlatform: 'sonos', entities: ['entity2'] }, false],
+        ['entity1', { entityPlatform: 'bose' }, false],
+        ['entity5', { entityPlatform: 'bose' }, true],
+        ['entity1', {}, false],
+        ['entity4', {}, false],
+        ['entity4', { entityPlatform: 'sonos' }, false],
+      ])('when entity is %j, config is %j: should return %j', (entity_id, config, expected) => {
+        // Act
+        const result = entityMatchMxmp(
+          newConfig({ ...config, type: 'custom:maxi-media-player' }),
+          hassEntity(entity_id),
+          hassWithEntities,
+        );
+
+        // Assert
+        expect(result).toBe(expected);
+      });
+    });
   });
 });

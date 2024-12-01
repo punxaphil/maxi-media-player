@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { CardConfig, MediaPlayerItem, Section, TemplateResult } from '../types';
+import { CardConfig, GetQueueResponse, MediaPlayerItem, Section, TemplateResult } from '../types';
 import { ServiceCallRequest } from 'custom-card-helpers/dist/types';
 import { CALL_MEDIA_DONE, CALL_MEDIA_STARTED } from '../constants';
 import { MediaPlayer } from '../model/media-player';
@@ -45,27 +45,75 @@ export default class HassService {
   }
 
   async getRelatedEntities(player: MediaPlayer, ...entityTypes: string[]) {
-    return new Promise<HassEntity[]>(async (resolve) => {
+    return new Promise<HassEntity[]>((resolve) => {
       const subscribeMessage = {
         type: 'render_template',
         template: `{{ device_entities(device_id('${player.id}')) }}`,
       };
       try {
-        const unsubscribe = await this.hass.connection.subscribeMessage<TemplateResult>((response) => {
-          try {
-            unsubscribe();
-            resolve(
-              response.result
-                .filter((item: string) => entityTypes.some((type) => item.includes(type)))
-                .map((item) => this.hass.states[item]),
-            );
-          } catch {
-            resolve([]);
-          }
-        }, subscribeMessage);
+        this.hass.connection
+          .subscribeMessage<TemplateResult>((response) => {
+            try {
+              resolve(
+                response.result
+                  .filter((item: string) => entityTypes.some((type) => item.includes(type)))
+                  .map((item) => this.hass.states[item]),
+              );
+            } catch {
+              resolve([]);
+            }
+          }, subscribeMessage)
+          .then((unsub) => unsub);
       } catch {
         resolve([]);
       }
     });
   }
+
+  async getQueue(mediaPlayer: MediaPlayer): Promise<MediaPlayerItem[]> {
+    try {
+      const ret = await this.hass.callWS<GetQueueResponse>({
+        type: 'call_service',
+        domain: 'sonos',
+        service: 'get_queue',
+        target: {
+          entity_id: mediaPlayer.id,
+        },
+        return_response: true,
+      });
+      const queueItems = ret.response[mediaPlayer.id];
+      return queueItems.map((item) => {
+        return {
+          title: `${item.media_artist} - ${item.media_title}`,
+        };
+      });
+    } catch (e) {
+      console.error('Error getting queue', e);
+      return [];
+    }
+  }
+
+  async playQueue(mediaPlayer: MediaPlayer, queuePosition: number) {
+    this.card.dispatchEvent(customEvent(CALL_MEDIA_STARTED, { section: this.currentSection }));
+    try {
+      await this.hass.callService('sonos', 'play_queue', {
+        entity_id: mediaPlayer.id,
+        queue_position: queuePosition,
+      });
+    } finally {
+      this.card.dispatchEvent(customEvent(CALL_MEDIA_DONE));
+    }
+  }
+
+  async removeFromQueue(mediaPlayer: MediaPlayer, queuePosition: number) {
+    await this.hass.callService('sonos', 'remove_from_queue', {
+      entity_id: mediaPlayer.id,
+      queue_position: queuePosition,
+    });
+  }
+
+  async clearQueue(mediaPlayer: MediaPlayer) {
+    await this.hass.callService('media_player', 'clear_playlist', { entity_id: mediaPlayer.id });
+  }
+
 }
