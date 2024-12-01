@@ -116,4 +116,16 @@ export default class HassService {
     await this.hass.callService('media_player', 'clear_playlist', { entity_id: mediaPlayer.id });
   }
 
+  async setSleepTimer(mediaPlayer: MediaPlayer, sleepTimer: number) {
+    await this.hass.callService('sonos', 'set_sleep_timer', {
+      entity_id: mediaPlayer.id,
+      sleep_time: sleepTimer,
+    });
+  }
+
+  async cancelSleepTimer(player: MediaPlayer) {
+    await this.hass.callService('sonos', 'clear_sleep_timer', {
+      entity_id: player.id,
+    });
+  }
 }

@@ -9,10 +9,11 @@ import MediaControlService from '../services/media-control-service';
 import { MediaPlayer } from '../model/media-player';
 import HassService from '../services/hass-service';
 import { HassEntity } from 'home-assistant-js-websocket';
+import '../components/sleep-timer';
 
 const { SELECT_SOURCE } = MediaPlayerEntityFeature;
 
-class Volumes extends LitElement {
+export class Volumes extends LitElement {
   @property({ attribute: false }) store!: Store;
   private config!: CardConfig;
   private activePlayer!: MediaPlayer;
@@ -34,7 +35,7 @@ class Volumes extends LitElement {
   }
 
   private volumeWithName(player: MediaPlayer, updateMembers = true) {
-    const name = updateMembers ? this.config.labelForTheAllVolumesSlider ?? 'All' : player.name;
+    const name = updateMembers ? (this.config.labelForTheAllVolumesSlider ?? 'All') : player.name;
     const volDown = async () => await this.mediaControlService.volumeDown(player, updateMembers);
     const volUp = async () => await this.mediaControlService.volumeUp(player, updateMembers);
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
@@ -64,13 +65,14 @@ class Volumes extends LitElement {
           show-switches=${this.showSwitches[player.id] || nothing}
         ></ha-icon-button>
       </div>
-      <div class="switches">
-        <mxmp-ha-player hide=${hideSwitches || nothing} .store=${this.store} .features=${[SELECT_SOURCE]}>
-        </mxmp-ha-player>
+      <div class="switches" hide=${hideSwitches || nothing}>
+        <mxmp-ha-player .store=${this.store} .features=${[SELECT_SOURCE]}> </mxmp-ha-player>
         ${until(this.getAdditionalControls(hideSwitches, player))}
+        <mxmp-sleep-timer .store=${this.store} .player=${player}></mxmp-sleep-timer>
       </div>
     </div>`;
   }
+
   private toggleShowSwitches(player: MediaPlayer) {
     this.showSwitches[player.id] = !this.showSwitches[player.id];
     this.requestUpdate();
