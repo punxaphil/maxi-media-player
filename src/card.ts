@@ -223,7 +223,8 @@ export class Card extends LitElement {
     } else {
       this.section = PLAYER;
     }
-    newConfig.mediaBrowserItemsPerRow = newConfig.mediaBrowserItemsPerRow || 4;
+
+    newConfig.favoritesItemsPerRow = newConfig.favoritesItemsPerRow || 4;
     // support custom:auto-entities
     if (newConfig.entities?.length && newConfig.entities[0].entity) {
       newConfig.entities = newConfig.entities.map((entity: { entity: string }) => entity.entity);
@@ -233,6 +234,19 @@ export class Card extends LitElement {
       if (newConfig.showNonSonosPlayers) {
         newConfig.entityPlatform = undefined;
       }
+    }
+    // handle deprecated config
+    if (newConfig.customSources) {
+      newConfig.customFavorites = newConfig.customSources;
+    }
+    if (newConfig.customThumbnail) {
+      newConfig.customFavoriteThumbnails = newConfig.customThumbnail;
+    }
+    if (newConfig.customThumbnailIfMissing) {
+      newConfig.customFavoriteThumbnailsIfMissing = newConfig.customThumbnailIfMissing;
+    }
+    if (newConfig.mediaBrowserItemsPerRow) {
+      newConfig.favoritesItemsPerRow = newConfig.mediaBrowserItemsPerRow;
     }
     this.config = newConfig;
   }

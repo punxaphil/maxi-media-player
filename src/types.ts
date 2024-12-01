@@ -51,7 +51,7 @@ export interface CardConfig extends LovelaceCardConfig {
   predefinedGroups?: ConfigPredefinedGroup[];
   title?: string;
   labelWhenNoMediaIsSelected?: string;
-  labelForTheAllVolumesSlider: string;
+  labelForTheAllVolumesSlider?: string;
   entityNameRegexToReplace?: string;
   entityNameReplacement?: string;
   artworkHostname?: string;
@@ -60,12 +60,12 @@ export interface CardConfig extends LovelaceCardConfig {
   hideGroupCurrentTrack?: boolean;
   dynamicVolumeSlider?: boolean;
   mediaArtworkOverrides?: MediaArtworkOverride[];
-  customSources?: CustomSources;
-  customThumbnail?: CustomThumbnails;
-  customThumbnailIfMissing?: CustomThumbnails;
+  customFavorites?: CustomFavorites;
+  customFavoriteThumbnails?: CustomFavoriteThumbnails;
+  customFavoriteThumbnailsIfMissing?: CustomFavoriteThumbnails;
   favoritesToIgnore?: string[];
-  mediaBrowserItemsPerRow?: number;
-  mediaBrowserHideTitleForThumbnailIcons?: boolean;
+  favoritesItemsPerRow?: number;
+  favoritesHideTitleForThumbnailIcons?: boolean;
   topFavorites?: string[];
   numberOfFavoritesToShow?: number;
   hideBrowseMediaButton?: boolean;
@@ -108,16 +108,16 @@ export interface MediaArtworkOverride {
   sizePercentage?: number;
 }
 
-export interface CustomSources {
-  [name: string]: CustomSource[];
+export interface CustomFavorites {
+  [name: string]: CustomFavorite[];
 }
 
-export interface CustomSource {
+export interface CustomFavorite {
   title: string;
   thumbnail?: string;
 }
 
-export interface CustomThumbnails {
+export interface CustomFavoriteThumbnails {
   [title: string]: string;
 }
 

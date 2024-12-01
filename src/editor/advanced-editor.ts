@@ -66,7 +66,7 @@ export const ADVANCED_SCHEMA = [
     type: 'string',
   },
   {
-    name: 'mediaBrowserHideTitleForThumbnailIcons',
+    name: 'favoritesHideTitleForThumbnailIcons',
     selector: { boolean: {} },
   },
   {
@@ -141,6 +141,19 @@ export const ADVANCED_SCHEMA = [
     name: 'showBrowseMediaInPlayerSection',
     selector: { boolean: {} },
   },
+  {
+    type: 'string',
+    name: 'mediaTitleRegexToReplace',
+  },
+  {
+    type: 'string',
+    name: 'mediaTitleReplacement',
+  },
+  {
+    name: 'footerHeight',
+    type: 'integer',
+    valueMin: 0,
+  },
 ];
 
 class AdvancedEditor extends BaseEditor {
@@ -158,9 +171,9 @@ class AdvancedEditor extends BaseEditor {
       <div>
         The following needs to be configured using code (YAML):
         <ul>
-          <li>customSources</li>
-          <li>customThumbnail</li>
-          <li>customThumbnailIfMissing</li>
+          <li>customFavorites</li>
+          <li>customFavoriteThumbnails</li>
+          <li>customFavoriteThumbnailsIfMissing</li>
           <li>favoritesToIgnore</li>
           <li>groupingButtonIcons</li>
           <li>sectionButtonIcons</li>

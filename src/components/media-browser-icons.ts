@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js';
 import Store from '../model/store';
 import { CardConfig, MediaPlayerItem } from '../types';
 import { customEvent } from '../utils/utils';
-import { MEDIA_ITEM_SELECTED, mediaBrowserTitleStyle } from '../constants';
+import { MEDIA_ITEM_SELECTED, mediaItemTitleStyle } from '../constants';
 import { itemsWithFallbacks, renderMediaBrowserItem } from '../utils/media-browser-utils';
 import { styleMap } from 'lit-html/directives/style-map.js';
 
@@ -20,10 +20,10 @@ export class MediaBrowserIcons extends LitElement {
         ${itemsWithFallbacks(this.items, this.config).map(
           (item) => html`
             <ha-control-button
-              style=${this.buttonStyle(this.config.mediaBrowserItemsPerRow || 4)}
+              style=${this.buttonStyle(this.config.favoritesItemsPerRow || 4)}
               @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
             >
-              ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.mediaBrowserHideTitleForThumbnailIcons)}
+              ${renderMediaBrowserItem(item, !item.thumbnail || !this.config.favoritesHideTitleForThumbnailIcons)}
             </ha-control-button>
           `,
         )}
@@ -31,9 +31,9 @@ export class MediaBrowserIcons extends LitElement {
     `;
   }
 
-  private buttonStyle(mediaBrowserItemsPerRow: number) {
+  private buttonStyle(favoritesItemsPerRow: number) {
     const margin = '1%';
-    const size = `calc(100% / ${mediaBrowserItemsPerRow} - ${margin} * 2)`;
+    const size = `calc(100% / ${favoritesItemsPerRow} - ${margin} * 2)`;
     return styleMap({
       width: size,
       height: size,
@@ -43,7 +43,7 @@ export class MediaBrowserIcons extends LitElement {
 
   static get styles() {
     return [
-      mediaBrowserTitleStyle,
+      mediaItemTitleStyle,
       css`
         .icons {
           display: flex;

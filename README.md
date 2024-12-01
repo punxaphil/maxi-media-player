@@ -33,7 +33,6 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 
 # Installation
 ## With HACS (recommended)
-
 1. Download HACS following the instructions on https://hacs.xyz/docs/setup/download
 1. Proceed to the initial configuration following the instructions on https://hacs.xyz/docs/configuration/basic
 1. On your sidebar go to HACS
@@ -45,8 +44,6 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 1. You can now click on Add card in the bottom right corner and search for Maxi Media Player
 
 Coming soon in the HACS default repo (still waiting for validation).
-
-
 
 ## Without HACS
 1. Download this file: maxi-media-player.js
@@ -77,7 +74,6 @@ Use the Visual Editor in Home Assistant to configure the card. Most options are 
 
 ### Configuration in YAML
 
-
 ```yaml
 type: custom:maxi-media-player
 entities: # Required unless you specify entityPlatform
@@ -88,7 +84,6 @@ entities: # Required unless you specify entityPlatform
 excludeItemsInEntitiesList: true # Will invert the selection in the `entities` list, so that all players that are not in the list will be used.
 entityPlatform: sonos # will select all entities for this platform. Will override the `entities` list if set.
 ```
-
 
 All settings below are optional
 ```yaml
@@ -175,8 +170,8 @@ mediaArtworkOverrides: # Show your own selected artwork if certain rules match
     imageUrl: https://cdn-icons-png.flaticon.com/512/4108/4108794.png
   - ifMissing: true # ifMissing will only be used if none of the "Equals" overrides above resulted in a match 
     imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
-customSources: # Read more in 'Custom Favorites / Sources' section below
-  media_player.tv: # set this to 'all' to show the custom source for all players
+customFavorites: # Read more in 'Custom Favorites' section below
+  media_player.tv: # set this to 'all' to show the custom favorite for all players
     - title: TV # Must match the name of the source (unless you specify media_content_id/type as shown below)
       thumbnail: https://cdn-icons-png.flaticon.com/512/716/716429.png
   all:
@@ -201,14 +196,14 @@ showChannelInPlayer: true # default is false. Will show the channel (if availabl
 hidePlaylistInPlayer: true # default is false. Will hide the playlist name in the player section.
 
 # media browser specific
-mediaBrowserItemsPerRow: 1 # default is 4. Use this to show items as list.
-mediaBrowserHideTitleForThumbnailIcons: true # default is false. Only makes a difference if mediaBrowserItemsPerRow > 1. Will hide title for thumbnail artworks.
-customThumbnail:
+favoritesItemsPerRow: 1 # default is 4. Use this to show items as list.
+favoritesHideTitleForThumbnailIcons: true # default is false. Only makes a difference if favoritesItemsPerRow > 1. Will hide title for thumbnail artworks.
+customFavoriteThumbnails:
   Voyage: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
-customThumbnailIfMissing:
+customFavoriteThumbnailsIfMissing:
   Ed Sheeran Radio: https://i.scdn.co/image/ab6761610000e5eb4d2f80ceffc6c70a432ccd7c
   Legendary: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
-  fallback: https://cdn-icons-png.flaticon.com/512/651/651717.png # will use this if thumbnail is missing and none of the above matches. Defaults to black music notes with white background.  
+  fallback: https://cdn-icons-png.flaticon.com/512/651/651717.png # will use this if thumbnail is missing and none of the above matches. Defaults to image of music notes.
 favoritesToIgnore:
   - My Favorite Album
   - My Bad Playlist
@@ -223,6 +218,7 @@ mediaBrowserTitle: My favorites # default is 'All favorites'. Use this to change
 
 # volumes specific
 hideVolumeCogwheel: true # default is false. Will hide the cogwheel for the volumes section.
+
 ```
 
 ## Using individual section cards
@@ -261,7 +257,7 @@ The following variables are being used and can be set in your theme to change th
 
 Read more about using theme variables here: https://www.home-assistant.io/integrations/frontend/#defining-themes
 
-## Custom Favorites / Sources
+## Custom Favorites
 
 You can add your own buttons to the Favorites section. This can be useful if you want to quickly start a specific radio station or playlist.
 
@@ -272,14 +268,14 @@ To determine what to configure for a button do the following:
 4. Find the media player entity that is playing the radio station or playlist.
 5. Look for the `media_content_id` and `media_content_type` attributes.
 6. For the thumbnail, you can inspect the HTML to see what image the media browser is using, or you can also use a local URL if you have the image stored locally.
-7. Use these values to configure the custom source.
+7. Use these values to configure the custom favorite.
 
 Example:
-![custom_sources.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/custom_sources.png)
+![custom_favorites.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/custom_favorites.png)
     
 ```yaml
 type: custom:maxi-media-player
-customSources: 
+customFavorites: 
   all: # 'all' means it will show for all players, otherwise specify the entity_id of the player.
     - title: BBC
       media_content_id: x-rincon-mp3radio://http://stream.live.vc.bbcmedia.co.uk/bbc_world_service
