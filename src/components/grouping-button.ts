@@ -10,8 +10,10 @@ export class GroupingButton extends LitElement {
     const iconAndName = (!!this.icon && !!this.name) || nothing;
     return html`
       <ha-control-button selected=${this.selected || nothing}>
-        ${this.icon ? html` <ha-icon icon-and-name=${iconAndName} .icon=${this.icon}></ha-icon>` : ''}
-        ${this.name ? html`<span>${this.name}</span>` : ''}
+        <div>
+          ${this.icon ? html` <ha-icon icon-and-name=${iconAndName} .icon=${this.icon}></ha-icon>` : ''}
+          ${this.name ? html`<span>${this.name}</span>` : ''}
+        </div>
       </ha-control-button>
     `;
   }
@@ -20,24 +22,14 @@ export class GroupingButton extends LitElement {
     return css`
       ha-control-button {
         width: fit-content;
-        --control-button-background-color: var(--accent-color);
+        --control-button-background-color: var(--secondary-text-color);
         --control-button-icon-color: var(--secondary-text-color);
       }
       ha-control-button[selected] {
         --control-button-icon-color: var(--accent-color);
       }
 
-      ha-icon {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      ha-icon[icon-and-name] {
-        padding-right: 0;
-      }
-
       span {
-        padding-right: 1rem;
-        padding-left: 1rem;
         font-weight: bold;
       }
     `;
