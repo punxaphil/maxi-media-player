@@ -14,24 +14,31 @@ class PlayerHeader extends LitElement {
     this.config = this.store.config;
     this.activePlayer = this.store.activePlayer;
 
-    const speakerList = getSpeakerList(this.activePlayer, this.store.predefinedGroups);
+    return html` <div class="info">
+      <div class="entity">${getSpeakerList(this.activePlayer, this.store.predefinedGroups)}</div>
+      <div class="song">${this.getSong()}</div>
+      <div class="artist-album">${this.getAlbum()}</div>
+      <mxmp-progress .store=${this.store}></mxmp-progress>
+    </div>`;
+  }
+
+  private getSong() {
     let song = this.activePlayer.getCurrentTrack();
     song = song || this.config.labelWhenNoMediaIsSelected || 'No media selected';
     if (this.config.showSourceInPlayer && this.activePlayer.attributes.source) {
       song = `${song} (${this.activePlayer.attributes.source})`;
     }
+    return song;
+  }
+
+  private getAlbum() {
     let album = this.activePlayer.attributes.media_album_name;
     if (this.config.showChannelInPlayer && this.activePlayer.attributes.media_channel) {
       album = this.activePlayer.attributes.media_channel;
     } else if (!this.config.hidePlaylistInPlayer && this.activePlayer.attributes.media_playlist) {
       album = `${this.activePlayer.attributes.media_playlist} - ${album}`;
     }
-    return html` <div class="info">
-      <div class="entity">${speakerList}</div>
-      <div class="song">${song}</div>
-      <div class="artist-album">${album}</div>
-      <mxmp-progress .store=${this.store}></mxmp-progress>
-    </div>`;
+    return album;
   }
 
   static get styles() {
