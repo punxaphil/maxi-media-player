@@ -142,3 +142,7 @@ export function sortEntities(config: CardConfig, filtered: HassEntity[]) {
     return filtered.sort((a, b) => a.entity_id.localeCompare(b.entity_id));
   }
 }
+
+export function findPlayer(mediaPlayers: MediaPlayer[], playerId: string | undefined) {
+  return mediaPlayers.find((member) => member.id === playerId);
+}

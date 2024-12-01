@@ -6,6 +6,7 @@ import { CardConfig, MediaPlayerEntityFeature } from '../types';
 import { mdiFastForward, mdiRewind, mdiVolumeMinus, mdiVolumePlus } from '@mdi/js';
 import { MediaPlayer } from '../model/media-player';
 import { until } from 'lit-html/directives/until.js';
+import { findPlayer } from '../utils/utils';
 
 const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
 
@@ -15,6 +16,7 @@ class PlayerControls extends LitElement {
   private activePlayer!: MediaPlayer;
   private mediaControlService!: MediaControlService;
   private volumePlayer!: MediaPlayer;
+  private updateMemberVolumes!: boolean;
 
   render() {
     this.config = this.store.config;
@@ -22,7 +24,8 @@ class PlayerControls extends LitElement {
     this.mediaControlService = this.store.mediaControlService;
     const noUpDown = !!this.config.showVolumeUpAndDownButtons && nothing;
     const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && nothing;
-    this.volumePlayer = this.activePlayer.getMember(this.config.playerVolumeEntityId) ?? this.activePlayer;
+    this.volumePlayer = this.getVolumePlayer();
+    this.updateMemberVolumes = !this.config.playerVolumeEntityId;
     return html`
       <div class="main" id="mediaControls">
           <div class="icons">
@@ -42,26 +45,37 @@ class PlayerControls extends LitElement {
               <mxmp-ha-player .store=${this.store} .features=${this.showBrowseMedia()}></mxmp-ha-player>
           </div>
           <mxmp-volume .store=${this.store} .player=${this.volumePlayer}
-                       .updateMembers=${!this.config.playerVolumeEntityId}></mxmp-volume>
+                       .updateMembers=${this.updateMemberVolumes}></mxmp-volume>
           <div class="icons">
               <mxmp-ha-player .store=${this.store} .features=${this.store.showPower(true)}></mxmp-ha-player>
           </div">
       </div>
   `;
   }
-  private volDown = async () =>
-    await this.mediaControlService.volumeDown(this.volumePlayer, !this.config.playerVolumeEntityId);
-  private volUp = async () =>
-    await this.mediaControlService.volumeUp(this.volumePlayer, !this.config.playerVolumeEntityId);
+
+  private getVolumePlayer() {
+    let result;
+    if (this.config.playerVolumeEntityId) {
+      if (this.config.allowPlayerVolumeEntityOutsideOfGroup) {
+        result = findPlayer(this.store.allMediaPlayers, this.config.playerVolumeEntityId);
+      } else {
+        result = this.activePlayer.getMember(this.config.playerVolumeEntityId);
+      }
+    }
+    return result ?? this.activePlayer;
+  }
+
+  private volDown = async () => await this.mediaControlService.volumeDown(this.volumePlayer, this.updateMemberVolumes);
+  private volUp = async () => await this.mediaControlService.volumeUp(this.volumePlayer, this.updateMemberVolumes);
   private rewind = async () =>
     await this.mediaControlService.seek(
-      this.volumePlayer,
-      this.volumePlayer.attributes.media_position - (this.config.fastForwardAndRewindStepSizeSeconds || 15),
+      this.activePlayer,
+      this.activePlayer.attributes.media_position - (this.config.fastForwardAndRewindStepSizeSeconds || 15),
     );
   private fastForward = async () =>
     await this.mediaControlService.seek(
-      this.volumePlayer,
-      this.volumePlayer.attributes.media_position + (this.config.fastForwardAndRewindStepSizeSeconds || 15),
+      this.activePlayer,
+      this.activePlayer.attributes.media_position + (this.config.fastForwardAndRewindStepSizeSeconds || 15),
     );
 
   private async getAudioInputFormat() {

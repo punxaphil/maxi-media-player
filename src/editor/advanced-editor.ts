@@ -103,6 +103,10 @@ export const ADVANCED_SCHEMA = [
     selector: { entity: { multiple: false, filter: { domain: 'media_player' } } },
   },
   {
+    name: 'allowPlayerVolumeEntityOutsideOfGroup',
+    selector: { boolean: {} },
+  },
+  {
     name: 'dontSwitchPlayerWhenGrouping',
     selector: { boolean: {} },
   },

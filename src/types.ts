@@ -86,6 +86,7 @@ export interface CardConfig extends LovelaceCardConfig {
   artworkMinHeight?: number;
   artworkAsBackground?: boolean;
   playerVolumeEntityId?: string;
+  allowPlayerVolumeEntityOutsideOfGroup?: boolean;
   dontSwitchPlayerWhenGrouping?: boolean;
   showSourceInPlayer?: boolean;
   showBrowseMediaInPlayerSection?: boolean;
