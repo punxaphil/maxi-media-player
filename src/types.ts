@@ -97,6 +97,8 @@ export interface CardConfig extends LovelaceCardConfig {
   groupingButtonIcons?: GroupingButtonIcons;
   sectionButtonIcons?: SectionButtonIcons;
   footerHeight?: number;
+  mediaTitleRegexToReplace?: string;
+  mediaTitleReplacement?: string;
 }
 
 export interface MediaArtworkOverride {

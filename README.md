@@ -109,6 +109,8 @@ sectionButtonIcons: # customize icons for the section buttons
   groups: mdi:multicast
   grouping: mdi:group
   volumes: mdi:volume-high
+mediaTitleRegexToReplace: '.wav?.*' # Regex pattern to replace parts of the media title
+mediaTitleReplacement: ' radio' # Replacement for the media title regex pattern
   
 # groups specific
 groupsTitle: ''

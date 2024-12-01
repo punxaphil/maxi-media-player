@@ -1,6 +1,6 @@
 import { HassEntity } from 'home-assistant-js-websocket';
 import { CardConfig } from '../types';
-import { getGroupPlayerIds } from '../utils/utils';
+import { findPlayer, getGroupPlayerIds } from '../utils/utils';
 
 export class MediaPlayer {
   id: string;
@@ -15,7 +15,7 @@ export class MediaPlayer {
   constructor(hassEntity: HassEntity, config: CardConfig, mediaPlayerHassEntities?: HassEntity[]) {
     this.id = hassEntity.entity_id;
     this.config = config;
-    this.name = this.getEntityName(hassEntity, config);
+    this.name = this.getEntityName(hassEntity);
     this.state = hassEntity.state;
     this.attributes = hassEntity.attributes;
     this.members = mediaPlayerHassEntities ? this.createGroupMembers(hassEntity, mediaPlayerHassEntities) : [this];
@@ -24,7 +24,7 @@ export class MediaPlayer {
   }
 
   getMember(playerId?: string) {
-    return this.members.find((member) => member.id === playerId);
+    return findPlayer(this.members, playerId);
   }
 
   hasMember(playerId: string) {
@@ -45,13 +45,22 @@ export class MediaPlayer {
     if (!track) {
       track = this.attributes.media_content_id?.replace(/.*:\/\//g, '') ?? '';
     }
+    if (this.config.mediaTitleRegexToReplace) {
+      track = track.replace(
+        new RegExp(this.config.mediaTitleRegexToReplace, 'g'),
+        this.config.mediaTitleReplacement || '',
+      );
+    }
     return track;
   }
 
-  private getEntityName(hassEntity: HassEntity, config: CardConfig) {
+  private getEntityName(hassEntity: HassEntity) {
     const name = hassEntity.attributes.friendly_name || '';
-    if (config.entityNameRegexToReplace) {
-      return name.replace(new RegExp(config.entityNameRegexToReplace, 'g'), config.entityNameReplacement || '');
+    if (this.config.entityNameRegexToReplace) {
+      return name.replace(
+        new RegExp(this.config.entityNameRegexToReplace, 'g'),
+        this.config.entityNameReplacement || '',
+      );
     }
     return name;
   }
