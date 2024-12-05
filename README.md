@@ -198,6 +198,7 @@ showSourceInPlayer: true # default is false. Will show the source (if available)
 showBrowseMediaInPlayerSection: true # default is false. Will show the browse media button in the player section.
 showChannelInPlayer: true # default is false. Will show the channel (if available) in the player section. This can for instance be the radio station name.
 hidePlaylistInPlayer: true # default is false. Will hide the playlist name in the player section.
+stopInsteadOfPause: true # default is false. Will show the stop button instead of the pause button when media is playing.
 
 # media browser specific
 favoritesItemsPerRow: 1 # default is 4. Use this to show items as list.

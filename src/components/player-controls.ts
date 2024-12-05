@@ -8,7 +8,8 @@ import { MediaPlayer } from '../model/media-player';
 import { until } from 'lit-html/directives/until.js';
 import { findPlayer } from '../utils/utils';
 
-const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA } = MediaPlayerEntityFeature;
+const { SHUFFLE_SET, REPEAT_SET, PLAY, PAUSE, NEXT_TRACK, PREVIOUS_TRACK, BROWSE_MEDIA, STOP } =
+  MediaPlayerEntityFeature;
 
 class PlayerControls extends LitElement {
   @property({ attribute: false }) store!: Store;
@@ -26,6 +27,7 @@ class PlayerControls extends LitElement {
     const noFastForwardAndRewind = !!this.config.showFastForwardAndRewindButtons && nothing;
     this.volumePlayer = this.getVolumePlayer();
     this.updateMemberVolumes = !this.config.playerVolumeEntityId;
+    const pauseOrStop = this.config.stopInsteadOfPause ? STOP : PAUSE;
     return html`
       <div class="main" id="mediaControls">
           <div class="icons">
@@ -34,7 +36,7 @@ class PlayerControls extends LitElement {
               <mxmp-ha-player .store=${this.store} .features=${this.showShuffle()}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${this.showPrev()}></mxmp-ha-player>
               <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.rewind} .path=${mdiRewind}></ha-icon-button>
-              <mxmp-ha-player .store=${this.store} .features=${[PLAY, PAUSE]} class="big-icon"></mxmp-ha-player>
+              <mxmp-ha-player .store=${this.store} .features=${[PLAY, pauseOrStop]} class="big-icon"></mxmp-ha-player>
               <ha-icon-button hide=${noFastForwardAndRewind} @click=${this.fastForward} .path=${mdiFastForward}></ha-icon-button>
               <mxmp-ha-player .store=${this.store} .features=${this.showNext()}></mxmp-ha-player>
               <mxmp-ha-player .store=${this.store} .features=${this.showRepeat()}></mxmp-ha-player>

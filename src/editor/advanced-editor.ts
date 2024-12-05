@@ -158,6 +158,10 @@ export const ADVANCED_SCHEMA = [
     type: 'integer',
     valueMin: 0,
   },
+  {
+    name: 'stopInsteadOfPause',
+    selector: { boolean: {} },
+  },
 ];
 
 class AdvancedEditor extends BaseEditor {

@@ -99,6 +99,7 @@ export interface CardConfig extends LovelaceCardConfig {
   footerHeight?: number;
   mediaTitleRegexToReplace?: string;
   mediaTitleReplacement?: string;
+  stopInsteadOfPause?: boolean;
 }
 
 export interface MediaArtworkOverride {
