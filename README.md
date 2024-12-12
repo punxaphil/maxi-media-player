@@ -33,7 +33,7 @@ Do you like the Maxi Media Player? Support the project with a coffee ☕️
 
 # Installation
 ## With HACS (recommended)
-Recommended way of installing this card is with HACS (Home Assistant Community Store).
+Recommended way of installing this card is with HACS [Home Assistant Community Store](https://hacs.xyz/docs/setup/download).
 
 ## Without HACS
 1. Download this file: maxi-media-player.js
