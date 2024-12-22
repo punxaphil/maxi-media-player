@@ -200,9 +200,10 @@ customFavoriteThumbnailsIfMissing:
   Ed Sheeran Radio: https://i.scdn.co/image/ab6761610000e5eb4d2f80ceffc6c70a432ccd7c
   Legendary: https://i.scdn.co/image/ab67706f000000027b2e7ee752dc222ff2fd466f
   fallback: https://cdn-icons-png.flaticon.com/512/651/651717.png # will use this if thumbnail is missing and none of the above matches. Defaults to image of music notes.
-favoritesToIgnore:
-  - My Favorite Album
-  - My Bad Playlist
+favoritesToIgnore: # will compare both against title and media_content_id
+  - My Favorite Album # Hide specific title
+  - Christmas # Hide any titles matching 'Christmas'
+  - radio_browser # Hide any radio stations from radio_browser (since their media_content_id contains this string)
 topFavorites: # Show these favorites at the top of the list
   - Legendary
   - Country Rocks
