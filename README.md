@@ -101,6 +101,7 @@ sectionButtonIcons: # customize icons for the section buttons
   volumes: mdi:volume-high
 mediaTitleRegexToReplace: '.wav?.*' # Regex pattern to replace parts of the media title
 mediaTitleReplacement: ' radio' # Replacement for the media title regex pattern
+inverseGroupMuteState: true # default is false, which means that only if all players are muted, mute icon shows as 'muted'. If set to true, mute icon will show as 'muted' if any player is muted.
   
 # groups specific
 groupsTitle: ''
@@ -440,7 +441,7 @@ card_mod:
       }
 ```
 
-### Example 9 - Hide volume slider
+### Example 9 - Hide volume slider and mute icon
 
 ```yaml
 card_mod:
