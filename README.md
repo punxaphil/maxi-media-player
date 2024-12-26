@@ -318,6 +318,30 @@ It is recommended to install this one in HACS GitHub - elax46/custom-brand-icons
 
 ![device_icons.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/device_icons.png)
 
+## Finding media_content_id (used in Custom Favorites)
+
+If you want to find the `media_content_id` for a specific radio station or playlist (for instance to configure `customFavorites`), you can do the following:
+1. Open Media tab
+2. Open Chrome Dev Tools
+3. Go to Network tab
+4. Filter on "WS"
+5. Reload page
+6. Now you will see a row `websocket`, click on `websocket`
+7. Select Messages tab
+8. Add filter `play_media`
+9. Now navigate to your playlist, and start playing it
+10. A line will appear, click on it
+11. Expand the JSON object, and look under `service_data`
+    There you will see something like:
+```
+entity_id: "media_player.kok"
+media_content_id: "spotify://8fb1de564ba7e4c8c4512361860574c83b9/spotify:playlist:1Oz4xMzRKtRiEs51243ZknqGJm"
+media_content_type: "spotify://playlist"
+```
+
+![media_content_id.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_content_id.png)
+
+
 ## CSS Styling
 
 The recommend way to change look and feel is to use the built-in theming capabilities in Home Assistant. If that is not enough this card supports being styled with [card_mod](https://github.com/thomasloven/lovelace-card-mod).
