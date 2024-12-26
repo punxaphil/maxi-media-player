@@ -311,6 +311,12 @@ entities:
   - media_player.sonos_livingroom
 ```
 
+## Device icons
+
+You can configure icons for your devices. This is done under Home Assistant -> Settings -> Entities, select your device then configure the Icon property. If you have configured an icon, it will show in the groups section of the card.
+It is recommended to install this one in HACS GitHub - elax46/custom-brand-icons. It has a lot of icons for different devices.
+
+![device_icons.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/device_icons.png)
 
 ## CSS Styling
 
@@ -338,7 +344,7 @@ The above YAML renders the following:
 
 ### More card_mod examples
 
-### Example 1 - Reduce margin for grouping list items
+#### Example 1 - Reduce margin for grouping list items
 
 ![card_mod_grouping_margin.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_grouping_margin.png)
 
@@ -354,7 +360,7 @@ card_mod:
       }
 ```
 
-### Example 2 - Resize volume and icons
+#### Example 2 - Resize volume and icons
 
 ```yaml
 card_mod:
@@ -371,7 +377,7 @@ card_mod:
 
 ```
 
-### Example 3 - Change the font and background color of grouping button
+#### Example 3 - Change the font and background color of grouping button
 
 ```yaml
 card_mod:
@@ -383,7 +389,7 @@ card_mod:
       }
 ```
 
-### Example 4 - Resize controls area in player section
+#### Example 4 - Resize controls area in player section
 
 ```yaml
 card_mod:
@@ -394,7 +400,7 @@ card_mod:
       }
 ```
 
-### Example 5 - Hide entity/group name
+#### Example 5 - Hide entity/group name
 
 ```yaml
 card_mod:
@@ -405,7 +411,7 @@ card_mod:
       }
 ```
 
-### Example 6 - More transparent title track and volume slider
+#### Example 6 - More transparent title track and volume slider
 
 ```yaml
 card_mod:
@@ -420,7 +426,7 @@ card_mod:
       }
 ```
 
-### Example 7 - Make the padding smaller around the artwork of the thumbnails in the favorites section
+#### Example 7 - Make the padding smaller around the artwork of the thumbnails in the favorites section
 
 ```yaml
 card_mod:
@@ -431,7 +437,7 @@ card_mod:
       }  
 ```
 
-### Example 8 - Remove artwork in player section
+#### Example 8 - Remove artwork in player section
 
 ```yaml
 card_mod:
@@ -442,7 +448,7 @@ card_mod:
       }
 ```
 
-### Example 9 - Hide volume slider and mute icon
+#### Example 9 - Hide volume slider and mute icon
 
 ```yaml
 card_mod:
@@ -453,7 +459,7 @@ card_mod:
       }
 ```
 
-### Example 10 - Hide background from controls when artwork is shown as background
+#### Example 10 - Hide background from controls when artwork is shown as background
 
 ```yaml
 artworkAsBackground: true
@@ -464,7 +470,7 @@ card_mod:
     }
 ```
 
-### Example 11 - Modify transparency of background from controls when artwork is shown as background
+#### Example 11 - Modify transparency of background from controls when artwork is shown as background
 
 ```yaml
 artworkAsBackground: true
@@ -476,7 +482,7 @@ card_mod:
       }
 ```
 
-### Example 12 - Show only player and now playing text information
+#### Example 12 - Show only player and now playing text information
 
 ```yaml
 heightPercentage: auto
@@ -493,7 +499,7 @@ card_mod:
       }
 ```
 
-### Example 13 - Style the favorite section
+#### Example 13 - Style the favorite section
 
 ```yaml
 card_mod:
@@ -505,7 +511,7 @@ card_mod:
       }  
 ```
 
-### Example 14 - Color of the player controls
+#### Example 14 - Color of the player controls
 
 ```yaml
 card_mod:
@@ -516,7 +522,7 @@ card_mod:
       }
 ```
 
-### Example 15 - Remove the top "All favorites" and "Browse media" from the favorites section
+#### Example 15 - Remove the top "All favorites" and "Browse media" from the favorites section
 
 ```yaml
 card_mod:
@@ -527,7 +533,7 @@ card_mod:
       }
 ```
 
-### Example 16 - Change colors of titles in favorites
+#### Example 16 - Change colors of titles in favorites
 
 ```yaml
 card_mod:
@@ -539,7 +545,7 @@ card_mod:
       }  
 ```
 
-### Example 17 - Remove everything except the album art
+#### Example 17 - Remove everything except the album art
 
 ```yaml
 card_mod:
@@ -550,7 +556,7 @@ card_mod:
       }
 ```
 
-### Example 18 - Hide the volume button and percentage
+#### Example 18 - Hide the volume button and percentage
 
 ```yaml
 card_mod:
@@ -563,7 +569,7 @@ card_mod:
 
 ![img.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_2.png)
 
-### Example 19 - Changing the font size of song title
+#### Example 19 - Changing the font size of song title
 
 ```yaml
 card_mod:
@@ -574,7 +580,7 @@ card_mod:
       }
 ```
 
-### Example 20 - Artwork position
+#### Example 20 - Artwork position
 
 ```yaml
 heightPercentage: auto
@@ -591,7 +597,7 @@ card_mod:
 
 ![img.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_3.png)
 
-### Example 21 - Size of group buttons
+#### Example 21 - Size of group buttons
 
 ```yaml
 card_mod:
@@ -602,7 +608,7 @@ card_mod:
       }
 ```
 
-### Example 22 - Font size for everything
+#### Example 22 - Font size for everything
 
 ```yaml
 card_mod:
@@ -612,7 +618,7 @@ card_mod:
       }
 ```
 
-### Example 23 - Increase entity font
+#### Example 23 - Increase entity font
 ```
 card_mod:
   style:
@@ -622,7 +628,7 @@ card_mod:
       }
 ```
 
-### Example 24 - Hide the select all/none buttons at the top of the groupings page
+#### Example 24 - Hide the select all/none buttons at the top of the groupings page
 ```
 card_mod:
   style:
@@ -632,7 +638,7 @@ card_mod:
       }  
 ```
 
-### Example 25 - reduce min-width of the card
+#### Example 25 - reduce min-width of the card
 ```
 widthPercentage: 30
 card_mod:
@@ -643,7 +649,7 @@ card_mod:
       }  
 ```
 
-### Example 26 - Padding and border around grouping items
+#### Example 26 - Padding and border around grouping items
 ```
 card_mod:
   style:
