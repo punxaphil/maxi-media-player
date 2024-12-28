@@ -424,13 +424,13 @@ card_mod:
       }
 ```
 
-#### Example 5 - Hide entity/group name
+#### Example 5 - Hide entity/group name and album name
 
 ```yaml
 card_mod:
   style:
     mxmp-player$ mxmp-player-header$: |
-      .entity {
+      .entity,.artist-album {
         display: none;
       }
 ```
