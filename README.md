@@ -385,7 +385,6 @@ card_mod:
 ```
 
 #### Example 2 - Resize volume and icons
-
 ```yaml
 card_mod:
   style:
@@ -402,7 +401,6 @@ card_mod:
 ```
 
 #### Example 3 - Change the font and background color of grouping button
-
 ```yaml
 card_mod:
   style:
@@ -414,7 +412,6 @@ card_mod:
 ```
 
 #### Example 4 - Resize controls area in player section
-
 ```yaml
 card_mod:
   style:
@@ -425,7 +422,6 @@ card_mod:
 ```
 
 #### Example 5 - Hide entity/group name and album name
-
 ```yaml
 card_mod:
   style:
@@ -436,7 +432,6 @@ card_mod:
 ```
 
 #### Example 6 - More transparent title track and volume slider
-
 ```yaml
 card_mod:
   style:
@@ -451,7 +446,6 @@ card_mod:
 ```
 
 #### Example 7 - Make the padding smaller around the artwork of the thumbnails in the favorites section
-
 ```yaml
 card_mod:
   style:
@@ -462,7 +456,6 @@ card_mod:
 ```
 
 #### Example 8 - Remove artwork in player section
-
 ```yaml
 card_mod:
   style:
@@ -473,7 +466,6 @@ card_mod:
 ```
 
 #### Example 9 - Hide volume slider and mute icon
-
 ```yaml
 card_mod:
   style:
@@ -484,7 +476,6 @@ card_mod:
 ```
 
 #### Example 10 - Hide background from controls when artwork is shown as background
-
 ```yaml
 artworkAsBackground: true
 card_mod:
@@ -495,7 +486,6 @@ card_mod:
 ```
 
 #### Example 11 - Modify transparency of background from controls when artwork is shown as background
-
 ```yaml
 artworkAsBackground: true
 card_mod:
@@ -507,7 +497,6 @@ card_mod:
 ```
 
 #### Example 12 - Show only player and now playing text information
-
 ```yaml
 heightPercentage: auto
 sections:
@@ -524,7 +513,6 @@ card_mod:
 ```
 
 #### Example 13 - Style the favorite section
-
 ```yaml
 card_mod:
   style:
@@ -536,7 +524,6 @@ card_mod:
 ```
 
 #### Example 14 - Color of the player controls
-
 ```yaml
 card_mod:
   style:
@@ -547,7 +534,6 @@ card_mod:
 ```
 
 #### Example 15 - Remove the top "All favorites" and "Browse media" from the favorites section
-
 ```yaml
 card_mod:
   style:
@@ -558,7 +544,6 @@ card_mod:
 ```
 
 #### Example 16 - Change colors of titles in favorites
-
 ```yaml
 card_mod:
   style:
@@ -570,7 +555,6 @@ card_mod:
 ```
 
 #### Example 17 - Remove everything except the album art
-
 ```yaml
 card_mod:
   style:
@@ -581,7 +565,6 @@ card_mod:
 ```
 
 #### Example 18 - Hide the volume button and percentage
-
 ```yaml
 card_mod:
   style:
@@ -594,7 +577,6 @@ card_mod:
 ![img.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_2.png)
 
 #### Example 19 - Changing the font size of song title
-
 ```yaml
 card_mod:
   style:
@@ -605,7 +587,6 @@ card_mod:
 ```
 
 #### Example 20 - Artwork position
-
 ```yaml
 heightPercentage: auto
 card_mod:
@@ -622,7 +603,6 @@ card_mod:
 ![img.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_3.png)
 
 #### Example 21 - Size of group buttons
-
 ```yaml
 card_mod:
   style:
@@ -633,7 +613,6 @@ card_mod:
 ```
 
 #### Example 22 - Font size for everything
-
 ```yaml
 card_mod:
   style: |
@@ -643,7 +622,7 @@ card_mod:
 ```
 
 #### Example 23 - Increase entity font
-```
+```yaml
 card_mod:
   style:
     mxmp-player$ mxmp-player-header$: |
@@ -653,7 +632,7 @@ card_mod:
 ```
 
 #### Example 24 - Hide the select all/none buttons at the top of the groupings page
-```
+```yaml
 card_mod:
   style:
     mxmp-grouping$: |
@@ -663,7 +642,7 @@ card_mod:
 ```
 
 #### Example 25 - reduce min-width of the card
-```
+```yaml
 widthPercentage: 30
 card_mod:
   style:
@@ -674,7 +653,7 @@ card_mod:
 ```
 
 #### Example 26 - Padding and border around grouping items
-```
+```yaml
 card_mod:
   style:
     mxmp-grouping$: |
@@ -686,3 +665,20 @@ card_mod:
 ```
 ![img.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/card_mod_4.png)
 
+#### Example 27 - Larger icons in the player section
+```yaml
+card_mod:
+  style:
+    mxmp-player$ mxmp-player-controls$: |
+      .icons {
+        margin-bottom: 1rem;
+      }
+      mxmp-ha-player,ha-icon-button {
+        --mdc-icon-size: 3rem !important;
+        --mdc-icon-button-size: 4rem !important;
+      }  
+      .big-icon {
+        --mdc-icon-size: 7rem !important;
+        --mdc-icon-button-size: 4rem !important;
+      }  
+```
