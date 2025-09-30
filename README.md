@@ -684,4 +684,13 @@ card_mod:
         --mdc-icon-size: 7rem !important;
         --mdc-icon-button-size: 4rem !important;
       }  
+
+#### Example 28 - Change the size of section button icons
+card_mod:
+  style:
+    mxmp-footer$ mxmp-section-button$: |
+      ha-icon-button {
+        --mdc-icon-button-size: 5rem !important;
+        --mdc-icon-size: 3rem !important;
+      }
 ```
