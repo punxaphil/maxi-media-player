@@ -2,6 +2,8 @@
 
 Maxi Media Player for Home Assistant UI with a focus on managing multiple media players!
 
+This card, Maxi Media Player, is a generalisation of the [Maxi Media Player](https://github.com/punxaphil/maxi-media-player), and its aim is to work with all media players supported by Home Assistant. In contrast to the Maxi Media Player, it will not automatically discover your media players, but you will have to specify which ones to use in the configuration. 
+
 ## Features:
 
 * Group/Ungroup speakers
