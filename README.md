@@ -2,7 +2,7 @@
 
 Maxi Media Player for Home Assistant UI with a focus on managing multiple media players!
 
-This card, Maxi Media Player, is a generalisation of the [Maxi Media Player](https://github.com/punxaphil/maxi-media-player), and its aim is to work with all media players supported by Home Assistant. In contrast to the Maxi Media Player, it will not automatically discover your media players, but you will have to specify which ones to use in the configuration. 
+This card, Maxi Media Player, is a generalisation of the [Sonos Card](https://github.com/punxaphil/custom-sonos-card), and its aim is to work with all media players supported by Home Assistant. In contrast to the Sonos Card, it will not automatically discover your media players, but you will have to specify which ones to use in the configuration. <!-- //#NO_REPLACE_ON_THIS_LINE -->
 
 ## Features:
 
