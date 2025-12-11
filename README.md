@@ -60,6 +60,16 @@ each other (by adding multiple instances of the card with different sections ena
 
 By using the section configuration you can utilise the full power of Home Assistant's layout capabilities and also drag in other cards in your Dashboard view.
 
+```yaml
+sections: # Choose which sections to show in the card. Available sections are:
+  - volumes
+  - groups
+  - grouping
+  - media browser
+  - player
+```
+
+
 ### Configuration
 
 Use the Visual Editor in Home Assistant to configure the card. Most options are available there.
@@ -82,11 +92,9 @@ All settings below are optional
 # common for all sections
 title: ''
 sections: # see explanation further up
-  - volumes
-  - groups
-  - grouping
   - media browser
   - player
+startSection: groups # default is player. Use this to set the default section to show. 
 widthPercentage: 75 # default is 100. Use this to change the width of the card.
 heightPercentage: 75 # default is 100. Use this to change the height of the card. Set to 'auto' to make the card height adjust to the content.
 footerHeight: 4 # default is 5. Unit is 'rem'. Use this to change the height of the footer.
@@ -115,7 +123,7 @@ compactGroups: true # default is false. Makes the groups section more compact.
 
 # grouping specific
 groupingTitle: ''
-predefinedGroups: # defaults to empty
+predefinedGroups: # defaults to empty. More advanced features in separate section further down.
   - name: Inside
     volume: 15 # If you want to set the volume of all speakers when grouping
     unmuteWhenGrouped: true # If you want to unmute all speakers when grouping
@@ -131,8 +139,30 @@ predefinedGroups: # defaults to empty
         volume: 5
   - name: All (except TV)
     excludeItemsInEntitiesList: true # Invert entities selection, so that all players will be grouped except those in the entities list
-    entities: 
+    entities:
       - media_player.tv
+# below advanced settings for predefined groups fully depend on what features your device supports
+  - name: Party Mode # Example with device-specific settings 
+    bass: 10 # Set bass level (-10 to 10) 
+    treble: -2 # Set treble level (-10 to 10) 
+    loudness: true # Enable/disable loudness 
+    entities:
+      - media_player.living_room
+      - media_player.kitchen
+  - name: Podcast Mode
+    bass: -5
+    loudness: false
+    speechEnhancement: true # Enable speech enhancement (soundbars only) 
+    nightSound: true # Enable night sound mode (soundbars only) 
+    entities:
+      - media_player.living_room
+  - name: All with Crossfade
+    crossfade: true # Enable/disable crossfade between tracks 
+    touchControls: true # Enable/disable touch controls 
+    statusLight: false # Enable/disable status light 
+    entities:
+      - media_player.bedroom
+      - media_player.hall
 skipApplyButtonWhenGrouping: true # default is false. Will skip the apply button when grouping.
 dontSwitchPlayerWhenGrouping: true # default is false. Will not switch to another player if main player is ungrouped.
 groupingButtonIcons: # Use this to set custom icons for the grouping buttons.
@@ -232,8 +262,8 @@ hideMediaBrowserHeader: true # default is false. Hides the header of the media b
 
 # volumes specific
 hideVolumeCogwheel: true # default is false. Will hide the cogwheel for the volumes section.
-
 ```
+
 
 ## Using individual section cards
 
@@ -300,8 +330,6 @@ playerControlsLargeIcons: true
 ```
 
 ![slim.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/slim.png)
-
-
 
 ## Custom Favorites
 
