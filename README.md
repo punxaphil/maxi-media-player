@@ -25,7 +25,7 @@ This card, Maxi Media Player, is a generalisation of the [Sonos Card](https://gi
 and more!
 
 ![player.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/player.png)
-![favorites.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/favorites.png)
+![media_browser.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/media_browser.png)
 ![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png)
 ![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png)
 ![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
