@@ -186,7 +186,7 @@ player:
   fastForwardAndRewindStepSizeSeconds: 60 # default is 15 seconds
   hideArtwork: true # default is false. Hides the artwork in the player section.
   labelWhenNoMediaIsSelected: 'No media selected'
-  mediaArtworkOverrides: # Show your own selected artwork if certain rules match
+  mediaArtworkOverrides: # Show your own selected artwork if certain rules match. These rules will also apply to favorites in the media browser section when applicable.
     - mediaTitleEquals: TV
       imageUrl: https://cdn-icons-png.flaticon.com/512/716/716429.png
       sizePercentage: 40
@@ -214,6 +214,18 @@ player:
       imageUrl: https://cdn-icons-png.flaticon.com/512/174/174872.png
     - mediaChannelRegexp: '^P[1-4]$' # Regexp matching channels P1, P2, P3, P4
       imageUrl: https://cdn-icons-png.flaticon.com/512/2995/2995101.png
+    - appNameEquals: 'YouTube' # Matches app_name attribute (e.g. Nvidia Shield apps)
+      imageUrl: https://cdn-icons-png.flaticon.com/512/174/174883.png
+    - sourceEquals: 'Netflix' # Matches source attribute
+      imageUrl: https://cdn-icons-png.flaticon.com/512/732/732228.png
+    - appIdEquals: '111299001912' # Matches app_id attribute (e.g. Samsung Tizen TV apps)
+      imageUrl: https://cdn-icons-png.flaticon.com/512/174/174883.png
+    - appNameRegexp: '.*Plex.*' # Regexp matching app names containing "Plex"
+      imageUrl: https://cdn-icons-png.flaticon.com/512/174/174868.png
+    - sourceRegexp: 'HDMI.*' # Regexp matching sources starting with "HDMI"
+      imageUrl: https://cdn-icons-png.flaticon.com/512/2995/2995101.png
+    - appIdRegexp: 'com\\.google\\..*' # Regexp matching Google app IDs
+      imageUrl: https://cdn-icons-png.flaticon.com/512/2991/2991148.png
     - ifMissing: true # ifMissing will only be used if none of the "Equals" or "Regexp" overrides above resulted in a match
       imageUrl: https://cdn-icons-png.flaticon.com/512/651/651758.png
     - mediaTitleEquals: 'My Radio Station' # imageUrl supports templates
