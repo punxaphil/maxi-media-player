@@ -651,8 +651,6 @@ card_mod:
 
 # Contributing
 
-## Getting Started
-
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (see `.nvmrc` for the required version)
@@ -696,7 +694,7 @@ For SSH to work, passwordless login (e.g. using ssh-copy-id) is expected to alre
 
 1. Make your changes in `src/`.
 2. Run `npm run deploy` to build and deploy to your HA instance for manual testing. The deploy script automatically increments the resource version (`hacstag`) so HA picks up the new build without cache issues.
-    - If you instead want to manually copy the built file to your HA instance, you can find it in `dist/maxi-media-player.js`. Copy this file to your HA `www/community/mxmp-card/` directory and update the resource reference in your Lovelace config if needed.
+    - If you instead want to manually copy the built file to your HA instance, you can find it in `dist/maxi-media-player.js`. Copy this file to your HA `www/community/maxi-media-player/` directory and update the resource reference in your Lovelace config if needed.
 4. Commit using [Conventional Commits](https://www.conventionalcommits.org/) format (e.g. `feat: add new feature`, `fix: resolve bug`, `feat(favorites): scoped feature`). This is used for automatic release note generation.
 
 ### Pull Requests
