@@ -110,6 +110,7 @@ entityNameReplacement: ''
 fontFamily: 'Roboto, sans-serif' # Use this to change the font family for the entire card.
 footerHeight: 4 # default is 5. Unit is 'rem'. Use this to change the height of the footer.
 heightPercentage: 75 # default is 100. Use this to change the height of the card. Set to 'auto' to make the card height adjust to the content.
+listItemHeight: 3 # default is built-in height. Unit is 'rem'. Use this to change the height of list items (e.g., media browser rows, queue rows).
 mediaTitleRegexToReplace: '.wav?.*' # Regex pattern to replace parts of the media title
 mediaTitleReplacement: ' radio' # Replacement for the media title regex pattern
 minWidth: 10 # default is 20. Unit is 'rem'. Use this to change the minimum width of the card.
@@ -127,6 +128,7 @@ allowPlayerVolumeEntityOutsideOfGroup: true # default is false. Will allow the p
 dynamicVolumeSlider: true # default is false. See more in section further down.
 dynamicVolumeSliderMax: 40 # default is 30. Use this to change the max value for the dynamic volume slider.
 dynamicVolumeSliderThreshold: 30 # default is 20. Use this to change the threshold for the dynamic volume slider.
+volumeSliderHeight: 1.2 # default is built-in slider height. Unit is 'rem'. Global slider height for all volume components.
 entitiesToIgnoreVolumeLevelFor: # default is empty. Use this if you want to ignore volume level for certain players in the player section. Useful if you have a main device with fixed volume.
   - media_player.my_sonos_port_device
 entityPlatform: music_assistant # default is empty.
@@ -250,7 +252,7 @@ player:
   hideVolumeMuteButton: true # default is false. Hides the mute/unmute button in the player.
   hideVolumePercentage: true # default is false. Hides the volume percentage display in the player.
   volumeMuteButtonSize: 2 # default is 2.5. Unit is 'rem'. Use this to change the size of the mute button in the player.
-  volumeSliderHeight: 0.5 # default is 1.5. Unit is 'rem'. Use this to change the height of the volume slider in the player.
+  volumeSliderHeight: 0.5 # Unit is 'rem'. Overrides the global volumeSliderHeight for the player section slider only.
   volumeEntityId: media_player.bedroom # default is empty. Use this to control the volume of another player in the player section. Entity ID must the selected player or part of the selected player's group, otherwise it will not be controlled.
   showAudioInputFormat: true # default is false. Will show the audio input format (e.g. Dolby Digital) in the player section if available. By default, it will only show if the input format in the volumes section.
   showBrowseMediaButton: true # default is false. Will show the browse media button in the player section.
