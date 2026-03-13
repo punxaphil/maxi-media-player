@@ -29,6 +29,7 @@ and more!
 ![groups.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/groups.png)
 ![grouping.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/grouping.png)
 ![volumes.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/volumes.png)
+![search.png](https://github.com/punxaphil/maxi-media-player/raw/main/img/search.png)
 
 ## Support the project
 
